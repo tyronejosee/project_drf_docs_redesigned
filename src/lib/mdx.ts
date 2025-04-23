@@ -53,3 +53,35 @@ export async function getMdxBySlug({ type, slug, prism = true }: Props) {
     },
   };
 }
+
+export function getMdxLinks(type?: string): { path: string; title: string }[] {
+  const basePath = path.join(process.cwd(), "src/content");
+  if (!fs.existsSync(basePath)) {
+    throw new Error(`Directory ${basePath} does not exist`);
+  }
+
+  const dirPath = type ? path.join(basePath, type) : basePath;
+  if (!fs.existsSync(dirPath)) {
+    throw new Error(`Directory ${dirPath} does not exist`);
+  }
+
+  try {
+    const files = fs.readdirSync(dirPath);
+    const mdxFiles = files
+      .filter((file) => file.endsWith(".mdx"))
+      .map((file) => {
+        const filePath = path.join(dirPath, file);
+        const source = fs.readFileSync(filePath, "utf8");
+        const { data: frontmatterData } = matter(source);
+
+        return {
+          title: frontmatterData.title || file.replace(".mdx", ""),
+          path: `/${type ? `${type}/` : ""}${file.replace(".mdx", "")}`,
+        };
+      });
+
+    return mdxFiles;
+  } catch (error) {
+    throw new Error(`Error reading files from ${dirPath}: ${error}`);
+  }
+}

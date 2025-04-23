@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 
 import { Geist, Geist_Mono } from "next/font/google";
-import { Navigation } from "@/components/ui";
+import { getMdxLinks } from "@/lib/mdx";
+import { Navigation, Sidebar } from "@/components/ui";
 import { PROJECT_NAME } from "@/config/constants";
 import Providers from "./providers";
 
@@ -35,14 +36,31 @@ type Props = {
 };
 
 export default function RootLayout({ children }: Props) {
+  const tutorials = getMdxLinks("tutorial");
+  const apiGuides = getMdxLinks("api-guide");
+  const topics = getMdxLinks("topics");
+
   return (
     <html lang="en" className="dark">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          <Navigation />
-          {children}
+          <Navigation
+            tutorials={tutorials}
+            apiGuides={apiGuides}
+            topics={topics}
+          />
+          <div className="relative mx-auto max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
+            <Sidebar
+              tutorials={tutorials}
+              apiGuides={apiGuides}
+              topics={topics}
+            />
+            <div className="mt-6 w-full max-w-screen-md min-w-0 px-1 md:px-6">
+              {children}
+            </div>
+          </div>
         </Providers>
       </body>
     </html>

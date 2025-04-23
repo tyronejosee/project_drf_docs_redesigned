@@ -1,7 +1,18 @@
-export default function HomePage() {
+import type { Metadata } from "next";
+
+import { getMdxBySlug } from "@/lib/mdx";
+import { MDXContent } from "@/components/tools";
+
+export const metadata: Metadata = {
+  title: "Homepage",
+};
+
+export default async function TutorialPage() {
+  const { code } = await getMdxBySlug({ slug: "index" });
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-2">
-      <h1>DRF Docs</h1>
-    </div>
+    <main className="prose dark:prose-invert">
+      <MDXContent code={code} />
+    </main>
   );
 }
