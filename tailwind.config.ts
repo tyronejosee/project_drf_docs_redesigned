@@ -2,6 +2,7 @@ import type { Config } from "tailwindcss";
 
 import { heroui } from "@heroui/theme";
 import typography from "@tailwindcss/typography";
+import { b } from "framer-motion/client";
 
 const config: Config = {
   content: [
@@ -13,7 +14,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: "#a30000",
+        primary: "#ef4444",
         secondary: "#FF9100",
         neutral: {
           light: "#fafafa",
@@ -23,38 +24,39 @@ const config: Config = {
           dark: "#0a0a0a",
         },
       },
-      typography: (theme) => ({
+      typography: (theme: (path: string) => string | undefined) => ({
         DEFAULT: {
           css: {
+            fontSize: "1rem",
             color: theme("colors.neutral.light"),
             h1: {
-              color: theme("colors.primary"),
+              color: theme("colors.white"),
               fontWeight: "900",
             },
             h2: {
-              color: theme("colors.primary"),
+              color: theme("colors.white"),
               fontWeight: "800",
             },
             h3: {
-              color: theme("colors.primary"),
+              color: theme("colors.white"),
               fontWeight: "700",
             },
             a: {
-              color: theme("colors.primary"),
+              color: theme("colors.blue.400"),
               textDecoration: "none",
               "&:hover": {
                 textDecoration: "underline",
               },
             },
             strong: {
-              color: theme("colors.primary"),
+              color: theme("colors.white"),
               fontWeight: "700",
             },
             hr: {
-              borderColor: theme("colors.neutral.gray"),
+              borderColor: theme("colors.neutral.darkgrey"),
               borderTopStyle: "solid",
               borderTopWidth: "4px",
-              round: "1rem",
+              borderRadius: "0.5rem",
               marginTop: "2rem",
               marginBottom: "2rem",
               "&:first-child": {
@@ -67,10 +69,10 @@ const config: Config = {
               color: theme("colors.primary"),
               backgroundColor: theme("colors.neutral.darkgrey"),
               borderRadius: "0.4rem",
-              padding: "0.4rem 0.4rem",
+              padding: "0.1rem 0.3rem",
             },
             pre: {
-              backgroundColor: theme("colors.neutral.primary"),
+              backgroundColor: theme("colors.neutral.darkgrey"),
               borderRadius: "0.75rem",
               padding: "1.25rem",
               marginTop: "1.5rem",
@@ -81,9 +83,9 @@ const config: Config = {
             "pre code": {
               backgroundColor: "transparent",
               padding: "0",
-              fontSize: "0.9rem",
+              fontSize: "0.5rem",
               fontFamily: theme("fontFamily.mono"),
-              fontWeight: "400",
+              fontWeight: "200",
             },
             ".line-numbers-rows": {
               borderRight: `1px solid ${theme("colors.neutral.gray")}`,

@@ -3,5 +3,26 @@
 @tailwind utilities;
 
 html {
-  @apply text-lg selection:bg-primary selection:text-neutral-950 dark:bg-neutral-900 dark:text-neutral-50;
+  @apply bg-neutral-900 text-neutral-50 text-lg selection:bg-neutral-gray;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(115, 115, 115, 0.5);;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background-color: rgba(255, 255, 255, 0.9);;
 }
