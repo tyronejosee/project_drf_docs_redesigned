@@ -7,9 +7,3 @@ Documentation for Django Rest Framework.
 A powerful and flexible toolkit for building Web APIs.
 It is a great choice for building RESTful APIs in Python.
 `;
-
-export const NAV_ITEMS = [
-  { id: 1, href: "tutorial/quickstart", label: "Quickstart" },
-];
-
-export const MENU_ITEMS = [...NAV_ITEMS];
