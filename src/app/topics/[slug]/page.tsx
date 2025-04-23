@@ -9,21 +9,21 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const { frontmatter } = await getMdxBySlug({ type: "tutorial", slug });
+  const { frontmatter } = await getMdxBySlug({ type: "topics", slug });
 
   return {
-    title: frontmatter ? frontmatter.title : "",
+    title: frontmatter ? frontmatter.title : slug,
     keywords: [frontmatter.keywords.join(", ")],
     openGraph: {
-      title: frontmatter ? frontmatter.title : "",
+      title: frontmatter ? frontmatter.title : slug,
       type: "article",
     },
   };
 }
 
-export default async function TutorialDetailPage({ params }: Props) {
+export default async function TopicsDetailPage({ params }: Props) {
   const { slug } = await params;
-  const { code } = await getMdxBySlug({ type: "tutorial", slug });
+  const { code } = await getMdxBySlug({ type: "topics", slug });
 
   return (
     <main className="prose dark:prose-invert">

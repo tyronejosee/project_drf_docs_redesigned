@@ -9,7 +9,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const { frontmatter } = await getMdxBySlug({ type: "tutorial", slug });
+  const { frontmatter } = await getMdxBySlug({ type: "api-guide", slug });
 
   return {
     title: frontmatter ? frontmatter.title : "",
@@ -21,9 +21,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function TutorialDetailPage({ params }: Props) {
+export default async function ApiGuideDetailPage({ params }: Props) {
   const { slug } = await params;
-  const { code } = await getMdxBySlug({ type: "tutorial", slug });
+  const { code } = await getMdxBySlug({ type: "api-guide", slug });
 
   return (
     <main className="prose dark:prose-invert">
