@@ -28,9 +28,7 @@ django-admin startproject tutorial .  # Note the trailing '.' character
 cd tutorial
 django-admin startapp quickstart
 cd ..
-
 ```
-
 
 The project layout should look like:
 
@@ -57,18 +55,21 @@ $ find .
 ./env
 ./env/...
 ./manage.py
-
 ```
 
 It may look unusual that the application has been created within the project directory. Using the project's namespace avoids name clashes with external modules (a topic that goes outside the scope of the quickstart).
 
 Now sync your database for the first time:
 
-    python manage.py migrate
+```bash
+python manage.py migrate
+```
 
 We'll also create an initial user named `admin` with a password. We'll authenticate as that user later in our example.
 
-    python manage.py createsuperuser --username admin --email admin@example.com
+```bash
+python manage.py createsuperuser --username admin --email admin@example.com
+```
 
 Once you've set up a database and the initial user is created and ready to go, open up the app's directory and we'll get coding...
 
@@ -91,7 +92,6 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Group
         fields = ['url', 'name']
-
 ```
 
 Notice that we're using hyperlinked relations in this case with `HyperlinkedModelSerializer`.  You can also use primary key and various other relationships, but hyperlinking is good RESTful design.
@@ -123,7 +123,6 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all().order_by('name')
     serializer_class = GroupSerializer
     permission_classes = [permissions.IsAuthenticated]
-
 ```
 
 Rather than write multiple views we're grouping together all the common behavior into classes called `ViewSets`.
@@ -150,7 +149,6 @@ urlpatterns = [
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
-
 ```
 
 Because we're using viewsets instead of views, we can automatically generate the URL conf for our API, by simply registering the viewsets with a router class.
@@ -167,7 +165,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10
 }
-
 ```
 
 ## Settings
@@ -179,7 +176,6 @@ INSTALLED_APPS = [
     ...
     'rest_framework',
 ]
-
 ```
 
 Okay, we're done.
@@ -212,7 +208,6 @@ Enter host password for user 'admin':
         }
     ]
 }
-
 ```
 
 Or using the [httpie][httpie], command line tool...
@@ -235,7 +230,6 @@ $HTTP/1.1 200 OK
         }
     ]
 }
-
 ```
 
 Or directly through the browser, by going to the URL `http://127.0.0.1:8000/users/`...

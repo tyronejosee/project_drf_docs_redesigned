@@ -1,5 +1,5 @@
 ---
-title: "Tutorial 6: ViewSets & Routers"
+title: "T6: ViewSets & Routers"
 keywords: ["django", "rest", "framework", "api", "viewsets", "routers"]
 ---
 
@@ -27,7 +27,6 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
-
 ```
 
 Here we've used the `ReadOnlyModelViewSet` class to automatically provide the default 'read-only' operations.  We're still setting the `queryset` and `serializer_class` attributes exactly as we did when we were using regular views, but we no longer need to provide the same information to two separate classes.
@@ -60,7 +59,6 @@ class SnippetViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
-
 ```
 
 This time we've used the `ModelViewSet` class in order to get the complete set of default read and write operations.
@@ -102,7 +100,6 @@ user_list = UserViewSet.as_view({
 user_detail = UserViewSet.as_view({
     'get': 'retrieve'
 })
-
 ```
 
 Notice how we're creating multiple views from each `ViewSet` class, by binding the HTTP methods to the required action for each view.
@@ -110,15 +107,14 @@ Notice how we're creating multiple views from each `ViewSet` class, by binding t
 Now that we've bound our resources into concrete views, we can register the views with the URL conf as usual.
 
 ```python
-    urlpatterns = format_suffix_patterns([
-        path('', api_root),
-        path('snippets/', snippet_list, name='snippet-list'),
-        path('snippets/<int:pk>/', snippet_detail, name='snippet-detail'),
-        path('snippets/<int:pk>/highlight/', snippet_highlight, name='snippet-highlight'),
-        path('users/', user_list, name='user-list'),
-        path('users/<int:pk>/', user_detail, name='user-detail')
-    ])
-
+urlpatterns = format_suffix_patterns([
+    path('', api_root),
+    path('snippets/', snippet_list, name='snippet-list'),
+    path('snippets/<int:pk>/', snippet_detail, name='snippet-detail'),
+    path('snippets/<int:pk>/highlight/', snippet_highlight, name='snippet-highlight'),
+    path('users/', user_list, name='user-list'),
+    path('users/<int:pk>/', user_detail, name='user-detail')
+])
 ```
 
 ## Using Routers
@@ -142,7 +138,6 @@ router.register(r'users', views.UserViewSet, basename='user')
 urlpatterns = [
     path('', include(router.urls)),
 ]
-
 ```
 
 Registering the ViewSets with the router is similar to providing a urlpattern.  We include two arguments - the URL prefix for the views, and the view set itself.

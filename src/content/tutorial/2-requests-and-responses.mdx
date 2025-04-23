@@ -1,5 +1,5 @@
 ---
-title: "Tutorial 2: Requests and Responses"
+title: "T2: Requests and Responses"
 keywords: ["django", "rest", "framework", "api", "requests", "responses"]
 ---
 
@@ -15,7 +15,6 @@ REST framework introduces a `Request` object that extends the regular `HttpReque
 ```python
 request.POST  # Only handles form data.  Only works for 'POST' method.
 request.data  # Handles arbitrary data.  Works for 'POST', 'PUT' and 'PATCH' methods.
-
 ```
 
 ## Response objects
@@ -24,7 +23,6 @@ REST framework also introduces a `Response` object, which is a type of `Template
 
 ```python
 return Response(data)  # Renders to content type as requested by the client.
-
 ```
 
 ## Status codes
@@ -70,7 +68,6 @@ def snippet_list(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 ```
 
 Our instance view is an improvement over the previous example.  It's a little more concise, and the code now feels very similar to if we were working with the Forms API.  We're also using named status codes, which makes the response meanings more obvious.
@@ -102,7 +99,6 @@ def snippet_detail(request, pk):
     elif request.method == 'DELETE':
         snippet.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
 ```
 
 This should all feel very familiar - it is not a lot different from working with regular Django views.
@@ -117,14 +113,12 @@ Start by adding a `format` keyword argument to both of the views, like so.
 
 ```python
 def snippet_list(request, format=None):
-
 ```
 
 and
 
 ```python
 def snippet_detail(request, pk, format=None):
-
 ```
 
 Now update the `snippets/urls.py` file slightly, to append a set of `format_suffix_patterns` in addition to the existing URLs.
@@ -140,7 +134,6 @@ urlpatterns = [
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
-
 ```
 
 We don't necessarily need to add these extra url patterns in, but it gives us a simple, clean way of referring to a specific format.
@@ -174,7 +167,6 @@ HTTP/1.1 200 OK
     "style": "friendly"
     }
 ]
-
 ```
 
 We can control the format of the response that we get back, either by using the `Accept` header:
@@ -182,7 +174,6 @@ We can control the format of the response that we get back, either by using the 
 ```bash
 http http://127.0.0.1:8000/snippets/ Accept:application/json  # Request JSON
 http http://127.0.0.1:8000/snippets/ Accept:text/html         # Request HTML
-
 ```
 
 Or by appending a format suffix:
@@ -190,7 +181,6 @@ Or by appending a format suffix:
 ```bash
 http http://127.0.0.1:8000/snippets.json  # JSON suffix
 http http://127.0.0.1:8000/snippets.api   # Browsable API suffix
-
 ```
 
 Similarly, we can control the format of the request that we send, using the `Content-Type` header.
@@ -219,7 +209,6 @@ http --json POST http://127.0.0.1:8000/snippets/ code="print(456)"
     "language": "python",
     "style": "friendly"
 }
-
 ```
 
 If you add a `--debug` switch to the `http` requests above, you will be able to see the request type in request headers.

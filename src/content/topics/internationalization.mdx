@@ -1,3 +1,8 @@
+---
+title: "Internationalization"
+keywords: ["django", "rest", "framework", "api", "internationalization"]
+---
+
 # Internationalization
 
 > Supporting internationalization is not optional. It must be a core feature.
@@ -15,35 +20,47 @@ Doing so will allow you to:
 
 You can change the default language by using the standard Django `LANGUAGE_CODE` setting:
 
-    LANGUAGE_CODE = "es-es"
+```python
+LANGUAGE_CODE = "es-es"
+```
 
 You can turn on per-request language requests by adding `LocalMiddleware` to your `MIDDLEWARE` setting:
 
-    MIDDLEWARE = [
-        ...
-        'django.middleware.locale.LocaleMiddleware'
-    ]
+```python
+MIDDLEWARE = [
+    ...
+    'django.middleware.locale.LocaleMiddleware'
+]
+```
 
 When per-request internationalization is enabled, client requests will respect the `Accept-Language` header where possible. For example, let's make a request for an unsupported media type:
 
 **Request**
 
-    GET /api/users HTTP/1.1
-    Accept: application/xml
-    Accept-Language: es-es
-    Host: example.org
+```http
+GET /api/users HTTP/1.1
+Accept: application/xml
+Accept-Language: es-es
+Host: example.org
+```
 
 **Response**
 
-    HTTP/1.0 406 NOT ACCEPTABLE
+```http
+HTTP/1.0 406 NOT ACCEPTABLE
+```
 
-    {"detail": "No se ha podido satisfacer la solicitud de cabecera de Accept."}
+```json
+{"detail": "No se ha podido satisfacer la solicitud de cabecera de Accept."}
+```
 
 REST framework includes these built-in translations both for standard exception cases, and for serializer validation errors.
 
 Note that the translations only apply to the error strings themselves. The format of error messages, and the keys of field names will remain the same. An example `400 Bad Request` response body might look like this:
 
-    {"detail": {"username": ["Esse campo deve ser único."]}}
+```json
+{"detail": {"username": ["Esse campo deve ser único."]}}
+```
 
 If you want to use different string for parts of the response such as `detail` and `non_field_errors` then you can modify this behavior by using a [custom exception handler][custom-exception-handler].
 
@@ -53,10 +70,12 @@ By default all available languages will be supported.
 
 If you only wish to support a subset of the available languages, use Django's standard `LANGUAGES` setting:
 
-    LANGUAGES = [
-        ('de', _('German')),
-        ('en', _('English')),
-    ]
+```python
+LANGUAGES = [
+    ('de', _('German')),
+    ('en', _('English')),
+]
+```
 
 ## Adding new translations
 

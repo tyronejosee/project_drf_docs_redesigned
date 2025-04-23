@@ -1,5 +1,5 @@
 ---
-title: "Tutorial 5: Relationships & Hyperlinked APIs"
+title: "T5: Relationships & Hyperlinked APIs"
 keywords: ["django", "rest", "framework", "api", "relationships", "hyperlinked"]
 ---
 
@@ -22,8 +22,7 @@ def api_root(request, format=None):
     return Response({
         'users': reverse('user-list', request=request, format=format),
         'snippets': reverse('snippet-list', request=request, format=format)
-    })
-    
+    })    
 ```
 
 Two things should be noticed here. First, we're using REST framework's `reverse` function in order to return fully-qualified URLs; second, URL patterns are identified by convenience names that we will declare later on in our `snippets/urls.py`.
@@ -48,7 +47,6 @@ class SnippetHighlight(generics.GenericAPIView):
     def get(self, request, *args, **kwargs):
         snippet = self.get_object()
         return Response(snippet.highlighted)
-
 ```
 
 As usual we need to add the new views that we've created in to our URLconf.
@@ -56,14 +54,12 @@ We'll add a url pattern for our new API root in `snippets/urls.py`:
 
 ```python
 path('', views.api_root),
-
 ```
 
 And then add a url pattern for the snippet highlights:
 
 ```python
 path('snippets/<int:pk>/highlight/', views.SnippetHighlight.as_view()),
-
 ```
 
 ## Hyperlinking our API
@@ -107,7 +103,6 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = ['url', 'id', 'username', 'snippets']
-
 ```
 
 Notice that we've also added a new `'highlight'` field.  This field is of the same type as the `url` field, except that it points to the `'snippet-highlight'` url pattern, instead of the `'snippet-detail'` url pattern.
@@ -149,7 +144,6 @@ urlpatterns = format_suffix_patterns([
         views.UserDetail.as_view(),
         name='user-detail')
 ])
-
 ```
 
 ## Adding pagination
@@ -163,7 +157,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10
 }
-
 ```
 
 Note that settings in REST framework are all namespaced into a single dictionary setting, named `REST_FRAMEWORK`, which helps keep them well separated from your other project settings.

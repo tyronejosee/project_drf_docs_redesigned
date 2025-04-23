@@ -1,3 +1,8 @@
+---
+title: "Documenting your API"
+keywords: ["django", "rest", "framework", "api", "documenting"]
+---
+
 # Documenting your API
 
 > A REST API should spend almost all of its descriptive effort in defining the media type(s) used for representing resources and driving application state.
@@ -184,14 +189,16 @@ The description in the browsable API is generated from the docstring of the view
 
 If the python `Markdown` library is installed, then [markdown syntax][markdown] may be used in the docstring, and will be converted to HTML in the browsable API.  For example:
 
-    class AccountListView(views.APIView):
-        """
-        Returns a list of all **active** accounts in the system.
+```python
+class AccountListView(views.APIView):
+    """
+    Returns a list of all **active** accounts in the system.
 
-        For more details on how accounts are activated please [see here][ref].
+    For more details on how accounts are activated please [see here][ref].
 
-        [ref]: http://example.com/activating-accounts
-        """
+    [ref]: http://example.com/activating-accounts
+    """
+```
 
 Note that when using viewsets the basic docstring is used for all generated views.  To provide descriptions for each view, such as for the list and retrieve views, use docstring sections as described in [Schemas as documentation: Examples][schemas-examples].
 
@@ -203,14 +210,16 @@ When using the generic views, any `OPTIONS` requests will additionally respond w
 
 You can modify the response behavior to `OPTIONS` requests by overriding the `options` view method and/or by providing a custom Metadata class.  For example:
 
-    def options(self, request, *args, **kwargs):
-        """
-        Don't include the view description in OPTIONS responses.
-        """
-        meta = self.metadata_class()
-        data = meta.determine_metadata(request, self)
-        data.pop('description')
-        return Response(data=data, status=status.HTTP_200_OK)
+```python
+def options(self, request, *args, **kwargs):
+    """
+    Don't include the view description in OPTIONS responses.
+    """
+    meta = self.metadata_class()
+    data = meta.determine_metadata(request, self)
+    data.pop('description')
+    return Response(data=data, status=status.HTTP_200_OK)
+```
 
 See [the Metadata docs][metadata-docs] for more details.
 
@@ -225,14 +234,11 @@ In this approach, rather than documenting the available API endpoints up front, 
 To implement a hypermedia API you'll need to decide on an appropriate media type for the API, and implement a custom renderer and parser for that media type.  The [REST, Hypermedia & HATEOAS][hypermedia-docs] section of the documentation includes pointers to background reading, as well as links to various hypermedia formats.
 
 [cite]: https://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven
-
 [hypermedia-docs]: rest-hypermedia-hateoas.md
 [metadata-docs]: ../api-guide/metadata.md
 [schemas-examples]: ../api-guide/schemas.md#examples
-
 [image-drf-yasg]: ../img/drf-yasg.png
 [image-self-describing-api]: ../img/self-describing.png
-
 [drf-yasg]: https://github.com/axnsan12/drf-yasg/
 [drf-spectacular]: https://github.com/tfranzel/drf-spectacular/
 [markdown]: https://daringfireball.net/projects/markdown/syntax
