@@ -2,7 +2,6 @@ import type { Config } from "tailwindcss";
 
 import { heroui } from "@heroui/theme";
 import typography from "@tailwindcss/typography";
-import { b } from "framer-motion/client";
 
 const config: Config = {
   content: [
@@ -61,6 +60,33 @@ const config: Config = {
               marginBottom: "2rem",
               "&:first-child": {
                 display: "none",
+              },
+            },
+            blockquote: {
+              borderLeft: `4px solid ${theme("colors.primary")}`,
+              paddingLeft: "1rem",
+              color: theme("colors.neutral.light"),
+              fontStyle: "italic",
+              quotes: '"“""”"',
+              "&::before": {
+                content: "open-quote",
+                color: theme("colors.primary"),
+                fontSize: "2rem",
+                lineHeight: "0",
+                marginRight: "0.25rem",
+                verticalAlign: "-0.4em",
+              },
+              "&::after": {
+                content: "close-quote",
+                display: "none",
+              },
+              cite: {
+                display: "block",
+                fontSize: "0.875rem",
+                fontWeight: "500",
+                color: theme("colors.neutral.gray"),
+                marginTop: "0.5rem",
+                textAlign: "right",
               },
             },
             "code::before": { content: '""' },

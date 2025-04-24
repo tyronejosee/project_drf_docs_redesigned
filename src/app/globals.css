@@ -4,6 +4,23 @@
 
 html {
   @apply bg-neutral-900 text-neutral-50 text-lg selection:bg-neutral-gray;
+  scroll-behavior: smooth;
+}
+
+h1[id], h2[id] {
+  @apply scroll-mt-16;
+}
+
+table {
+  @apply min-w-full text-left;
+}
+
+th {
+  @apply min-w-[200px] text-xs;
+}
+
+td {
+  @apply min-w-52 text-xs;
 }
 
 ::-webkit-scrollbar {
