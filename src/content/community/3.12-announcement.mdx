@@ -1,3 +1,9 @@
+---
+title: "3.12 Announcement"
+keywords: ["django", "rest", "framework", "api", "announcement"]
+order: 10
+---
+
 <style>
 .promo li a {
     float: left;
@@ -30,12 +36,12 @@ in the URL path.
 
 For example...
 
-Method                          | Path            | Tags
---------------------------------|-----------------|-------------
-`GET`, `PUT`, `PATCH`, `DELETE` | `/users/{id}/`  | `['users']`
-`GET`, `POST`                   | `/users/`       | `['users']`
-`GET`, `PUT`, `PATCH`, `DELETE` | `/orders/{id}/` | `['orders']`
-`GET`, `POST`                   | `/orders/`      | `['orders']`
+| Method                          | Path            | Tags         |
+| ------------------------------- | --------------- | ------------ |
+| `GET`, `PUT`, `PATCH`, `DELETE` | `/users/{id}/`  | `['users']`  |
+| `GET`, `POST`                   | `/users/`       | `['users']`  |
+| `GET`, `PUT`, `PATCH`, `DELETE` | `/orders/{id}/` | `['orders']` |
+| `GET`, `POST`                   | `/orders/`      | `['orders']` |
 
 The tags used for a particular view may also be overridden...
 
@@ -63,8 +69,7 @@ and response objects. This is in contrast with the previous approach, which
 fully expanded the request and response bodies for each operation.
 
 The names used for a component default to using the serializer class name, [but
-may be overridden if needed](https://www.django-rest-framework.org/api-guide/schemas/#components
-)...
+may be overridden if needed](https://www.django-rest-framework.org/api-guide/schemas/#components)...
 
 ```python
 class MyOrders(APIView):
@@ -77,18 +82,18 @@ Many methods on the `AutoSchema` class have now been promoted to public API,
 allowing you to more fully customize the schema generation. The following methods
 are now available for overriding...
 
-* `get_path_parameters`
-* `get_pagination_parameters`
-* `get_filter_parameters`
-* `get_request_body`
-* `get_responses`
-* `get_serializer`
-* `get_paginator`
-* `map_serializer`
-* `map_field`
-* `map_choice_field`
-* `map_field_validators`
-* `allows_filters`.
+- `get_path_parameters`
+- `get_pagination_parameters`
+- `get_filter_parameters`
+- `get_request_body`
+- `get_responses`
+- `get_serializer`
+- `get_paginator`
+- `map_serializer`
+- `map_field`
+- `map_choice_field`
+- `map_field_validators`
+- `allows_filters`.
 
 See [the schema docs](https://www.django-rest-framework.org/api-guide/schemas/#per-view-customization)
 for details on using custom `AutoSchema` subclasses.
@@ -157,25 +162,81 @@ Instead use `serializers.BooleanField` field and set `allow_null=True` which doe
 
 ## Funding
 
-REST framework is a *collaboratively funded project*. If you use
+REST framework is a _collaboratively funded project_. If you use
 REST framework commercially we strongly encourage you to invest in its
 continued development by **[signing up for a paid plan][funding]**.
 
-*Every single sign-up helps us make REST framework long-term financially sustainable.*
+_Every single sign-up helps us make REST framework long-term financially sustainable._
 
 <ul class="premium-promo promo">
-    <li><a href="https://getsentry.com/welcome/" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/sentry130.png)">Sentry</a></li>
-    <li><a href="https://getstream.io/try-the-api/?utm_source=drf&utm_medium=banner&utm_campaign=drf" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/stream-130.png)">Stream</a></li>
-    <li><a href="https://software.esg-usa.com" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/esg-new-logo.png)">ESG</a></li>
-    <li><a href="https://rollbar.com" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/rollbar2.png)">Rollbar</a></li>
-    <li><a href="https://cadre.com" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/cadre.png)">Cadre</a></li>
-    <li><a href="https://hubs.ly/H0f30Lf0" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/kloudless-plus-text.png)">Kloudless</a></li>
-    <li><a href="https://lightsonsoftware.com" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/lightson-dark.png)">Lights On Software</a></li>
-    <li><a href="https://retool.com/?utm_source=djangorest&utm_medium=sponsorship" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/retool-sidebar.png)">Retool</a></li>
+  <li>
+    <a
+      href="https://getsentry.com/welcome/"
+      style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/sentry130.png)"
+    >
+      Sentry
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://getstream.io/try-the-api/?utm_source=drf&utm_medium=banner&utm_campaign=drf"
+      style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/stream-130.png)"
+    >
+      Stream
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://software.esg-usa.com"
+      style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/esg-new-logo.png)"
+    >
+      ESG
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://rollbar.com"
+      style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/rollbar2.png)"
+    >
+      Rollbar
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://cadre.com"
+      style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/cadre.png)"
+    >
+      Cadre
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://hubs.ly/H0f30Lf0"
+      style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/kloudless-plus-text.png)"
+    >
+      Kloudless
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://lightsonsoftware.com"
+      style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/lightson-dark.png)"
+    >
+      Lights On Software
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://retool.com/?utm_source=djangorest&utm_medium=sponsorship"
+      style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/retool-sidebar.png)"
+    >
+      Retool
+    </a>
+  </li>
 </ul>
 <div style="clear: both; padding-bottom: 20px;"></div>
 
-*Many thanks to all our [wonderful sponsors][sponsors], and in particular to our premium backers, [Sentry](https://getsentry.com/welcome/), [Stream](https://getstream.io/?utm_source=drf&utm_medium=banner&utm_campaign=drf), [ESG](https://software.esg-usa.com/), [Rollbar](https://rollbar.com/?utm_source=django&utm_medium=sponsorship&utm_campaign=freetrial), [Cadre](https://cadre.com), [Kloudless](https://hubs.ly/H0f30Lf0), [Lights On Software](https://lightsonsoftware.com), and [Retool](https://retool.com/?utm_source=djangorest&utm_medium=sponsorship).*
+_Many thanks to all our [wonderful sponsors][sponsors], and in particular to our premium backers, [Sentry](https://getsentry.com/welcome/), [Stream](https://getstream.io/?utm_source=drf&utm_medium=banner&utm_campaign=drf), [ESG](https://software.esg-usa.com/), [Rollbar](https://rollbar.com/?utm_source=django&utm_medium=sponsorship&utm_campaign=freetrial), [Cadre](https://cadre.com), [Kloudless](https://hubs.ly/H0f30Lf0), [Lights On Software](https://lightsonsoftware.com), and [Retool](https://retool.com/?utm_source=djangorest&utm_medium=sponsorship)._
 
 [sponsors]: https://fund.django-rest-framework.org/topics/funding/#our-sponsors
 [funding]: funding.md

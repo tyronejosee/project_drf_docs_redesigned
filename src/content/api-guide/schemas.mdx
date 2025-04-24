@@ -1,9 +1,10 @@
 ---
-source:
-    - schemas
+title: "Schemas"
+keywords: ["django", "rest", "framework", "api", "schema"]
+order: 21
 ---
 
-# Schema
+# Schemas
 
 > A machine-readable [schema] describes what resources are available via the API, what their URLs are, how they are represented and what operations they support.
 >
@@ -37,17 +38,17 @@ Django REST Framework provides support for automatic generation of
 
 Schema generation has several moving parts. It's worth having an overview:
 
-* `SchemaGenerator` is a top-level class that is responsible for walking your
+- `SchemaGenerator` is a top-level class that is responsible for walking your
   configured URL patterns, finding `APIView` subclasses, enquiring for their
   schema representation, and compiling the final schema object.
-* `AutoSchema` encapsulates all the details necessary for per-view schema
+- `AutoSchema` encapsulates all the details necessary for per-view schema
   introspection. Is attached to each view via the `schema` attribute. You
   subclass `AutoSchema` in order to customize your schema.
-* The `generateschema` management command allows you to generate a static schema
+- The `generateschema` management command allows you to generate a static schema
   offline.
-* Alternatively, you can route `SchemaView` to dynamically generate and serve
+- Alternatively, you can route `SchemaView` to dynamically generate and serve
   your schema.
-* `settings.DEFAULT_SCHEMA_CLASS` allows you to specify an `AutoSchema`
+- `settings.DEFAULT_SCHEMA_CLASS` allows you to specify an `AutoSchema`
   subclass to serve as your project's default.
 
 The following sections explain more.
@@ -58,9 +59,9 @@ The following sections explain more.
 
     pip install pyyaml uritemplate inflection
 
-* `pyyaml` is used to generate schema into YAML-based OpenAPI format.
-* `uritemplate` is used internally to get parameters in path.
-* `inflection` is used to pluralize operations more appropriately in the list endpoints.
+- `pyyaml` is used to generate schema into YAML-based OpenAPI format.
+- `uritemplate` is used internally to get parameters in path.
+- `inflection` is used to pluralize operations more appropriately in the list endpoints.
 
 ### Generating a static schema with the `generateschema` management command
 
@@ -110,51 +111,57 @@ urlpatterns = [
 
 The `get_schema_view()` helper takes the following keyword arguments:
 
-* `title`: May be used to provide a descriptive title for the schema definition.
-* `description`: Longer descriptive text.
-* `version`: The version of the API.
-* `url`: May be used to pass a canonical base URL for the schema.
+- `title`: May be used to provide a descriptive title for the schema definition.
+- `description`: Longer descriptive text.
+- `version`: The version of the API.
+- `url`: May be used to pass a canonical base URL for the schema.
 
-        schema_view = get_schema_view(
-            title='Server Monitoring API',
-            url='https://www.example.org/api/'
-        )
+```python
+schema_view = get_schema_view(
+    title='Server Monitoring API',
+    url='https://www.example.org/api/'
+)
+```
 
-* `urlconf`: A string representing the import path to the URL conf that you want
-   to generate an API schema for. This defaults to the value of Django's
-   `ROOT_URLCONF` setting.
+- `urlconf`: A string representing the import path to the URL conf that you want
+  to generate an API schema for. This defaults to the value of Django's
+  `ROOT_URLCONF` setting.
 
-        schema_view = get_schema_view(
-            title='Server Monitoring API',
-            url='https://www.example.org/api/',
-            urlconf='myproject.urls'
-        )
+```python
+      schema_view = get_schema_view(
+          title='Server Monitoring API',
+          url='https://www.example.org/api/',
+          urlconf='myproject.urls'
+      )
+```
 
-* `patterns`: List of url patterns to limit the schema introspection to. If you
+- `patterns`: List of url patterns to limit the schema introspection to. If you
   only want the `myproject.api` urls to be exposed in the schema:
 
-        schema_url_patterns = [
-            path('api/', include('myproject.api.urls')),
-        ]
+```python
+schema_url_patterns = [
+    path('api/', include('myproject.api.urls')),
+]
 
-        schema_view = get_schema_view(
-            title='Server Monitoring API',
-            url='https://www.example.org/api/',
-            patterns=schema_url_patterns,
-        )
-* `public`: May be used to specify if schema should bypass views permissions. Default to False
+schema_view = get_schema_view(
+    title='Server Monitoring API',
+    url='https://www.example.org/api/',
+    patterns=schema_url_patterns,
+)
+```
 
-* `generator_class`: May be used to specify a `SchemaGenerator` subclass to be
+- `public`: May be used to specify if schema should bypass views permissions. Default to False
+
+- `generator_class`: May be used to specify a `SchemaGenerator` subclass to be
   passed to the `SchemaView`.
-* `authentication_classes`: May be used to specify the list of authentication
+- `authentication_classes`: May be used to specify the list of authentication
   classes that will apply to the schema endpoint. Defaults to
   `settings.DEFAULT_AUTHENTICATION_CLASSES`
-* `permission_classes`: May be used to specify the list of permission classes
+- `permission_classes`: May be used to specify the list of permission classes
   that will apply to the schema endpoint. Defaults to
   `settings.DEFAULT_PERMISSION_CLASSES`.
-* `renderer_classes`: May be used to pass the set of renderer classes that can
+- `renderer_classes`: May be used to pass the set of renderer classes that can
   be used to render the API root endpoint.
-
 
 ## SchemaGenerator
 
@@ -170,16 +177,18 @@ the schema for each view and collates the resulting OpenAPI schema.
 Typically you won't need to instantiate `SchemaGenerator` yourself, but you can
 do so like so:
 
-    generator = SchemaGenerator(title='Stock Prices API')
+```python
+generator = SchemaGenerator(title='Stock Prices API')
+```
 
 Arguments:
 
-* `title` **required**: The name of the API.
-* `description`: Longer descriptive text.
-* `version`: The version of the API. Defaults to `0.1.0`.
-* `url`: The root URL of the API schema. This option is not required unless the schema is included under path prefix.
-* `patterns`: A list of URLs to inspect when generating the schema. Defaults to the project's URL conf.
-* `urlconf`: A URL conf module name to use when generating the schema. Defaults to `settings.ROOT_URLCONF`.
+- `title` **required**: The name of the API.
+- `description`: Longer descriptive text.
+- `version`: The version of the API. Defaults to `0.1.0`.
+- `url`: The root URL of the API schema. This option is not required unless the schema is included under path prefix.
+- `patterns`: A list of URLs to inspect when generating the schema. Defaults to the project's URL conf.
+- `urlconf`: A URL conf module name to use when generating the schema. Defaults to `settings.ROOT_URLCONF`.
 
 In order to customize the top-level schema, subclass
 `rest_framework.schemas.openapi.SchemaGenerator` and provide your subclass
@@ -190,8 +199,10 @@ function.
 
 Returns a dictionary that represents the OpenAPI schema:
 
-    generator = SchemaGenerator(title='Stock Prices API')
-    schema = generator.get_schema()
+```python
+generator = SchemaGenerator(title='Stock Prices API')
+schema = generator.get_schema()
+```
 
 The `request` argument is optional, and may be used if you want to apply
 per-user permissions to the resulting schema generation.
@@ -200,7 +211,7 @@ This is a good point to override if you want to customize the generated
 dictionary For example you might wish to add terms of service to the [top-level
 `info` object][info-object]:
 
-```
+```python
 class TOSSchemaGenerator(SchemaGenerator):
     def get_schema(self, *args, **kwargs):
         schema = super().get_schema(*args, **kwargs)
@@ -219,14 +230,16 @@ from rest_framework.schemas.openapi import AutoSchema
 By default, view introspection is performed by an `AutoSchema` instance
 accessible via the `schema` attribute on `APIView`.
 
-    auto_schema = some_view.schema
+```python
+auto_schema = some_view.schema
+```
 
 `AutoSchema` provides the OpenAPI elements needed for each view, request method
 and path:
 
-* A list of [OpenAPI components][openapi-components]. In DRF terms these are
+- A list of [OpenAPI components][openapi-components]. In DRF terms these are
   mappings of serializers that describe request and response bodies.
-* The appropriate [OpenAPI operation object][openapi-operation] that describes
+- The appropriate [OpenAPI operation object][openapi-operation] that describes
   the endpoint, including path and query parameters for pagination, filtering,
   and so on.
 
@@ -238,7 +251,7 @@ operation = auto_schema.get_operation(...)
 In compiling the schema, `SchemaGenerator` calls `get_components()` and
 `get_operation()` for each view, allowed method, and path.
 
-----
+---
 
 **Note**: The automatic introspection of components, and many operation
 parameters relies on the relevant attributes and methods of
@@ -246,7 +259,7 @@ parameters relies on the relevant attributes and methods of
 etc. For basic `APIView` subclasses, default introspection is essentially limited to
 the URL kwarg path parameters for this reason.
 
-----
+---
 
 `AutoSchema` encapsulates the view introspection needed for schema generation.
 Because of this all the schema generation logic is kept in a single place,
@@ -342,7 +355,6 @@ You may see warnings if your API has duplicate component names. If so you can ov
 
 Returns a reference to the serializer component. This may be useful if you override `get_schema()`.
 
-
 #### `map_serializer()`
 
 Maps serializers to their OpenAPI representations.
@@ -426,13 +438,13 @@ common customizations, if the default generated values are not appropriate.
 
 The available kwargs are:
 
-* `tags`: Specify a list of tags.
-* `component_name`: Specify the component name.
-* `operation_id_base`: Specify the resource-name part of operation IDs.
+- `tags`: Specify a list of tags.
+- `component_name`: Specify the component name.
+- `operation_id_base`: Specify the resource-name part of operation IDs.
 
 You pass the kwargs when declaring the `AutoSchema` instance on your view:
 
-```
+```python
 class PetDetailView(generics.RetrieveUpdateDestroyAPIView):
     schema = AutoSchema(
         tags=['Pets'],

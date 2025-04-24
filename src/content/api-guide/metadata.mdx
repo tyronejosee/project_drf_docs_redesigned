@@ -1,6 +1,7 @@
 ---
-source:
-    - metadata.py
+title: "Metadata"
+keywords: ["django", "rest", "framework", "api", "metadata"]
+order: 20
 ---
 
 # Metadata
@@ -15,52 +16,57 @@ There are not currently any widely adopted conventions for exactly what style of
 
 Here's an example response that demonstrates the information that is returned by default.
 
-    HTTP 200 OK
-    Allow: GET, POST, HEAD, OPTIONS
-    Content-Type: application/json
+```http
+HTTP 200 OK
+Allow: GET, POST, HEAD, OPTIONS
+Content-Type: application/json
+```
 
-    {
-        "name": "To Do List",
-        "description": "List existing 'To Do' items, or create a new item.",
-        "renders": [
-            "application/json",
-            "text/html"
-        ],
-        "parses": [
-            "application/json",
-            "application/x-www-form-urlencoded",
-            "multipart/form-data"
-        ],
-        "actions": {
-            "POST": {
-                "note": {
-                    "type": "string",
-                    "required": false,
-                    "read_only": false,
-                    "label": "title",
-                    "max_length": 100
-                }
-            }
-        }
+```json
+{
+  "name": "To Do List",
+  "description": "List existing 'To Do' items, or create a new item.",
+  "renders": ["application/json", "text/html"],
+  "parses": [
+    "application/json",
+    "application/x-www-form-urlencoded",
+    "multipart/form-data"
+  ],
+  "actions": {
+    "POST": {
+      "note": {
+        "type": "string",
+        "required": false,
+        "read_only": false,
+        "label": "title",
+        "max_length": 100
+      }
     }
+  }
+}
+```
 
 ## Setting the metadata scheme
 
 You can set the metadata class globally using the `'DEFAULT_METADATA_CLASS'` settings key:
 
-    REST_FRAMEWORK = {
-        'DEFAULT_METADATA_CLASS': 'rest_framework.metadata.SimpleMetadata'
-    }
+```python
+REST_FRAMEWORK = {
+    'DEFAULT_METADATA_CLASS': 'rest_framework.metadata.SimpleMetadata'
+}
+```
 
 Or you can set the metadata class individually for a view:
 
-    class APIRoot(APIView):
-        metadata_class = APIRootMetadata
+```python
+class APIRoot(APIView):
+    metadata_class = APIRootMetadata
 
-        def get(self, request, format=None):
-            return Response({
-                ...
-            })
+    def get(self, request, format=None):
+        return Response({
+            ...
+        })
+```
 
 The REST framework package only includes a single metadata class implementation, named `SimpleMetadata`. If you want to use an alternative style you'll need to implement a custom metadata class.
 
@@ -70,11 +76,13 @@ If you have specific requirements for creating schema endpoints that are accesse
 
 For example, the following additional route could be used on a viewset to provide a linkable schema endpoint.
 
-    @action(methods=['GET'], detail=False)
-    def api_schema(self, request):
-        meta = self.metadata_class()
-        data = meta.determine_metadata(request, self)
-        return Response(data)
+```python
+@action(methods=['GET'], detail=False)
+def api_schema(self, request):
+    meta = self.metadata_class()
+    data = meta.determine_metadata(request, self)
+    return Response(data)
+```
 
 There are a couple of reasons that you might choose to take this approach, including that `OPTIONS` responses [are not cacheable][no-options].
 
@@ -90,22 +98,26 @@ Useful things that you might want to do could include returning schema informati
 
 The following class could be used to limit the information that is returned to `OPTIONS` requests.
 
-    class MinimalMetadata(BaseMetadata):
-        """
-        Don't include field and other information for `OPTIONS` requests.
-        Just return the name and description.
-        """
-        def determine_metadata(self, request, view):
-            return {
-                'name': view.get_view_name(),
-                'description': view.get_view_description()
-            }
+```python
+class MinimalMetadata(BaseMetadata):
+    """
+    Don't include field and other information for `OPTIONS` requests.
+    Just return the name and description.
+    """
+    def determine_metadata(self, request, view):
+        return {
+            'name': view.get_view_name(),
+            'description': view.get_view_description()
+        }
+```
 
 Then configure your settings to use this custom class:
 
-    REST_FRAMEWORK = {
-        'DEFAULT_METADATA_CLASS': 'myproject.apps.core.MinimalMetadata'
-    }
+```python
+REST_FRAMEWORK = {
+    'DEFAULT_METADATA_CLASS': 'myproject.apps.core.MinimalMetadata'
+}
+```
 
 # Third party packages
 

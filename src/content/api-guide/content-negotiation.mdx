@@ -1,9 +1,8 @@
 ---
 title: "Content negotiation"
 keywords: ["django", "rest", "framework", "api", "content", "negotiation"]
+order: 19
 ---
-
-`negotiation.py`
 
 # Content negotiation
 
@@ -24,7 +23,10 @@ REST framework uses a simple style of content negotiation to determine which med
 
 For example, given the following `Accept` header:
 
-    application/json; indent=4, application/json, application/yaml, text/html, */*
+```http
+application/json; indent=4, application/json, application/yaml, text/html, */*
+```
+
 
 The priorities for each of the given media types would be:
 
@@ -59,44 +61,50 @@ The `select_renderer()` method should return a two-tuple of (renderer instance, 
 The following is a custom content negotiation class which ignores the client
 request when selecting the appropriate parser or renderer.
 
-    from rest_framework.negotiation import BaseContentNegotiation
+```python
+from rest_framework.negotiation import BaseContentNegotiation
 
-    class IgnoreClientContentNegotiation(BaseContentNegotiation):
-        def select_parser(self, request, parsers):
-            """
-            Select the first parser in the `.parser_classes` list.
-            """
-            return parsers[0]
+class IgnoreClientContentNegotiation(BaseContentNegotiation):
+    def select_parser(self, request, parsers):
+        """
+        Select the first parser in the `.parser_classes` list.
+        """
+        return parsers[0]
 
-        def select_renderer(self, request, renderers, format_suffix):
-            """
-            Select the first renderer in the `.renderer_classes` list.
-            """
-            return (renderers[0], renderers[0].media_type)
+    def select_renderer(self, request, renderers, format_suffix):
+        """
+        Select the first renderer in the `.renderer_classes` list.
+        """
+        return (renderers[0], renderers[0].media_type)
+```
 
 ## Setting the content negotiation
 
 The default content negotiation class may be set globally, using the `DEFAULT_CONTENT_NEGOTIATION_CLASS` setting.  For example, the following settings would use our example `IgnoreClientContentNegotiation` class.
 
-    REST_FRAMEWORK = {
-        'DEFAULT_CONTENT_NEGOTIATION_CLASS': 'myapp.negotiation.IgnoreClientContentNegotiation',
-    }
+```python
+REST_FRAMEWORK = {
+    'DEFAULT_CONTENT_NEGOTIATION_CLASS': 'myapp.negotiation.IgnoreClientContentNegotiation',
+}
+```
 
 You can also set the content negotiation used for an individual view, or viewset, using the `APIView` class-based views.
 
-    from myapp.negotiation import IgnoreClientContentNegotiation
-    from rest_framework.response import Response
-    from rest_framework.views import APIView
+```python
+from myapp.negotiation import IgnoreClientContentNegotiation
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-    class NoNegotiationView(APIView):
-        """
-        An example view that does not perform content negotiation.
-        """
-        content_negotiation_class = IgnoreClientContentNegotiation
+class NoNegotiationView(APIView):
+    """
+    An example view that does not perform content negotiation.
+    """
+    content_negotiation_class = IgnoreClientContentNegotiation
 
-        def get(self, request, format=None):
-            return Response({
-                'accepted media type': request.accepted_renderer.media_type
-            })
+    def get(self, request, format=None):
+        return Response({
+            'accepted media type': request.accepted_renderer.media_type
+        })
+```
 
 [accept-header]: https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
