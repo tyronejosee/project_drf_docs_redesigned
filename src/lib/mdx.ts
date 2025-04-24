@@ -3,6 +3,8 @@ import path from "path";
 import matter from "gray-matter";
 import { bundleMDX } from "mdx-bundler";
 import rehypePrism from "rehype-prism-plus";
+import rehypeSlug from "rehype-slug";
+import { extractHeadings } from "@/lib/markdown";
 
 type Props = {
   type?: "api-guide" | "community" | "topics" | "tutorial";
@@ -18,6 +20,7 @@ export async function getMdxBySlug({ type, slug, prism = true }: Props) {
 
   const source = fs.readFileSync(filePath, "utf8");
   const { data: frontmatterData, content } = matter(source);
+  const headings = extractHeadings(content);
 
   const { code, frontmatter } = await bundleMDX({
     source: content,
@@ -25,6 +28,7 @@ export async function getMdxBySlug({ type, slug, prism = true }: Props) {
       if (prism) {
         options.rehypePlugins = [
           ...(options.rehypePlugins ?? []),
+          rehypeSlug,
           [
             rehypePrism,
             {
@@ -51,6 +55,7 @@ export async function getMdxBySlug({ type, slug, prism = true }: Props) {
       ...frontmatter,
       ...frontmatterData,
     },
+    headings,
   };
 }
 
@@ -77,8 +82,12 @@ export function getMdxLinks(type?: string): { path: string; title: string }[] {
         return {
           title: frontmatterData.title || file.replace(".mdx", ""),
           path: `/${type ? `${type}/` : ""}${file.replace(".mdx", "")}`,
+          order: frontmatterData.order ?? Infinity,
         };
-      });
+      })
+      .sort((a, b) => a.order - b.order)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      .map(({ order, ...rest }) => rest);
 
     return mdxFiles;
   } catch (error) {
