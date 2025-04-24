@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { getMdxBySlug } from "@/lib/mdx";
+import { HydrateHeadings } from "@/components/ui";
 import { MDXContent } from "@/components/tools";
 
 type Props = {
@@ -12,10 +13,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { frontmatter } = await getMdxBySlug({ type: "tutorial", slug });
 
   return {
-    title: frontmatter ? frontmatter.title : "",
+    title: frontmatter ? frontmatter.title : slug,
     keywords: [frontmatter.keywords.join(", ")],
     openGraph: {
-      title: frontmatter ? frontmatter.title : "",
+      title: frontmatter ? frontmatter.title : slug,
       type: "article",
     },
   };
@@ -23,11 +24,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function TutorialDetailPage({ params }: Props) {
   const { slug } = await params;
-  const { code } = await getMdxBySlug({ type: "tutorial", slug });
+  const { code, headings } = await getMdxBySlug({ type: "tutorial", slug });
 
   return (
     <main className="prose dark:prose-invert">
       <MDXContent code={code} />
+      <HydrateHeadings headings={headings} />
     </main>
   );
 }

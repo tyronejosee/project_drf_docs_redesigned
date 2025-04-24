@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import { Geist, Geist_Mono } from "next/font/google";
 import { getMdxLinks } from "@/lib/mdx";
-import { Navigation, Sidebar } from "@/components/ui";
+import { Navigation, Sidebar, TableContents } from "@/components/ui";
 import { PROJECT_NAME } from "@/config/constants";
 import Providers from "./providers";
 
@@ -39,6 +39,7 @@ export default function RootLayout({ children }: Props) {
   const tutorials = getMdxLinks("tutorial");
   const apiGuides = getMdxLinks("api-guide");
   const topics = getMdxLinks("topics");
+  const communities = getMdxLinks("community");
 
   return (
     <html lang="en" className="dark">
@@ -50,16 +51,19 @@ export default function RootLayout({ children }: Props) {
             tutorials={tutorials}
             apiGuides={apiGuides}
             topics={topics}
+            communities={communities}
           />
           <div className="relative mx-auto max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
             <Sidebar
               tutorials={tutorials}
               apiGuides={apiGuides}
               topics={topics}
+              communities={communities}
             />
             <div className="mt-6 w-full max-w-screen-md min-w-0 px-1 md:px-6">
               {children}
             </div>
+            <TableContents />
           </div>
         </Providers>
       </body>

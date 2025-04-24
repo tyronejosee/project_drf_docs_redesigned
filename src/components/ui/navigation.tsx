@@ -1,6 +1,6 @@
 "use client";
 
-import type { ApiGuide, Topic, Tutorial } from "@/types";
+import type { ApiGuide, Community, Topic, Tutorial } from "@/types";
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
@@ -22,6 +22,7 @@ type NavigationProps = {
   tutorials: Tutorial[];
   apiGuides: ApiGuide[];
   topics: Topic[];
+  communities: Community[];
 };
 
 type CustomNavMenuProps = {
@@ -29,6 +30,7 @@ type CustomNavMenuProps = {
   tutorials: Tutorial[];
   apiGuides: ApiGuide[];
   topics: Topic[];
+  communities: Community[];
 };
 
 const CustomNavMenu = ({
@@ -36,11 +38,12 @@ const CustomNavMenu = ({
   tutorials,
   apiGuides,
   topics,
+  communities,
 }: CustomNavMenuProps) => {
-  if (!isOpen) return null;
-
   const pathname = usePathname();
   const isActive = (path: string) => pathname === path;
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed top-12 left-0 right-0 bg-black/60 backdrop-blur-md z-50">
@@ -49,7 +52,7 @@ const CustomNavMenu = ({
           <Accordion
             isCompact
             showDivider={false}
-            defaultExpandedKeys={["0", "1"]}
+            defaultExpandedKeys={["1"]}
             selectionMode="multiple"
           >
             <AccordionItem
@@ -118,6 +121,28 @@ const CustomNavMenu = ({
                 ))}
               </ul>
             </AccordionItem>
+            <AccordionItem
+              key="3"
+              aria-label="Community"
+              title="Community"
+              classNames={{ title: "text-sm" }}
+            >
+              <ul className="flex flex-col">
+                {communities.map((community, index) => (
+                  <Link
+                    key={index}
+                    href={community.path}
+                    className={`text-sm pl-4 py-1 ${
+                      isActive(community.path)
+                        ? "text-white border-l border-primary"
+                        : "text-neutral-500 border-l border-neutral-800"
+                    }`}
+                  >
+                    {community.title}
+                  </Link>
+                ))}
+              </ul>
+            </AccordionItem>
           </Accordion>
         </nav>
       </div>
@@ -129,6 +154,7 @@ export default function Navigation({
   tutorials,
   apiGuides,
   topics,
+  communities,
 }: NavigationProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -204,6 +230,7 @@ export default function Navigation({
         isOpen={isMenuOpen}
         tutorials={tutorials}
         apiGuides={apiGuides}
+        communities={communities}
         topics={topics}
       />
     </>

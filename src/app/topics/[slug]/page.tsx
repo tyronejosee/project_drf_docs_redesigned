@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { getMdxBySlug } from "@/lib/mdx";
+import { HydrateHeadings } from "@/components/ui";
 import { MDXContent } from "@/components/tools";
 
 type Props = {
@@ -23,11 +24,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function TopicsDetailPage({ params }: Props) {
   const { slug } = await params;
-  const { code } = await getMdxBySlug({ type: "topics", slug });
+  const { code, headings } = await getMdxBySlug({ type: "topics", slug });
 
   return (
     <main className="prose dark:prose-invert">
       <MDXContent code={code} />
+      <HydrateHeadings headings={headings} />
     </main>
   );
 }

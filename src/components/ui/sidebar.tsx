@@ -1,6 +1,6 @@
 "use client";
 
-import type { ApiGuide, Topic, Tutorial } from "@/types";
+import type { ApiGuide, Community, Topic, Tutorial } from "@/types";
 import { Accordion, AccordionItem } from "@heroui/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -9,9 +9,15 @@ type Props = {
   tutorials: Tutorial[];
   apiGuides: ApiGuide[];
   topics: Topic[];
+  communities: Community[];
 };
 
-export default function Sidebar({ tutorials, apiGuides, topics }: Props) {
+export default function Sidebar({
+  tutorials,
+  apiGuides,
+  topics,
+  communities,
+}: Props) {
   const pathname = usePathname();
   const isActive = (path: string) => pathname === path;
 
@@ -22,7 +28,7 @@ export default function Sidebar({ tutorials, apiGuides, topics }: Props) {
           <Accordion
             isCompact
             showDivider={false}
-            defaultExpandedKeys={["0"]}
+            defaultExpandedKeys={["1"]}
             selectionMode="multiple"
           >
             <AccordionItem
@@ -87,6 +93,28 @@ export default function Sidebar({ tutorials, apiGuides, topics }: Props) {
                     }`}
                   >
                     {topic.title}
+                  </Link>
+                ))}
+              </ul>
+            </AccordionItem>
+            <AccordionItem
+              key="3"
+              aria-label="Community"
+              title="Community"
+              classNames={{ title: "text-sm" }}
+            >
+              <ul className="flex flex-col">
+                {communities.map((community, index) => (
+                  <Link
+                    key={index}
+                    href={community.path}
+                    className={`text-sm pl-4 py-1 ${
+                      isActive(community.path)
+                        ? "text-white border-l border-primary"
+                        : "text-neutral-500 border-l border-neutral-800"
+                    }`}
+                  >
+                    {community.title}
                   </Link>
                 ))}
               </ul>

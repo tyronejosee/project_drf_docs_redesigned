@@ -10,21 +10,21 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const { frontmatter } = await getMdxBySlug({ type: "api-guide", slug });
+  const { frontmatter } = await getMdxBySlug({ type: "community", slug });
 
   return {
-    title: frontmatter ? frontmatter.title : "",
+    title: frontmatter ? frontmatter.title : slug,
     keywords: [frontmatter.keywords.join(", ")],
     openGraph: {
-      title: frontmatter ? frontmatter.title : "",
+      title: frontmatter ? frontmatter.title : slug,
       type: "article",
     },
   };
 }
 
-export default async function ApiGuideDetailPage({ params }: Props) {
+export default async function CommunityDetailPage({ params }: Props) {
   const { slug } = await params;
-  const { code, headings } = await getMdxBySlug({ type: "api-guide", slug });
+  const { code, headings } = await getMdxBySlug({ type: "community", slug });
 
   return (
     <main className="prose dark:prose-invert">
