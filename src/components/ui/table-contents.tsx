@@ -1,0 +1,48 @@
+"use client";
+
+import Link from "next/link";
+
+import { Skeleton } from "@heroui/react";
+import { useActiveHeading } from "@/hooks";
+import { useHeadingsStore } from "@/stores/headings-store";
+
+export default function TableContents() {
+  const headings = useHeadingsStore((s) => s.headings);
+  const isLoading = headings.length === 0;
+  const activeId = useActiveHeading(headings);
+
+  return (
+    <nav className="order-last hidden w-56 shrink-0 lg:block">
+      <ul className="sticky top-[84px] h-[calc(100vh-121px)] overflow-y-auto">
+        <h2 className="mb-2 text-sm font-semibold text-white">On this page</h2>
+        {isLoading
+          ? Array.from({ length: 9 }).map((_, idx) => (
+              <li key={idx}>
+                <Skeleton className="h-4 w-20 rounded-lg mt-2 mb-3" />
+              </li>
+            ))
+          : headings.map((heading) => (
+              <li
+                key={heading.id}
+                className={`pl-4 border-l ${
+                  activeId === heading.id
+                    ? "border-l-primary"
+                    : "border-l-neutral-darkgrey"
+                }`}
+              >
+                <Link
+                  href={`#${heading.id}`}
+                  className={`text-sm ${
+                    activeId === heading.id
+                      ? "text-white"
+                      : "text-neutral-gray hover:text-white"
+                  }`}
+                >
+                  {heading.text}
+                </Link>
+              </li>
+            ))}
+      </ul>
+    </nav>
+  );
+}
