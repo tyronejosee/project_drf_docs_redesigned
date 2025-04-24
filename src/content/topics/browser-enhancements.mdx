@@ -1,11 +1,12 @@
 ---
 title: "Browser enhancements"
 keywords: ["django", "rest", "framework", "api", "browser", "enhancements"]
+order: 5
 ---
 
 # Browser enhancements
 
-> "There are two noncontroversial uses for overloaded POST.  The first is to *simulate* HTTP's uniform interface for clients like web browsers that don't support PUT or DELETE"
+> "There are two noncontroversial uses for overloaded POST. The first is to _simulate_ HTTP's uniform interface for clients like web browsers that don't support PUT or DELETE"
 >
 > &mdash; [RESTful Web Services][cite], Leonard Richardson & Sam Ruby.
 
@@ -21,8 +22,8 @@ After including the library, use the `data-method` attribute on the form, like s
 
 ```html
 <form action="/" data-method="PUT">
-    <input name='foo'/>
-    ...
+  <input name="foo" />
+  ...
 </form>
 ```
 
@@ -36,9 +37,9 @@ For example:
 
 ```html
 <form action="/">
-    <input data-override='content-type' value='application/json' type='hidden'/>
-    <textarea data-override='content'>{}</textarea>
-    <input type="submit"/>
+  <input data-override="content-type" value="application/json" type="hidden" />
+  <textarea data-override="content">{}</textarea>
+  <input type="submit" />
 </form>
 ```
 
@@ -90,8 +91,8 @@ class AcceptQueryParamOverride()
 
 ## Doesn't HTML5 support PUT and DELETE forms?
 
-Nope.  It was at one point intended to support `PUT` and `DELETE` forms, but
-was later [dropped from the spec][html5].  There remains
+Nope. It was at one point intended to support `PUT` and `DELETE` forms, but
+was later [dropped from the spec][html5]. There remains
 [ongoing discussion][put_delete] about adding support for `PUT` and `DELETE`,
 as well as how to support content types other than form-encoded data.
 

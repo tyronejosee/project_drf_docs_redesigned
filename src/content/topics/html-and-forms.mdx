@@ -1,9 +1,10 @@
 ---
-title: "HTML & Forms"
+title: "HTML and Forms"
 keywords: ["django", "rest", "framework", "api", "html", "forms"]
+order: 4
 ---
 
-# HTML & Forms
+# HTML and Forms
 
 REST framework is suitable for returning both API style responses, and regular HTML pages. Additionally, serializers can be used as HTML forms and rendered in templates.
 
@@ -40,14 +41,16 @@ class ProfileList(APIView):
 - `profile_list.html`:
 
 ```html
-<html><body>
-<h1>Profiles</h1>
-<ul>
-    {% for profile in profiles %}
-    <li>{{ profile.name }}</li>
-    {% endfor %}
-</ul>
-</body></html>
+<html>
+  <body>
+    <h1>Profiles</h1>
+    <ul>
+      {% for profile in profiles %}
+      <li>{{ profile.name }}</li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>
 ```
 
 ## Rendering Forms
@@ -88,17 +91,16 @@ class ProfileDetail(APIView):
 ```html
 {% load rest_framework %}
 
-<html><body>
+<html>
+  <body>
+    <h1>Profile - {{ profile.name }}</h1>
 
-<h1>Profile - {{ profile.name }}</h1>
-
-<form action="{% url 'profile-detail' pk=profile.pk %}" method="POST">
-    {% csrf_token %}
-    {% render_form serializer %}
-    <input type="submit" value="Save">
-</form>
-
-</body></html>
+    <form action="{% url 'profile-detail' pk=profile.pk %}" method="POST">
+      {% csrf_token %} {% render_form serializer %}
+      <input type="submit" value="Save" />
+    </form>
+  </body>
+</html>
 ```
 
 ### Using template packs
@@ -111,8 +113,11 @@ The following HTML will link to a CDN hosted version of the Bootstrap 3 CSS:
 
 ```html
 <head>
-    …
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  …
+  <link
+    rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
+  />
 </head>
 ```
 
@@ -139,17 +144,15 @@ class LoginSerializer(serializers.Serializer):
 
 Presents form labels above their corresponding control inputs, using the standard Bootstrap layout.
 
-*This is the default template pack.*
+_This is the default template pack._
 
 ```html
-{% load rest_framework %}
-
-...
+{% load rest_framework %} ...
 
 <form action="{% url 'login' %}" method="post" novalidate>
-    {% csrf_token %}
-    {% render_form serializer template_pack='rest_framework/vertical' %}
-    <button type="submit" class="btn btn-default">Sign in</button>
+  {% csrf_token %} {% render_form serializer
+  template_pack='rest_framework/vertical' %}
+  <button type="submit" class="btn btn-default">Sign in</button>
 </form>
 ```
 
@@ -161,21 +164,23 @@ Presents form labels above their corresponding control inputs, using the standar
 
 Presents labels and controls alongside each other, using a 2/10 column split.
 
-*This is the form style used in the browsable API and admin renderers.*
+_This is the form style used in the browsable API and admin renderers._
 
 ```html
-{% load rest_framework %}
+{% load rest_framework %} ...
 
-...
-
-<form class="form-horizontal" action="{% url 'login' %}" method="post" novalidate>
-    {% csrf_token %}
-    {% render_form serializer %}
-    <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-            <button type="submit" class="btn btn-default">Sign in</button>
-        </div>
+<form
+  class="form-horizontal"
+  action="{% url 'login' %}"
+  method="post"
+  novalidate
+>
+  {% csrf_token %} {% render_form serializer %}
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" class="btn btn-default">Sign in</button>
     </div>
+  </div>
 </form>
 ```
 
@@ -188,14 +193,12 @@ Presents labels and controls alongside each other, using a 2/10 column split.
 A compact form style that presents all the controls inline.
 
 ```html
-{% load rest_framework %}
-
-...
+{% load rest_framework %} ...
 
 <form class="form-inline" action="{% url 'login' %}" method="post" novalidate>
-    {% csrf_token %}
-    {% render_form serializer template_pack='rest_framework/inline' %}
-    <button type="submit" class="btn btn-default">Sign in</button>
+  {% csrf_token %} {% render_form serializer
+  template_pack='rest_framework/inline' %}
+  <button type="submit" class="btn btn-default">Sign in</button>
 </form>
 ```
 
@@ -216,7 +219,7 @@ details = serializers.CharField(
 )
 ```
 
-If you instead want a field to be rendered using a custom template that is *not part of an included template pack*, you can instead use the `template` style option, to fully specify a template name:
+If you instead want a field to be rendered using a custom template that is _not part of an included template pack_, you can instead use the `template` style option, to fully specify a template name:
 
 ```python
 details = serializers.CharField(
@@ -236,14 +239,14 @@ details = serializers.CharField(
 
 The complete list of `base_template` options and their associated style options is listed below.
 
-base_template          | Valid field types                                           | Additional style options
------------------------|-------------------------------------------------------------|-----------------------------------------------
-input.html             | Any string, numeric or date/time field                      | input_type, placeholder, hide_label, autofocus
-textarea.html          | `CharField`                                                 | rows, placeholder, hide_label
-select.html            | `ChoiceField` or relational field types                     | hide_label
-radio.html             | `ChoiceField` or relational field types                     | inline, hide_label
-select_multiple.html   | `MultipleChoiceField` or relational fields with `many=True` | hide_label
-checkbox_multiple.html | `MultipleChoiceField` or relational fields with `many=True` | inline, hide_label
-checkbox.html          | `BooleanField`                                              | hide_label
-fieldset.html          | Nested serializer                                           | hide_label
-list_fieldset.html     | `ListField` or nested serializer with `many=True`           | hide_label
+| base_template          | Valid field types                                           | Additional style options                       |
+| ---------------------- | ----------------------------------------------------------- | ---------------------------------------------- |
+| input.html             | Any string, numeric or date/time field                      | input_type, placeholder, hide_label, autofocus |
+| textarea.html          | `CharField`                                                 | rows, placeholder, hide_label                  |
+| select.html            | `ChoiceField` or relational field types                     | hide_label                                     |
+| radio.html             | `ChoiceField` or relational field types                     | inline, hide_label                             |
+| select_multiple.html   | `MultipleChoiceField` or relational fields with `many=True` | hide_label                                     |
+| checkbox_multiple.html | `MultipleChoiceField` or relational fields with `many=True` | inline, hide_label                             |
+| checkbox.html          | `BooleanField`                                              | hide_label                                     |
+| fieldset.html          | Nested serializer                                           | hide_label                                     |
+| list_fieldset.html     | `ListField` or nested serializer with `many=True`           | hide_label                                     |

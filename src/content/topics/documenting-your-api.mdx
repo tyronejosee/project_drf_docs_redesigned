@@ -1,6 +1,7 @@
 ---
 title: "Documenting your API"
 keywords: ["django", "rest", "framework", "api", "documenting"]
+order: 1
 ---
 
 # Documenting your API
@@ -65,27 +66,31 @@ this:
 <html>
   <head>
     <title>Swagger</title>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="//unpkg.com/swagger-ui-dist@3/swagger-ui.css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="//unpkg.com/swagger-ui-dist@3/swagger-ui.css"
+    />
   </head>
   <body>
     <div id="swagger-ui"></div>
     <script src="//unpkg.com/swagger-ui-dist@3/swagger-ui-bundle.js"></script>
     <script>
-    const ui = SwaggerUIBundle({
+      const ui = SwaggerUIBundle({
         url: "{% url schema_url %}",
-        dom_id: '#swagger-ui',
+        dom_id: "#swagger-ui",
         presets: [
           SwaggerUIBundle.presets.apis,
-          SwaggerUIBundle.SwaggerUIStandalonePreset
+          SwaggerUIBundle.SwaggerUIStandalonePreset,
         ],
         layout: "BaseLayout",
         requestInterceptor: (request) => {
-          request.headers['X-CSRFToken'] = "{{ csrf_token }}"
+          request.headers["X-CSRFToken"] = "{{ csrf_token }}";
           return request;
-        }
-      })
+        },
+      });
     </script>
   </body>
 </html>
@@ -126,9 +131,12 @@ this:
   <head>
     <title>ReDoc</title>
     <!-- needed for adaptive design -->
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700"
+      rel="stylesheet"
+    />
     <!-- ReDoc doesn't change outer page styles -->
     <style>
       body {
@@ -138,8 +146,8 @@ this:
     </style>
   </head>
   <body>
-    <redoc spec-url='{% url schema_url %}'></redoc>
-    <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"> </script>
+    <redoc spec-url="{% url schema_url %}"></redoc>
+    <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"></script>
   </body>
 </html>
 ```
@@ -166,10 +174,9 @@ urlpatterns = [
 
 See the [ReDoc documentation][redoc] for advanced usage.
 
-
 ## Self describing APIs
 
-The browsable API that REST framework provides makes it possible for your API to be entirely self describing.  The documentation for each API endpoint can be provided simply by visiting the URL in your browser.
+The browsable API that REST framework provides makes it possible for your API to be entirely self describing. The documentation for each API endpoint can be provided simply by visiting the URL in your browser.
 
 ![Screenshot - Self describing API][image-self-describing-api]
 
@@ -177,17 +184,17 @@ The browsable API that REST framework provides makes it possible for your API to
 
 #### Setting the title
 
-The title that is used in the browsable API is generated from the view class name or function name.  Any trailing `View` or `ViewSet` suffix is stripped, and the string is whitespace separated on uppercase/lowercase boundaries or underscores.
+The title that is used in the browsable API is generated from the view class name or function name. Any trailing `View` or `ViewSet` suffix is stripped, and the string is whitespace separated on uppercase/lowercase boundaries or underscores.
 
 For example, the view `UserListView`, will be named `User List` when presented in the browsable API.
 
-When working with viewsets, an appropriate suffix is appended to each generated view.  For example, the view set `UserViewSet` will generate views named `User List` and `User Instance`.
+When working with viewsets, an appropriate suffix is appended to each generated view. For example, the view set `UserViewSet` will generate views named `User List` and `User Instance`.
 
 #### Setting the description
 
 The description in the browsable API is generated from the docstring of the view or viewset.
 
-If the python `Markdown` library is installed, then [markdown syntax][markdown] may be used in the docstring, and will be converted to HTML in the browsable API.  For example:
+If the python `Markdown` library is installed, then [markdown syntax][markdown] may be used in the docstring, and will be converted to HTML in the browsable API. For example:
 
 ```python
 class AccountListView(views.APIView):
@@ -200,15 +207,15 @@ class AccountListView(views.APIView):
     """
 ```
 
-Note that when using viewsets the basic docstring is used for all generated views.  To provide descriptions for each view, such as for the list and retrieve views, use docstring sections as described in [Schemas as documentation: Examples][schemas-examples].
+Note that when using viewsets the basic docstring is used for all generated views. To provide descriptions for each view, such as for the list and retrieve views, use docstring sections as described in [Schemas as documentation: Examples][schemas-examples].
 
 #### The `OPTIONS` method
 
-REST framework APIs also support programmatically accessible descriptions, using the `OPTIONS` HTTP method.  A view will respond to an `OPTIONS` request with metadata including the name, description, and the various media types it accepts and responds with.
+REST framework APIs also support programmatically accessible descriptions, using the `OPTIONS` HTTP method. A view will respond to an `OPTIONS` request with metadata including the name, description, and the various media types it accepts and responds with.
 
 When using the generic views, any `OPTIONS` requests will additionally respond with metadata regarding any `POST` or `PUT` actions available, describing which fields are on the serializer.
 
-You can modify the response behavior to `OPTIONS` requests by overriding the `options` view method and/or by providing a custom Metadata class.  For example:
+You can modify the response behavior to `OPTIONS` requests by overriding the `options` view method and/or by providing a custom Metadata class. For example:
 
 ```python
 def options(self, request, *args, **kwargs):
@@ -229,9 +236,9 @@ See [the Metadata docs][metadata-docs] for more details.
 
 To be fully RESTful an API should present its available actions as hypermedia controls in the responses that it sends.
 
-In this approach, rather than documenting the available API endpoints up front, the description instead concentrates on the *media types* that are used.  The available actions that may be taken on any given URL are not strictly fixed, but are instead made available by the presence of link and form controls in the returned document.
+In this approach, rather than documenting the available API endpoints up front, the description instead concentrates on the _media types_ that are used. The available actions that may be taken on any given URL are not strictly fixed, but are instead made available by the presence of link and form controls in the returned document.
 
-To implement a hypermedia API you'll need to decide on an appropriate media type for the API, and implement a custom renderer and parser for that media type.  The [REST, Hypermedia & HATEOAS][hypermedia-docs] section of the documentation includes pointers to background reading, as well as links to various hypermedia formats.
+To implement a hypermedia API you'll need to decide on an appropriate media type for the API, and implement a custom renderer and parser for that media type. The [REST, Hypermedia & HATEOAS][hypermedia-docs] section of the documentation includes pointers to background reading, as well as links to various hypermedia formats.
 
 [cite]: https://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven
 [hypermedia-docs]: rest-hypermedia-hateoas.md

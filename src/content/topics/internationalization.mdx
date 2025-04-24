@@ -1,6 +1,7 @@
 ---
 title: "Internationalization"
 keywords: ["django", "rest", "framework", "api", "internationalization"]
+order: 2
 ---
 
 # Internationalization
@@ -13,8 +14,8 @@ REST framework ships with translatable error messages. You can make these appear
 
 Doing so will allow you to:
 
-* Select a language other than English as the default, using the standard `LANGUAGE_CODE` Django setting.
-* Allow clients to choose a language themselves, using the `LocaleMiddleware` included with Django. A typical usage for API clients would be to include an `Accept-Language` request header.
+- Select a language other than English as the default, using the standard `LANGUAGE_CODE` Django setting.
+- Allow clients to choose a language themselves, using the `LocaleMiddleware` included with Django. A typical usage for API clients would be to include an `Accept-Language` request header.
 
 ## Enabling internationalized APIs
 
@@ -51,7 +52,9 @@ HTTP/1.0 406 NOT ACCEPTABLE
 ```
 
 ```json
-{"detail": "No se ha podido satisfacer la solicitud de cabecera de Accept."}
+{
+  "detail": "No se ha podido satisfacer la solicitud de cabecera de Accept."
+}
 ```
 
 REST framework includes these built-in translations both for standard exception cases, and for serializer validation errors.
@@ -59,7 +62,11 @@ REST framework includes these built-in translations both for standard exception 
 Note that the translations only apply to the error strings themselves. The format of error messages, and the keys of field names will remain the same. An example `400 Bad Request` response body might look like this:
 
 ```json
-{"detail": {"username": ["Esse campo deve ser único."]}}
+{
+  "detail": {
+    "username": ["Esse campo deve ser único."]
+  }
+}
 ```
 
 If you want to use different string for parts of the response such as `detail` and `non_field_errors` then you can modify this behavior by using a [custom exception handler][custom-exception-handler].
@@ -83,12 +90,12 @@ REST framework translations are managed online using [Transifex][transifex-proje
 
 Sometimes you may need to add translation strings to your project locally. You may need to do this if:
 
-* You want to use REST Framework in a language which has not been translated yet on Transifex.
-* Your project includes custom error messages, which are not part of REST framework's default translation strings.
+- You want to use REST Framework in a language which has not been translated yet on Transifex.
+- Your project includes custom error messages, which are not part of REST framework's default translation strings.
 
 #### Translating a new language locally
 
-This guide assumes you are already familiar with how to translate a Django app.  If you're not, start by reading [Django's translation docs][django-translation].
+This guide assumes you are already familiar with how to translate a Django app. If you're not, start by reading [Django's translation docs][django-translation].
 
 If you're translating a new language you'll need to translate the existing REST framework error messages:
 
@@ -101,7 +108,7 @@ If you're translating a new language you'll need to translate the existing REST 
 4. Edit the `django.po` file you've just copied, translating all the error messages.
 
 5. Run `manage.py compilemessages -l pt_BR` to make the translations
-available for Django to use. You should see a message like `processing file django.po in <...>/locale/pt_BR/LC_MESSAGES`.
+   available for Django to use. You should see a message like `processing file django.po in <...>/locale/pt_BR/LC_MESSAGES`.
 
 6. Restart your development server to see the changes take effect.
 
