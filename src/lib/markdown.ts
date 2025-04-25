@@ -4,13 +4,12 @@ import { unified } from "unified";
 import { visit } from "unist-util-visit";
 import remarkParse from "remark-parse";
 import remarkMdx from "remark-mdx";
-import slugify from "slugify";
+import Slugger from "github-slugger";
 
-export function extractHeadings(
-  markdown: string
-): { depth: number; text: string; id: string }[] {
+export function extractHeadings(markdown: string) {
   const tree = unified().use(remarkParse).use(remarkMdx).parse(markdown);
   const headings: { depth: number; text: string; id: string }[] = [];
+  const slugger = new Slugger();
 
   visit(tree, "heading", (node: Heading) => {
     const text = node.children
@@ -22,7 +21,7 @@ export function extractHeadings(
       .join(" ");
 
     if (node.depth === 1 || node.depth === 2) {
-      const id = slugify(text, { lower: true, strict: true });
+      const id = slugger.slug(text);
       headings.push({ depth: node.depth, text, id });
     }
   });

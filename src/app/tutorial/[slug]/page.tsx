@@ -27,7 +27,7 @@ export default async function TutorialDetailPage({ params }: Props) {
   const { code, headings } = await getMdxBySlug({ type: "tutorial", slug });
 
   return (
-    <main className="prose dark:prose-invert">
+    <main className="prose dark:prose-invert break-words mx-auto sm:pb-56">
       <MDXContent code={code} />
       <HydrateHeadings headings={headings} />
     </main>

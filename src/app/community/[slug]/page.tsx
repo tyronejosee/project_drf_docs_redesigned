@@ -27,7 +27,7 @@ export default async function CommunityDetailPage({ params }: Props) {
   const { code, headings } = await getMdxBySlug({ type: "community", slug });
 
   return (
-    <main className="prose dark:prose-invert">
+    <main className="prose dark:prose-invert break-words mx-auto sm:pb-56">
       <MDXContent code={code} />
       <HydrateHeadings headings={headings} />
     </main>

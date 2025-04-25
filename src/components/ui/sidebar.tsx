@@ -28,7 +28,7 @@ export default function Sidebar({
           <Accordion
             isCompact
             showDivider={false}
-            defaultExpandedKeys={["1"]}
+            defaultExpandedKeys={["0", "1", "2", "3"]}
             selectionMode="multiple"
           >
             <AccordionItem
