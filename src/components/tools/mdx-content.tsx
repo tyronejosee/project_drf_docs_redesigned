@@ -5,6 +5,7 @@ import type { MDXComponents } from "mdx/types";
 import { useMemo } from "react";
 import Link from "next/link";
 import { getMDXComponent } from "mdx-bundler/client";
+import { CodeBlock } from "@/components/tools";
 
 const mdxComponents: MDXComponents = {
   a: ({ href = "", children, ...props }) =>
@@ -17,6 +18,13 @@ const mdxComponents: MDXComponents = {
         {children}
       </a>
     ),
+  pre: (props: any) => {
+    const child = props.children;
+    const className = child?.props?.className || "";
+    const language = className.replace("language-", "");
+
+    return <CodeBlock language={language}>{child}</CodeBlock>;
+  },
 };
 
 export default function MDXContent({
