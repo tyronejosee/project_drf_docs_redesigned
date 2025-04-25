@@ -2,25 +2,127 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-  @apply bg-neutral-900 text-neutral-50 text-lg selection:bg-neutral-gray;
-  scroll-behavior: smooth;
-}
+@layer base {
+  html {
+    @apply bg-neutral-900 text-neutral-200 selection:bg-neutral-gray;
+    scroll-behavior: smooth;
+  }
 
-h1[id], h2[id] {
-  @apply scroll-mt-16;
-}
+  h1[id],
+  h2[id] {
+    @apply scroll-mt-16;
+  }
 
-table {
-  @apply min-w-full text-left;
-}
+  .prose h1 {
+    @apply text-4xl font-black text-white;
+  }
 
-th {
-  @apply min-w-[200px] text-xs;
-}
+  .prose h2 {
+    @apply text-3xl font-extrabold text-white;
+  }
 
-td {
-  @apply min-w-52 text-xs;
+  .prose h3 {
+    @apply text-xl font-bold text-white;
+  }
+
+  .prose a {
+    @apply text-blue-400 no-underline hover:underline;
+  }
+
+  .prose strong {
+    @apply font-black text-white;
+  }
+
+  .prose hr {
+    @apply border-3 border-neutral-darkgrey rounded-xl my-8 first:hidden;
+  }
+
+  .prose blockquote {
+    @apply border-l-4 pl-4 italic text-neutral-light border-primary rounded-xl;
+    quotes: "“" "”";
+  }
+
+  .prose blockquote::before {
+    content: "“";
+    color: theme("colors.neutral.gray");
+    font-family: "Victor Mono", monospace;
+    font-size: 4rem;
+    line-height: 0;
+    margin-right: 0.25rem;
+    vertical-align: -0.4em;
+  }
+
+  .prose blockquote::after {
+    content: "”";
+    display: none;
+  }
+
+  .prose blockquote cite {
+    @apply block text-sm font-medium mt-2 text-right text-neutral-gray;
+  }
+
+  .prose table {
+    @apply w-full text-sm text-left rtl:text-right text-white;
+  }
+
+  .prose thead {
+    @apply text-xs font-black uppercase bg-neutral-darkgrey text-white;
+  }
+
+  .prose tr > th {
+    @apply min-w-52 text-xs px-4 py-2;
+  }
+
+  .prose tr {
+    @apply border-b border-transparent;
+  }
+
+  .prose tr > td {
+    @apply min-w-52 text-xs px-4 h-10 pb-1;
+  }
+
+  .prose ul > li::marker {
+    @apply font-bold text-neutral-gray leading-relaxed;
+    /* content: '- '; */
+  }
+
+  .prose pre {
+    @apply rounded-xl border border-neutral-gray overflow-x-auto p-4;
+    background-color: #171717 !important;
+  }
+
+  .prose pre code {
+    @apply text-sm lg:text-xs font-mono leading-relaxed;
+    font-family: "Fira Code", monospace;
+  }
+
+  .prose pre {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .prose pre::-webkit-scrollbar {
+    height: 8px;
+    width: 0px;
+  }
+
+  .prose pre::-webkit-scrollbar-track {
+    background: transparent;
+    margin-left: 8px;
+    margin-right: 8px;
+  }
+
+  .prose pre::-webkit-scrollbar-thumb {
+    background-color: #737373;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+    transition: background-color 0.2s ease;
+  }
+
+  .prose pre::-webkit-scrollbar-thumb:active {
+    background-color: rgba(255, 255, 255, 0.9);
+  }
 }
 
 ::-webkit-scrollbar {
@@ -33,7 +135,7 @@ td {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(115, 115, 115, 0.5);;
+  background-color: rgba(115, 115, 115, 0.5);
   border-radius: 10px;
   border: 2px solid transparent;
   background-clip: content-box;
@@ -41,5 +143,5 @@ td {
 }
 
 ::-webkit-scrollbar-thumb:active {
-  background-color: rgba(255, 255, 255, 0.9);;
+  background-color: rgba(255, 255, 255, 0.9);
 }
