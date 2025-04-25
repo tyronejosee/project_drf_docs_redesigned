@@ -6,8 +6,8 @@ import { Navigation, Sidebar, TableContents } from "@/components/ui";
 import { PROJECT_NAME } from "@/config/constants";
 import Providers from "./providers";
 
-import "prismjs/themes/prism-tomorrow.css";
 import "./globals.css";
+import "prismjs/themes/prism-tomorrow.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,6 +41,8 @@ export default function RootLayout({ children }: Props) {
   const topics = getMdxLinks("topics");
   const communities = getMdxLinks("community");
 
+  const allMdxLinks = [...tutorials, ...apiGuides, ...topics, ...communities];
+
   return (
     <html lang="en" className="dark">
       <body
@@ -48,6 +50,7 @@ export default function RootLayout({ children }: Props) {
       >
         <Providers>
           <Navigation
+            mdxLinks={allMdxLinks}
             tutorials={tutorials}
             apiGuides={apiGuides}
             topics={topics}

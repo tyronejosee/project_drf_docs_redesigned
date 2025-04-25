@@ -1,6 +1,6 @@
 export const PROJECT_NAME = "Django REST Framework";
 
-export const PROJECT_NAME_SHORT = "DRF Docs";
+export const PROJECT_NAME_SHORT = "DRF";
 
 export const PROJECT_DESCRIPTION = `
 Documentation for Django Rest Framework.

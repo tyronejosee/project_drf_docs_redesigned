@@ -14,11 +14,13 @@ import {
   Accordion,
   AccordionItem,
 } from "@heroui/react";
-import { Circle, Menu, X } from "lucide-react";
-import { GitHubIcon } from "@/components/icons";
+import { Menu, X } from "lucide-react";
+import { GitHubIcon, Logo } from "@/components/icons";
+import { SearchBar } from "@/components/ui";
 import { PROJECT_NAME_SHORT } from "@/config/constants";
 
 type NavigationProps = {
+  mdxLinks: { title: string; path: string }[];
   tutorials: Tutorial[];
   apiGuides: ApiGuide[];
   topics: Topic[];
@@ -46,13 +48,13 @@ const CustomNavMenu = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed top-12 left-0 right-0 bg-black/60 backdrop-blur-md z-50">
+    <div className="fixed top-12 left-0 right-0 bg-black/70 backdrop-blur-xl z-50">
       <div className="h-screen container mx-auto py-4 px-6">
         <nav className="flex h-[calc(100vh-120px)] flex-col overflow-y-scroll pb-4 pr-2">
           <Accordion
             isCompact
             showDivider={false}
-            defaultExpandedKeys={["1"]}
+            defaultExpandedKeys={["0", "1", "2", "3"]}
             selectionMode="multiple"
           >
             <AccordionItem
@@ -151,6 +153,7 @@ const CustomNavMenu = ({
 };
 
 export default function Navigation({
+  mdxLinks,
   tutorials,
   apiGuides,
   topics,
@@ -190,7 +193,7 @@ export default function Navigation({
         <NavbarContent>
           <Link href="/">
             <NavbarBrand>
-              <Circle />
+              <Logo />
               <span className="font-bold ml-2">
                 {PROJECT_NAME_SHORT.toUpperCase()}
               </span>
@@ -199,6 +202,9 @@ export default function Navigation({
         </NavbarContent>
 
         <NavbarContent justify="end">
+          <NavbarItem className="hidden sm:flex">
+            <SearchBar mdxLinks={mdxLinks} />
+          </NavbarItem>
           <NavbarItem className="hidden sm:flex">
             <Button
               as={Link}
