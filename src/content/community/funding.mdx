@@ -4,17 +4,22 @@ keywords: ["django", "rest", "framework", "api", "funding"]
 order: 25
 ---
 
+```html
 <script>
-// Imperfect, but easier to fit in with the existing docs build.
-// Hyperlinks should point directly to the "fund." subdomain, but this'll
-// handle the nav bar links without requiring any docs build changes for the moment.
-if (window.location.hostname == "www.django-rest-framework.org") {
-    window.location.replace("https://fund.django-rest-framework.org/topics/funding/");
-}
+  // Imperfect, but easier to fit in with the existing docs build.
+  // Hyperlinks should point directly to the "fund." subdomain, but this'll
+  // handle the nav bar links without requiring any docs build changes for the moment.
+  if (window.location.hostname == "www.django-rest-framework.org") {
+    window.location.replace(
+      "https://fund.django-rest-framework.org/topics/funding/"
+    );
+  }
 </script>
+```
 
+```html
 <style>
-.promo li a {
+  .promo li a {
     float: left;
     width: 130px;
     height: 20px;
@@ -26,14 +31,14 @@ if (window.location.hostname == "www.django-rest-framework.org") {
     background-repeat: no-repeat;
     font-size: 120%;
     color: black;
-}
-.promo li {
+  }
+  .promo li {
     list-style: none;
-}
-.chart {
+  }
+  .chart {
     background-color: #e3e3e3;
     background: -webkit-linear-gradient(top, #fff 0, #e3e3e3 100%);
-    border: 1px solid #E6E6E6;
+    border: 1px solid #e6e6e6;
     border-radius: 5px;
     box-shadow: 0px 0px 2px 0px rgba(181, 181, 181, 0.3);
     padding: 40px 0px 5px;
@@ -43,26 +48,26 @@ if (window.location.hostname == "www.django-rest-framework.org") {
     min-height: 255px;
     position: relative;
     top: 37px;
-    margin-bottom: 20px
-}
-.quantity {
-    text-align: center
-}
-.dollar {
+    margin-bottom: 20px;
+  }
+  .quantity {
+    text-align: center;
+  }
+  .dollar {
     font-size: 19px;
     position: relative;
     top: -18px;
-}
-.price {
+  }
+  .price {
     font-size: 49px;
-}
-.period {
+  }
+  .period {
     font-size: 17px;
     position: relative;
     top: -8px;
     margin-left: 4px;
-}
-.plan-name {
+  }
+  .plan-name {
     text-align: center;
     font-size: 20px;
     font-weight: 400;
@@ -72,44 +77,46 @@ if (window.location.hostname == "www.django-rest-framework.org") {
     width: 90%;
     margin: 0 auto;
     margin-top: 8px;
-}
-.specs {
+  }
+  .specs {
     margin-top: 20px;
     min-height: 130px;
-}
-.specs.freelancer {
+  }
+  .specs.freelancer {
     min-height: 0px;
-}
-.spec {
+  }
+  .spec {
     font-size: 15px;
     color: #474747;
     text-align: center;
     font-weight: 300;
     margin-bottom: 13px;
-}
-.variable {
-    color: #1FBEE7;
+  }
+  .variable {
+    color: #1fbee7;
     font-weight: 400;
-}
-form.signup {
-    margin-top: 35px
-}
-.clear-promo {
-    padding-top: 30px
-}
-#main-content h1:first-of-type {
+  }
+  form.signup {
+    margin-top: 35px;
+  }
+  .clear-promo {
+    padding-top: 30px;
+  }
+  #main-content h1:first-of-type {
     margin: 0 0 50px;
     font-size: 60px;
     font-weight: 200;
-    text-align: center
-}
-#main-content {
-    padding-top: 10px; line-height: 23px
-}
-#main-content li {
-    line-height: 23px
-}
+    text-align: center;
+  }
+  #main-content {
+    padding-top: 10px;
+    line-height: 23px;
+  }
+  #main-content li {
+    line-height: 23px;
+  }
 </style>
+```
 
 # Funding
 
@@ -169,41 +176,44 @@ This subscription is recommended for individuals with an interest in seeing REST
 
 If you are using REST framework as a full-time employee, consider recommending that your company takes out a [corporate&nbsp;plan](#corporate-plans).
 
+```html
 <div class="pricing">
-                <div class="span4">
-                    <div class="chart first">
-                        <div class="quantity">
-                            <span class="dollar">{{ symbol }}</span>
-                            <span class="price">{{ rates.personal1 }}</span>
-                            <span class="period">/month{% if vat %} +VAT{% endif %}</span>
-                        </div>
-                        <div class="plan-name">Individual</div>
-                        <div class="specs freelancer">
-                            <div class="spec">
-                                Support ongoing development
-                            </div>
-                            <div class="spec">
-                                Credited on the site
-                            </div>
-                        </div>
-                        <form class="signup" action="/signup/{{ currency }}-{{ rates.personal1 }}/" method="POST">
-  <script
-    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-    data-key="{{ stripe_public }}"
-    data-amount="{{ stripe_amounts.personal1 }}"
-    data-name="Django REST framework"
-    data-description="Individual"
-    data-currency="{{ currency }}"
-    data-allow-remember-me=false
-    data-billing-address=true
-    data-label='Sign up'
-    data-panel-label='Sign up - {% verbatim %}{{amount}}{% endverbatim %}/mo'>
-  </script>
-</form>
-                    </div>
-                </div>
-            </div>
+  <div class="span4">
+    <div class="chart first">
+      <div class="quantity">
+        <span class="dollar">{{ symbol }}</span>
+        <span class="price">{{ rates.personal1 }}</span>
+        <span class="period">/month{% if vat %} +VAT{% endif %}</span>
+      </div>
+      <div class="plan-name">Individual</div>
+      <div class="specs freelancer">
+        <div class="spec">Support ongoing development</div>
+        <div class="spec">Credited on the site</div>
+      </div>
+      <form
+        class="signup"
+        action="/signup/{{ currency }}-{{ rates.personal1 }}/"
+        method="POST"
+      >
+        <script
+          src="https://checkout.stripe.com/checkout.js"
+          class="stripe-button"
+          data-key="{{ stripe_public }}"
+          data-amount="{{ stripe_amounts.personal1 }}"
+          data-name="Django REST framework"
+          data-description="Individual"
+          data-currency="{{ currency }}"
+          data-allow-remember-me="false"
+          data-billing-address="true"
+          data-label="Sign up"
+          data-panel-label="Sign up - {% verbatim %}{{amount}}{% endverbatim %}/mo"
+        ></script>
+      </form>
+    </div>
+  </div>
+</div>
 <div style="clear: both; padding-top: 50px"></div>
+```
 
 _Billing is monthly and you can cancel at any time._
 
@@ -217,121 +227,230 @@ In exchange for funding you'll also receive advertising space on our site, allow
 
 Our professional and premium plans also include **priority support**. At any time your engineers can escalate an issue or discussion group thread, and we'll ensure it gets a guaranteed response within the next working day.
 
+```html
 <div class="pricing">
-                <div class="span4">
-                    <div class="chart first">
-                        <div class="quantity">
-                            <span class="dollar">{{ symbol }}</span>
-                            <span class="price">{{ rates.corporate1 }}</span>
-                            <span class="period">/month{% if vat %} +VAT{% endif %}</span>
-                        </div>
-                        <div class="plan-name">Basic</div>
-                        <div class="specs startup">
-                            <div class="spec">
-                                Support ongoing development
-                            </div>
-                            <div class="spec">
-                                <span class="variable">Funding page</span> ad placement
-                            </div>
-                        </div>
-                        <form class="signup" action="/signup/{{ currency }}-{{ rates.corporate1 }}/" method="POST">
-  <script
-    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-    data-key="{{ stripe_public }}"
-    data-amount="{{ stripe_amounts.corporate1 }}"
-    data-name="Django REST framework"
-    data-description="Basic"
-    data-currency="{{ currency }}"
-    data-allow-remember-me=false
-    data-billing-address=true
-    data-label='Sign up'
-    data-panel-label='Sign up - {% verbatim %}{{amount}}{% endverbatim %}/mo'>
-  </script>
-</form>
-                    </div>
-                </div>
-                <div class="span4">
-                    <div class="chart">
-                        <div class="quantity">
-                            <span class="dollar">{{ symbol }}</span>
-                            <span class="price">{{ rates.corporate2 }}</span>
-                            <span class="period">/month{% if vat %} +VAT{% endif %}</span>
-                        </div>
-                        <div class="plan-name">Professional</div>
-                        <div class="specs">
-                            <div class="spec">
-                                Support ongoing development
-                            </div>
-                            <div class="spec">
-                                <span class="variable">Sidebar</span> ad placement
-                            </div>
-                            <div class="spec">
-                                <span class="variable">Priority support</span> for your engineers
-                            </div>
-                        </div>
-                        <form class="signup" action="/signup/{{ currency }}-{{ rates.corporate2 }}/" method="POST">
-  <script
-    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-    data-key="{{ stripe_public }}"
-    data-amount="{{ stripe_amounts.corporate2 }}"
-    data-name="Django REST framework"
-    data-description="Professional"
-    data-currency="{{ currency }}"
-    data-allow-remember-me=false
-    data-billing-address=true
-    data-label='Sign up'
-    data-panel-label='Sign up - {% verbatim %}{{amount}}{% endverbatim %}/mo'>
-  </script>
-</form>
-                    </div>
-                </div>
-                <div class="span4">
-                    <div class="chart last">
-                        <div class="quantity">
-                            <span class="dollar">{{ symbol }}</span>
-                            <span class="price">{{ rates.corporate3 }}</span>
-                            <span class="period">/month{% if vat %} +VAT{% endif %}</span>
-                        </div>
-                        <div class="plan-name">Premium</div>
-                        <div class="specs">
-                        <div class="spec">
-                            Support ongoing development
-                        </div>
-                            <div class="spec">
-                                <span class="variable">Homepage</span> ad placement
-                            </div>
-                            <div class="spec">
-                                <span class="variable">Sidebar</span> ad placement
-                            </div>
-                            <div class="spec">
-                                <span class="variable">Priority support</span> for your engineers
-                            </div>
-                        </div>
-                        <form class="signup" action="/signup/{{ currency }}-{{ rates.corporate3 }}/" method="POST">
-  <script
-    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-    data-key="{{ stripe_public }}"
-    data-amount="{{ stripe_amounts.corporate3 }}"
-    data-name="Django REST framework"
-    data-description="Premium"
-    data-currency="{{ currency }}"
-    data-allow-remember-me=false
-    data-billing-address=true
-    data-label='Sign up'
-    data-panel-label='Sign up - {% verbatim %}{{amount}}{% endverbatim %}/mo'>
-  </script>
-</form>
-                    </div>
-                </div>
-            </div>
+  <div class="span4">
+    <div class="chart first">
+      <div class="quantity">
+        <span class="dollar">{{ symbol }}</span>
+        <span class="price">{{ rates.corporate1 }}</span>
+        <span class="period">/month{% if vat %} +VAT{% endif %}</span>
+      </div>
+      <div class="plan-name">Basic</div>
+      <div class="specs startup">
+        <div class="spec">Support ongoing development</div>
+        <div class="spec">
+          <span class="variable">Funding page</span> ad placement
+        </div>
+      </div>
+      <form
+        class="signup"
+        action="/signup/{{ currency }}-{{ rates.corporate1 }}/"
+        method="POST"
+      >
+        <script
+          src="https://checkout.stripe.com/checkout.js"
+          class="stripe-button"
+          data-key="{{ stripe_public }}"
+          data-amount="{{ stripe_amounts.corporate1 }}"
+          data-name="Django REST framework"
+          data-description="Basic"
+          data-currency="{{ currency }}"
+          data-allow-remember-me="false"
+          data-billing-address="true"
+          data-label="Sign up"
+          data-panel-label="Sign up - {% verbatim %}{{amount}}{% endverbatim %}/mo"
+        ></script>
+      </form>
+    </div>
+  </div>
+  <div class="span4">
+    <div class="chart">
+      <div class="quantity">
+        <span class="dollar">{{ symbol }}</span>
+        <span class="price">{{ rates.corporate2 }}</span>
+        <span class="period">/month{% if vat %} +VAT{% endif %}</span>
+      </div>
+      <div class="plan-name">Professional</div>
+      <div class="specs">
+        <div class="spec">Support ongoing development</div>
+        <div class="spec">
+          <span class="variable">Sidebar</span> ad placement
+        </div>
+        <div class="spec">
+          <span class="variable">Priority support</span> for your engineers
+        </div>
+      </div>
+      <form
+        class="signup"
+        action="/signup/{{ currency }}-{{ rates.corporate2 }}/"
+        method="POST"
+      >
+        <script
+          src="https://checkout.stripe.com/checkout.js"
+          class="stripe-button"
+          data-key="{{ stripe_public }}"
+          data-amount="{{ stripe_amounts.corporate2 }}"
+          data-name="Django REST framework"
+          data-description="Professional"
+          data-currency="{{ currency }}"
+          data-allow-remember-me="false"
+          data-billing-address="true"
+          data-label="Sign up"
+          data-panel-label="Sign up - {% verbatim %}{{amount}}{% endverbatim %}/mo"
+        ></script>
+      </form>
+    </div>
+  </div>
+  <div class="span4">
+    <div class="chart last">
+      <div class="quantity">
+        <span class="dollar">{{ symbol }}</span>
+        <span class="price">{{ rates.corporate3 }}</span>
+        <span class="period">/month{% if vat %} +VAT{% endif %}</span>
+      </div>
+      <div class="plan-name">Premium</div>
+      <div class="specs">
+        <div class="spec">Support ongoing development</div>
+        <div class="spec">
+          <span class="variable">Homepage</span> ad placement
+        </div>
+        <div class="spec">
+          <span class="variable">Sidebar</span> ad placement
+        </div>
+        <div class="spec">
+          <span class="variable">Priority support</span> for your engineers
+        </div>
+      </div>
+      <form
+        class="signup"
+        action="/signup/{{ currency }}-{{ rates.corporate3 }}/"
+        method="POST"
+      >
+        <script
+          src="https://checkout.stripe.com/checkout.js"
+          class="stripe-button"
+          data-key="{{ stripe_public }}"
+          data-amount="{{ stripe_amounts.corporate3 }}"
+          data-name="Django REST framework"
+          data-description="Premium"
+          data-currency="{{ currency }}"
+          data-allow-remember-me="false"
+          data-billing-address="true"
+          data-label="Sign up"
+          data-panel-label="Sign up - {% verbatim %}{{amount}}{% endverbatim %}/mo"
+        ></script>
+      </form>
+    </div>
+  </div>
+</div>
 
 <div style="clear: both; padding-top: 50px"></div>
+```
+
+```jsx
+const plans = [ { name: "Basic", price: "rates.corporate1", amount:
+"stripe_amounts.corporate1", features: [ "Support ongoing development", "<span
+  class="variable"
+  >Funding page</span
+>
+ad placement", ], }, { name: "Professional", price: "rates.corporate2", amount:
+"stripe_amounts.corporate2", features: [ "Support ongoing development", "<span
+  class="variable"
+  >Sidebar</span
+>
+ad placement", "<span class="variable">Priority support</span> for your
+engineers", ], }, { name: "Premium", price: "rates.corporate3", amount:
+"stripe_amounts.corporate3", features: [ "Support ongoing development", "<span
+  class="variable"
+  >Homepage</span
+>
+ad placement", "<span class="variable">Sidebar</span> ad placement", "<span
+  class="variable"
+  >Priority support</span
+>
+for your engineers", ], }, ];
+```
+
+```html
+<ul
+  style={{
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "30px",
+    padding: 0,
+    margin: 0,
+    listStyle: "none",
+    justifyContent: "center",
+  }}
+>
+  {plans.map((plan, index) => (
+    <li
+      key={plan.name}
+      style={{
+        flex: "1 1 300px",
+        border: "1px solid #ddd",
+        borderRadius: "8px",
+        padding: "24px",
+        maxWidth: "360px",
+        boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+      }}
+    >
+      <div style={{ marginBottom: "16px" }}>
+        <div style={{ fontSize: "32px", fontWeight: "bold" }}>
+          <span className="dollar">{`{{ symbol }}`}</span>
+          <span className="price">{`{{ ${plan.price} }}`}</span>
+          <span className="period" style={{ fontSize: "16px", display: "block" }}>
+            /month{% raw %}{% if vat %} +VAT{% endif %}{% endraw %}
+          </span>
+        </div>
+        <div style={{ fontSize: "20px", fontWeight: 600, marginTop: "10px" }}>
+          {plan.name}
+        </div>
+      </div>
+      <ul style={{ paddingLeft: 20, marginBottom: 20 }}>
+        {plan.features.map((feature, i) => (
+          <li
+            key={i}
+            dangerouslySetInnerHTML={{ __html: feature }}
+            style={{ marginBottom: "8px" }}
+          />
+        ))}
+      </ul>
+      <form
+        className="signup"
+        action={`/signup/{{ currency }}-{{ ${plan.price} }}/`}
+        method="POST"
+      >
+        <script
+          src="https://checkout.stripe.com/checkout.js"
+          className="stripe-button"
+          data-key="{{ stripe_public }}"
+          data-amount={`{{ ${plan.amount} }}`}
+          data-name="Django REST framework"
+          data-description={plan.name}
+          data-currency="{{ currency }}"
+          data-allow-remember-me="false"
+          data-billing-address="true"
+          data-label="Sign up"
+          data-panel-label="Sign up - {% verbatim %}{{amount}}{% endverbatim %}/mo"
+        ></script>
+      </form>
+    </li>
+  ))}
+</ul>
+<div style={{ clear: "both", paddingTop: "50px" }} />
+```
 
 _Billing is monthly and you can cancel at any time._
 
 Once you've signed up, we will contact you via email and arrange your ad placements on the site.
 
-For further enquires please contact <a href=mailto:funding@django-rest-framework.org>funding@django-rest-framework.org</a>.
+For further enquires please contact
+
+```txt
+<a href=mailto:funding@django-rest-framework.org>funding@django-rest-framework.org</a>.
+```
 
 ---
 
@@ -339,56 +458,124 @@ For further enquires please contact <a href=mailto:funding@django-rest-framework
 
 In an effort to keep the project as transparent as possible, we are releasing [monthly progress reports](https://www.encode.io/reports/march-2018/) and regularly include financial reports and cost breakdowns.
 
+```html
 <!-- Begin MailChimp Signup Form -->
-<link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css">
+<link
+  href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css"
+  rel="stylesheet"
+  type="text/css"
+/>
 <style type="text/css">
-    #mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; }
-    /* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
+  #mc_embed_signup {
+    background: #fff;
+    clear: left;
+    font: 14px Helvetica, Arial, sans-serif;
+  }
+  /* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
        We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
 </style>
 <div id="mc_embed_signup">
-<form action="//encode.us13.list-manage.com/subscribe/post?u=b6b66bb5e4c7cb484a85c8dd7&amp;id=e382ef68ef" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+  <form
+    action="//encode.us13.list-manage.com/subscribe/post?u=b6b66bb5e4c7cb484a85c8dd7&amp;id=e382ef68ef"
+    method="post"
+    id="mc-embedded-subscribe-form"
+    name="mc-embedded-subscribe-form"
+    class="validate"
+    target="_blank"
+    novalidate
+  >
     <div id="mc_embed_signup_scroll">
-    <h2>Stay up to date, with our monthly progress reports...</h2>
-<div class="mc-field-group">
-    <label for="mce-EMAIL">Email Address </label>
-    <input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
-</div>
-    <div id="mce-responses" class="clear">
-        <div class="response" id="mce-error-response" style="display:none"></div>
-        <div class="response" id="mce-success-response" style="display:none"></div>
-    </div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
-    <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_b6b66bb5e4c7cb484a85c8dd7_e382ef68ef" tabindex="-1" value=""></div>
-    <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
+      <h2>Stay up to date, with our monthly progress reports...</h2>
+      <div class="mc-field-group">
+        <label for="mce-EMAIL">Email Address </label>
+        <input
+          type="email"
+          value=""
+          name="EMAIL"
+          class="required email"
+          id="mce-EMAIL"
+        />
+      </div>
+      <div id="mce-responses" class="clear">
+        <div
+          class="response"
+          id="mce-error-response"
+          style="display:none"
+        ></div>
+        <div
+          class="response"
+          id="mce-success-response"
+          style="display:none"
+        ></div>
+      </div>
+      <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+      <div style="position: absolute; left: -5000px;" aria-hidden="true">
+        <input
+          type="text"
+          name="b_b6b66bb5e4c7cb484a85c8dd7_e382ef68ef"
+          tabindex="-1"
+          value=""
+        />
+      </div>
+      <div class="clear">
+        <input
+          type="submit"
+          value="Subscribe"
+          name="subscribe"
+          id="mc-embedded-subscribe"
+          class="button"
+        />
+      </div>
     </div>
-</form>
+  </form>
 </div>
-<script type='text/javascript' src='//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js'></script><script type='text/javascript'>(function($) {window.fnames = new Array(); window.ftypes = new Array();fnames[0]='EMAIL';ftypes[0]='email';fnames[1]='FNAME';ftypes[1]='text';fnames[2]='LNAME';ftypes[2]='text';}(jQuery));var $mcj = jQuery.noConflict(true);</script>
+<script
+  type="text/javascript"
+  src="//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js"
+></script>
+<script type="text/javascript">
+  (function ($) {
+    window.fnames = new Array();
+    window.ftypes = new Array();
+    fnames[0] = "EMAIL";
+    ftypes[0] = "email";
+    fnames[1] = "FNAME";
+    ftypes[1] = "text";
+    fnames[2] = "LNAME";
+    ftypes[2] = "text";
+  })(jQuery);
+  var $mcj = jQuery.noConflict(true);
+</script>
 <!--End mc_embed_signup-->
+```
 
 ---
 
 ## Frequently asked questions
 
-**Q: Can you issue monthly invoices?**
-A: Yes, we are happy to issue monthly invoices. Please just <a href=mailto:funding@django-rest-framework.org>email us</a> and let us know who to issue the invoice to (name and address) and which email address to send it to each month.
-
-**Q: Does sponsorship include VAT?**
-A: Sponsorship is VAT exempt.
-
-**Q: Do I have to sign up for a certain time period?**
-A: No, we appreciate your support for any time period that is convenient for you. Also, you can cancel your sponsorship anytime.
-
-**Q: Can I pay yearly? Can I pay upfront fox X amount of months at a time?**
-A: We are currently only set up to accept monthly payments. However, if you'd like to support Django REST framework and you can only do yearly/upfront payments, we are happy to work with you and figure out a convenient solution.
-
-**Q: Are you only looking for corporate sponsors?**
-A: No, we value individual sponsors just as much as corporate sponsors and appreciate any kind of support.
+```html
+**Q: Can you issue monthly invoices?** A: Yes, we are happy to issue monthly
+invoices. Please just
+<a href="mailto:funding@django-rest-framework.org">email us</a> and let us know
+who to issue the invoice to (name and address) and which email address to send
+it to each month. **Q: Does sponsorship include VAT?** A: Sponsorship is VAT
+exempt. **Q: Do I have to sign up for a certain time period?** A: No, we
+appreciate your support for any time period that is convenient for you. Also,
+you can cancel your sponsorship anytime. **Q: Can I pay yearly? Can I pay
+upfront fox X amount of months at a time?** A: We are currently only set up to
+accept monthly payments. However, if you'd like to support Django REST framework
+and you can only do yearly/upfront payments, we are happy to work with you and
+figure out a convenient solution. **Q: Are you only looking for corporate
+sponsors?** A: No, we value individual sponsors just as much as corporate
+sponsors and appreciate any kind of support.
+```
 
 ---
 
 ## Our sponsors
 
+```html
 <div id="fundingInclude"></div>
 
 <script src="https://fund.django-rest-framework.org/funding_include.js"></script>
+```
