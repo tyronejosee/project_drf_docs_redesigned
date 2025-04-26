@@ -4,6 +4,9 @@ import { getMdxBySlug } from "@/lib/mdx";
 import { HydrateHeadings } from "@/components/ui";
 import { MDXContent } from "@/components/tools";
 
+export const dynamic = "force-static";
+export const revalidate = false;
+
 type Props = {
   params: Promise<{ slug: string }>;
 };

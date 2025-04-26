@@ -3,9 +3,13 @@ import type { Metadata } from "next";
 import { getMdxBySlug } from "@/lib/mdx";
 import { HydrateHeadings } from "@/components/ui";
 import { MDXContent } from "@/components/tools";
+import { PROJECT_NAME } from "@/config/constants";
+
+export const dynamic = "force-static";
+export const revalidate = false;
 
 export const metadata: Metadata = {
-  title: "Homepage",
+  title: `Homepage - ${PROJECT_NAME}`,
 };
 
 export default async function TutorialPage() {
