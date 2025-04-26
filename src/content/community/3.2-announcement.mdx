@@ -22,15 +22,17 @@ None of this would have been possible without the support of our wonderful Kicks
 
 To include `AdminRenderer` simply add it to your settings:
 
-    REST_FRAMEWORK = {
-        'DEFAULT_RENDERER_CLASSES': [
-            'rest_framework.renderers.JSONRenderer',
-            'rest_framework.renderers.AdminRenderer',
-            'rest_framework.renderers.BrowsableAPIRenderer'
-        ],
-        'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-        'PAGE_SIZE': 100
-    }
+```python
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.AdminRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer'
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 100
+}
+```
 
 There are some limitations to the `AdminRenderer`, in particular it is not yet able to handle list or dictionary inputs, as we do not have any HTML form fields that support those.
 
@@ -48,19 +50,19 @@ Our supported Django versions are now 1.5.6+, 1.6.3+, 1.7 and 1.8.
 
 There are no new deprecations in 3.2, although a number of existing deprecations have now escalated in line with our deprecation policy.
 
-* `request.DATA` was put on the deprecation path in 3.0. It has now been removed and its usage will result in an error. Use the more pythonic style of `request.data` instead.
-* `request.QUERY_PARAMS` was put on the deprecation path in 3.0. It has now been removed and its usage will result in an error. Use the more pythonic style of `request.query_params` instead.
-* The following `ModelSerializer.Meta` options have now been removed: `write_only_fields`, `view_name`, `lookup_field`. Use the more general `extra_kwargs` option instead.
+- `request.DATA` was put on the deprecation path in 3.0. It has now been removed and its usage will result in an error. Use the more pythonic style of `request.data` instead.
+- `request.QUERY_PARAMS` was put on the deprecation path in 3.0. It has now been removed and its usage will result in an error. Use the more pythonic style of `request.query_params` instead.
+- The following `ModelSerializer.Meta` options have now been removed: `write_only_fields`, `view_name`, `lookup_field`. Use the more general `extra_kwargs` option instead.
 
 The following pagination view attributes and settings have been moved into attributes on the pagination class since 3.1. Their usage was formerly in 'pending deprecation', and has now escalated to 'deprecated'. They will continue to function but will raise errors.
 
-* `view.paginate_by` - Use `paginator.page_size` instead.
-* `view.page_query_param` - Use `paginator.page_query_param` instead.
-* `view.paginate_by_param` - Use `paginator.page_size_query_param` instead.
-* `view.max_paginate_by` - Use `paginator.max_page_size` instead.
-* `settings.PAGINATE_BY` - Use `paginator.page_size` instead.
-* `settings.PAGINATE_BY_PARAM` - Use `paginator.page_size_query_param` instead.
-* `settings.MAX_PAGINATE_BY` - Use `paginator.max_page_size` instead.
+- `view.paginate_by` - Use `paginator.page_size` instead.
+- `view.page_query_param` - Use `paginator.page_query_param` instead.
+- `view.paginate_by_param` - Use `paginator.page_size_query_param` instead.
+- `view.max_paginate_by` - Use `paginator.max_page_size` instead.
+- `settings.PAGINATE_BY` - Use `paginator.page_size` instead.
+- `settings.PAGINATE_BY_PARAM` - Use `paginator.page_size_query_param` instead.
+- `settings.MAX_PAGINATE_BY` - Use `paginator.max_page_size` instead.
 
 ## Modifications to list behaviors
 
@@ -78,8 +80,8 @@ Previously a many-to-many field on a model would map to a serializer field that 
 
 Here's what the mapping looks like in practice:
 
-* `models.ManyToManyField()` → `serializers.PrimaryKeyRelatedField(many=True, allow_empty=False)`
-* `models.ManyToManyField(blank=True)` → `serializers.PrimaryKeyRelatedField(many=True)`
+- `models.ManyToManyField()` → `serializers.PrimaryKeyRelatedField(many=True, allow_empty=False)`
+- `models.ManyToManyField(blank=True)` → `serializers.PrimaryKeyRelatedField(many=True)`
 
 The upshot is this: If you have many to many fields in your models, then make sure you've included the argument `blank=True` if you want to allow empty inputs in the equivalent `ModelSerializer` fields.
 
@@ -89,21 +91,25 @@ When using `allow_null` with `ListField` or a nested `many=True` serializer the 
 
 For example, take the following field:
 
-    NestedSerializer(many=True, allow_null=True)
+```python
+NestedSerializer(many=True, allow_null=True)
+```
 
 Previously the validation behavior would be:
 
-* `[{…}, null, {…}]` is **valid**.
-* `null` is **invalid**.
+- `[{…}, null, {…}]` is **valid**.
+- `null` is **invalid**.
 
 Our validation behavior as of 3.2.0 is now:
 
-* `[{…}, null, {…}]` is **invalid**.
-* `null` is **valid**.
+- `[{…}, null, {…}]` is **invalid**.
+- `null` is **valid**.
 
 If you want to allow `null` child items, you'll need to instead specify `allow_null` on the child class, using an explicit `ListField` instead of `many=True`. For example:
 
-    ListField(child=NestedSerializer(allow_null=True))
+```python
+ListField(child=NestedSerializer(allow_null=True))
+```
 
 ## What's next?
 
@@ -111,9 +117,9 @@ The 3.3 release is currently planned for the start of October, and will be the l
 
 This release is planned to include:
 
-* Search and filtering controls in the browsable API and admin interface.
-* Improvements and public API for the admin interface.
-* Improvements and public API for our templated HTML forms and fields.
-* Nested object and list support in HTML forms.
+- Search and filtering controls in the browsable API and admin interface.
+- Improvements and public API for the admin interface.
+- Improvements and public API for our templated HTML forms and fields.
+- Nested object and list support in HTML forms.
 
 Thanks once again to all our sponsors and supporters.

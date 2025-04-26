@@ -4,25 +4,6 @@ keywords: ["django", "rest", "framework", "api", "announcement"]
 order: 16
 ---
 
-<style>
-.promo li a {
-    float: left;
-    width: 130px;
-    height: 20px;
-    text-align: center;
-    margin: 10px 30px;
-    padding: 150px 0 0 0;
-    background-position: 0 50%;
-    background-size: 130px auto;
-    background-repeat: no-repeat;
-    font-size: 120%;
-    color: black;
-}
-.promo li {
-    list-style: none;
-}
-</style>
-
 # Django REST framework 3.6
 
 The 3.6 release adds two major new features to REST framework.
@@ -32,7 +13,7 @@ The 3.6 release adds two major new features to REST framework.
 
 ![API Documentation](/img/api-docs.gif)
 
-*Above: The interactive API documentation.*
+_Above: The interactive API documentation._
 
 ---
 
@@ -44,17 +25,75 @@ If you use REST framework commercially and would like to see this work continue,
 we strongly encourage you to invest in its continued development by
 **[signing up for a paid&nbsp;plan][funding]**.
 
-<ul class="premium-promo promo">
-    <li><a href="https://www.rover.com/careers/" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/rover_130x130.png)">Rover.com</a></li>
-    <li><a href="https://sentry.io/welcome/" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/sentry130.png)">Sentry</a></li>
-    <li><a href="https://getstream.io/try-the-api/?utm_source=drf&utm_medium=banner&utm_campaign=drf" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/stream-130.png)">Stream</a></li>
-    <li><a href="https://machinalis.com/" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/Machinalis130.png)">Machinalis</a></li>
-    <li><a href="https://rollbar.com" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/rollbar.png)">Rollbar</a></li>
-    <li><a href="https://micropyramid.com/django-rest-framework-development-services/" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/mp-text-logo.png)">MicroPyramid</a></li>
+<ul
+  style={{
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))",
+    gap: "20px",
+    padding: 0,
+    margin: 0,
+    listStyle: "none",
+    justifyItems: "center",
+  }}
+>
+  {[
+    {
+      href: "https://www.rover.com/careers/",
+      img: "https://fund-rest-framework.s3.amazonaws.com/rover_130x130.png",
+      label: "Rover.com",
+    },
+    {
+      href: "https://sentry.io/welcome/",
+      img: "https://fund-rest-framework.s3.amazonaws.com/sentry130.png",
+      label: "Sentry",
+    },
+    {
+      href: "https://getstream.io/try-the-api/?utm_source=drf&utm_medium=banner&utm_campaign=drf",
+      img: "https://fund-rest-framework.s3.amazonaws.com/stream-130.png",
+      label: "Stream",
+    },
+    {
+      href: "https://machinalis.com/",
+      img: "https://fund-rest-framework.s3.amazonaws.com/Machinalis130.png",
+      label: "Machinalis",
+    },
+    {
+      href: "https://rollbar.com",
+      img: "https://fund-rest-framework.s3.amazonaws.com/rollbar.png",
+      label: "Rollbar",
+    },
+    {
+      href: "https://micropyramid.com/django-rest-framework-development-services/",
+      img: "https://fund-rest-framework.s3.amazonaws.com/mp-text-logo.png",
+      label: "MicroPyramid",
+    },
+  ].map(({ href, img, label }) => (
+    <li key={label}>
+      <a
+        href={href}
+        style={{
+          display: "block",
+          width: "130px",
+          height: "20px",
+          textAlign: "center",
+          margin: "10px 0",
+          padding: "150px 0 0 0",
+          backgroundPosition: "0 50%",
+          backgroundSize: "130px auto",
+          backgroundRepeat: "no-repeat",
+          fontSize: "120%",
+          color: "black",
+          backgroundImage: `url(${img})`,
+        }}
+      >
+        {label}
+      </a>
+    </li>
+  ))}
 </ul>
-<div style="clear: both; padding-bottom: 20px;"></div>
+<div style={{ paddingBottom: "20px" }} />
 
-*Many thanks to all our [sponsors][sponsors], and in particular to our premium backers, [Rover](https://www.rover.com/careers/), [Sentry](https://sentry.io/welcome/), [Stream](https://getstream.io/?utm_source=drf&utm_medium=banner&utm_campaign=drf), [Machinalis](https://machinalis.com/), [Rollbar](https://rollbar.com), and [MicroPyramid](https://micropyramid.com/django-rest-framework-development-services/).*
+_Many thanks to all our [sponsors][sponsors], and in particular to our premium backers, [Rover](https://www.rover.com/careers/), [Sentry](https://sentry.io/welcome/), [Stream](https://getstream.io/?utm_source=drf&utm_medium=banner&utm_campaign=drf), [Machinalis](https://machinalis.com/), [Rollbar](https://rollbar.com), and [MicroPyramid](https://micropyramid.com/django-rest-framework-development-services/)._
 
 ---
 
@@ -62,9 +101,9 @@ we strongly encourage you to invest in its continued development by
 
 REST framework's new API documentation supports a number of features:
 
-* Live API interaction.
-* Support for various authentication schemes.
-* Code snippets for the Python, JavaScript, and Command Line clients.
+- Live API interaction.
+- Support for various authentication schemes.
+- Code snippets for the Python, JavaScript, and Command Line clients.
 
 The `coreapi` library is required as a dependency for the API docs. Make sure
 to install the latest version (2.3.0 or above). The `pygments` and `markdown`
@@ -102,31 +141,36 @@ requests explicitly.
 
 Here's a brief example that demonstrates:
 
-* Loading the client library and schema.
-* Instantiating an authenticated client.
-* Making an API request using the client.
+- Loading the client library and schema.
+- Instantiating an authenticated client.
+- Making an API request using the client.
 
 **index.html**
 
-    <html>
-        <head>
-            <script src="/static/rest_framework/js/coreapi-0.1.0.js"></script>
-            <script src="/docs/schema.js"></script>
-            <script>
-                const coreapi = window.coreapi
-                const schema = window.schema
+```html
+<html>
+  <head>
+    <script src="/static/rest_framework/js/coreapi-0.1.0.js"></script>
+    <script src="/docs/schema.js"></script>
+    <script>
+      const coreapi = window.coreapi;
+      const schema = window.schema;
 
-                // Instantiate a client...
-                let auth = coreapi.auth.TokenAuthentication({scheme: 'JWT', token: 'xxx'})
-                let client = coreapi.Client({auth: auth})
+      // Instantiate a client...
+      let auth = coreapi.auth.TokenAuthentication({
+        scheme: "JWT",
+        token: "xxx",
+      });
+      let client = coreapi.Client({ auth: auth });
 
-                // Make an API request...
-                client.action(schema, ['projects', 'list']).then(function(result) {
-                    alert(result)
-                })
-            </script>
-        </head>
-    </html>
+      // Make an API request...
+      client.action(schema, ["projects", "list"]).then(function (result) {
+        alert(result);
+      });
+    </script>
+  </head>
+</html>
+```
 
 The JavaScript client library supports various authentication schemes, and can be
 used by your project itself, or as an external client interacting with your API.
@@ -176,8 +220,8 @@ been escalated to a "deprecated" warning.
 
 You should change your imports and REST framework filter settings as follows:
 
-* `rest_framework.filters.DjangoFilterBackend` becomes `django_filters.rest_framework.DjangoFilterBackend`.
-* `rest_framework.filters.FilterSet` becomes `django_filters.rest_framework.FilterSet`.
+- `rest_framework.filters.DjangoFilterBackend` becomes `django_filters.rest_framework.DjangoFilterBackend`.
+- `rest_framework.filters.FilterSet` becomes `django_filters.rest_framework.FilterSet`.
 
 ---
 
@@ -186,14 +230,14 @@ You should change your imports and REST framework filter settings as follows:
 There are likely to be a number of refinements to the API documentation and
 JavaScript client library over the coming weeks, which could include some of the following:
 
-* Support for private API docs, requiring login.
-* File upload and download support in the JavaScript client & API docs.
-* Comprehensive documentation for the JavaScript client library.
-* Automatically including authentication details in the API doc code snippets.
-* Adding authentication support in the command line client.
-* Support for loading Swagger and other schemas in the JavaScript client.
-* Improved support for documenting parameter schemas and response schemas.
-* Refining the API documentation interaction modal.
+- Support for private API docs, requiring login.
+- File upload and download support in the JavaScript client & API docs.
+- Comprehensive documentation for the JavaScript client library.
+- Automatically including authentication details in the API doc code snippets.
+- Adding authentication support in the command line client.
+- Support for loading Swagger and other schemas in the JavaScript client.
+- Improved support for documenting parameter schemas and response schemas.
+- Refining the API documentation interaction modal.
 
 Once work on those refinements is complete, we'll be starting feature work
 on realtime support, for the 3.7 release.

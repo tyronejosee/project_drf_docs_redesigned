@@ -4,25 +4,6 @@ keywords: ["django", "rest", "framework", "api", "announcement"]
 order: 9
 ---
 
-<style>
-.promo li a {
-    float: left;
-    width: 130px;
-    height: 20px;
-    text-align: center;
-    margin: 10px 30px;
-    padding: 150px 0 0 0;
-    background-position: 0 50%;
-    background-size: 130px auto;
-    background-repeat: no-repeat;
-    font-size: 120%;
-    color: black;
-}
-.promo li {
-    list-style: none;
-}
-</style>
-
 # Django REST framework 3.13
 
 ## Django 4.0 support
@@ -31,8 +12,8 @@ The latest release now fully supports Django 4.0.
 
 Our requirements are now:
 
-* Python 3.6+
-* Django 4.0, 3.2, 3.1, 2.2 (LTS)
+- Python 3.6+
+- Django 4.0, 3.2, 3.1, 2.2 (LTS)
 
 ## Fields arguments are now keyword-only
 
@@ -41,7 +22,7 @@ such as `serializers.CharField(max_length=200)`. This has always been the case,
 and all the examples that we have in the documentation use keyword arguments,
 rather than positional arguments.
 
-From REST framework 3.13 onwards, this is now *explicitly enforced*.
+From REST framework 3.13 onwards, this is now _explicitly enforced_.
 
 The most feasible cases where users might be accidentally omitting the keyword arguments
 are likely in the composite fields, `ListField` and `DictField`. For instance...
@@ -56,6 +37,6 @@ They must now use the more explicit keyword argument style...
 aliases = serializers.ListField(child=serializers.CharField())
 ```
 
-This change has been made because using positional arguments here *does not* result in the expected behaviour.
+This change has been made because using positional arguments here _does not_ result in the expected behaviour.
 
 See Pull Request [#7632](https://github.com/encode/django-rest-framework/pull/7632) for more details.

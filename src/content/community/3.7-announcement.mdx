@@ -4,32 +4,15 @@ keywords: ["django", "rest", "framework", "api", "announcement"]
 order: 15
 ---
 
-<style>
-.promo li a {
-    float: left;
-    width: 130px;
-    height: 20px;
-    text-align: center;
-    margin: 10px 30px;
-    padding: 150px 0 0 0;
-    background-position: 0 50%;
-    background-size: 130px auto;
-    background-repeat: no-repeat;
-    font-size: 120%;
-    color: black;
-}
-.promo li {
-    list-style: none;
-}
-</style>
-
 # Django REST framework 3.7
 
 The 3.7 release focuses on improvements to schema generation and the interactive API documentation.
 
 This release has been made possible by [Bayer](https://www.bayer.com/) who have sponsored the release.
 
-<a href="https://www.bayer.com/"><img src="/img/bayer.png"/></a>
+<a href="https://www.bayer.com/">
+  <img src="/img/bayer.png" />
+</a>
 
 ---
 
@@ -38,16 +21,69 @@ This release has been made possible by [Bayer](https://www.bayer.com/) who have 
 If you use REST framework commercially and would like to see this work continue, we strongly encourage you to invest in its continued development by
 **[signing up for a paid&nbsp;plan][funding]**.
 
-<ul class="premium-promo promo">
-    <li><a href="https://www.rover.com/careers/" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/rover_130x130.png)">Rover.com</a></li>
-    <li><a href="https://sentry.io/welcome/" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/sentry130.png)">Sentry</a></li>
-    <li><a href="https://getstream.io/try-the-api/?utm_source=drf&utm_medium=banner&utm_campaign=drf" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/stream-130.png)">Stream</a></li>
-    <li><a href="https://machinalis.com/" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/Machinalis130.png)">Machinalis</a></li>
-    <li><a href="https://rollbar.com" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/rollbar.png)">Rollbar</a></li>
+<ul
+  style={{
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))",
+    gap: "20px",
+    padding: 0,
+    margin: 0,
+    listStyle: "none",
+    justifyItems: "center",
+  }}
+>
+  {[
+    {
+      href: "https://www.rover.com/careers/",
+      img: "https://fund-rest-framework.s3.amazonaws.com/rover_130x130.png",
+      label: "Rover.com",
+    },
+    {
+      href: "https://sentry.io/welcome/",
+      img: "https://fund-rest-framework.s3.amazonaws.com/sentry130.png",
+      label: "Sentry",
+    },
+    {
+      href: "https://getstream.io/try-the-api/?utm_source=drf&utm_medium=banner&utm_campaign=drf",
+      img: "https://fund-rest-framework.s3.amazonaws.com/stream-130.png",
+      label: "Stream",
+    },
+    {
+      href: "https://machinalis.com/",
+      img: "https://fund-rest-framework.s3.amazonaws.com/Machinalis130.png",
+      label: "Machinalis",
+    },
+    {
+      href: "https://rollbar.com",
+      img: "https://fund-rest-framework.s3.amazonaws.com/rollbar.png",
+      label: "Rollbar",
+    },
+  ].map(({ href, img, label }) => (
+    <li key={label}>
+      <a
+        href={href}
+        style={{
+          display: "block",
+          width: "130px",
+          height: "20px",
+          textAlign: "center",
+          paddingTop: "150px",
+          backgroundPosition: "0 50%",
+          backgroundSize: "130px auto",
+          backgroundRepeat: "no-repeat",
+          fontSize: "120%",
+          color: "black",
+          backgroundImage: `url(${img})`,
+        }}
+      >
+        {label}
+      </a>
+    </li>
+  ))}
 </ul>
-<div style="clear: both; padding-bottom: 20px;"></div>
+<div style={{ paddingBottom: "20px" }} />
 
-*As well as our release sponsor, we'd like to say thanks in particular our premium backers, [Rover](https://www.rover.com/careers/), [Sentry](https://sentry.io/welcome/), [Stream](https://getstream.io/?utm_source=drf&utm_medium=banner&utm_campaign=drf), [Machinalis](https://machinalis.com/), and [Rollbar](https://rollbar.com).*
+_As well as our release sponsor, we'd like to say thanks in particular our premium backers, [Rover](https://www.rover.com/careers/), [Sentry](https://sentry.io/welcome/), [Stream](https://getstream.io/?utm_source=drf&utm_medium=banner&utm_campaign=drf), [Machinalis](https://machinalis.com/), and [Rollbar](https://rollbar.com)._
 
 ---
 

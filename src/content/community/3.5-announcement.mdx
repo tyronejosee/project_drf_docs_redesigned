@@ -4,25 +4,6 @@ keywords: ["django", "rest", "framework", "api", "announcement"]
 order: 17
 ---
 
-<style>
-.promo li a {
-    float: left;
-    width: 130px;
-    height: 20px;
-    text-align: center;
-    margin: 10px 30px;
-    padding: 150px 0 0 0;
-    background-position: 0 50%;
-    background-size: 130px auto;
-    background-repeat: no-repeat;
-    font-size: 120%;
-    color: black;
-}
-.promo li {
-    list-style: none;
-}
-</style>
-
 # Django REST framework 3.5
 
 The 3.5 release is the second in a planned series that is addressing schema
@@ -37,15 +18,109 @@ If you use REST framework commercially and would like to see this work continue,
 we strongly encourage you to invest in its continued development by
 **[signing up for a paid&nbsp;plan][funding]**.
 
-<ul class="premium-promo promo">
-    <li><a href="https://www.rover.com/careers/" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/rover_130x130.png)">Rover.com</a></li>
-    <li><a href="https://sentry.io/welcome/" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/sentry130.png)">Sentry</a></li>
-    <li><a href="https://getstream.io/?utm_source=drf&utm_medium=banner&utm_campaign=drf" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/stream-130.png)">Stream</a></li>
-    <li><a href="https://www.machinalis.com/#services" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/Machinalis130.png)">Machinalis</a></li>
+<ul
+  style={{
+    display: "grid",
+    gridTemplateColumns: "repeat(3, 1fr)",
+    gap: "20px",
+    padding: 0,
+    margin: 0,
+    listStyle: "none",
+    justifyItems: "center",
+  }}
+>
+  <li>
+    <a
+      href="https://www.rover.com/careers/"
+      style={{
+        width: "130px",
+        height: "20px",
+        textAlign: "center",
+        margin: "10px 0",
+        padding: "150px 0 0 0",
+        backgroundPosition: "0 50%",
+        backgroundSize: "130px auto",
+        backgroundRepeat: "no-repeat",
+        fontSize: "120%",
+        color: "black",
+        backgroundImage:
+          "url(https://fund-rest-framework.s3.amazonaws.com/rover_130x130.png)",
+        display: "block",
+      }}
+    >
+      Rover.com
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://sentry.io/welcome/"
+      style={{
+        width: "130px",
+        height: "20px",
+        textAlign: "center",
+        margin: "10px 0",
+        padding: "150px 0 0 0",
+        backgroundPosition: "0 50%",
+        backgroundSize: "130px auto",
+        backgroundRepeat: "no-repeat",
+        fontSize: "120%",
+        color: "black",
+        backgroundImage:
+          "url(https://fund-rest-framework.s3.amazonaws.com/sentry130.png)",
+        display: "block",
+      }}
+    >
+      Sentry
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://getstream.io/?utm_source=drf&utm_medium=banner&utm_campaign=drf"
+      style={{
+        width: "130px",
+        height: "20px",
+        textAlign: "center",
+        margin: "10px 0",
+        padding: "150px 0 0 0",
+        backgroundPosition: "0 50%",
+        backgroundSize: "130px auto",
+        backgroundRepeat: "no-repeat",
+        fontSize: "120%",
+        color: "black",
+        backgroundImage:
+          "url(https://fund-rest-framework.s3.amazonaws.com/stream-130.png)",
+        display: "block",
+      }}
+    >
+      Stream
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.machinalis.com/#services"
+      style={{
+        width: "130px",
+        height: "20px",
+        textAlign: "center",
+        margin: "10px 0",
+        padding: "150px 0 0 0",
+        backgroundPosition: "0 50%",
+        backgroundSize: "130px auto",
+        backgroundRepeat: "no-repeat",
+        fontSize: "120%",
+        color: "black",
+        backgroundImage:
+          "url(https://fund-rest-framework.s3.amazonaws.com/Machinalis130.png)",
+        display: "block",
+      }}
+    >
+      Machinalis
+    </a>
+  </li>
 </ul>
-<div style="clear: both; padding-bottom: 20px;"></div>
+<div style={{ paddingBottom: "20px" }} />
 
-*Many thanks to all our [sponsors][sponsors], and in particular to our premium backers, [Rover](https://www.rover.com/careers/), [Sentry](https://sentry.io/welcome/), [Stream](https://getstream.io/?utm_source=drf&utm_medium=banner&utm_campaign=drf), and [Machinalis](https://www.machinalis.com/#services).*
+_Many thanks to all our [sponsors][sponsors], and in particular to our premium backers, [Rover](https://www.rover.com/careers/), [Sentry](https://sentry.io/welcome/), [Stream](https://getstream.io/?utm_source=drf&utm_medium=banner&utm_campaign=drf), and [Machinalis](https://www.machinalis.com/#services)._
 
 ---
 
@@ -59,13 +134,13 @@ There is now also a shortcut function, `get_schema_view()`, which makes it easie
 
 For example, to include a swagger schema to your API, you would do the following:
 
-* Run `pip install django-rest-swagger`.
+- Run `pip install django-rest-swagger`.
 
-* Add `'rest_framework_swagger'` to your `INSTALLED_APPS` setting.
+- Add `'rest_framework_swagger'` to your `INSTALLED_APPS` setting.
 
-* Include the schema view in your URL conf:
+- Include the schema view in your URL conf:
 
-```py
+```python
 from rest_framework.schemas import get_schema_view
 from rest_framework_swagger.renderers import OpenAPIRenderer, SwaggerUIRenderer
 
@@ -96,9 +171,11 @@ You can now test your project using the `requests` library.
 This exposes exactly the same interface as if you were using a standard
 requests session instance.
 
-    client = RequestsClient()
-    response = client.get('http://testserver/users/')
-    assert response.status_code == 200
+```python
+client = RequestsClient()
+response = client.get('http://testserver/users/')
+assert response.status_code == 200
+```
 
 Rather than sending any HTTP requests to the network, this interface will
 coerce all outgoing requests into WSGI, and call into your application directly.
@@ -108,18 +185,20 @@ coerce all outgoing requests into WSGI, and call into your application directly.
 You can also now test your project by interacting with it using the `coreapi`
 client library.
 
-    # Fetch the API schema
-    client = CoreAPIClient()
-    schema = client.get('http://testserver/schema/')
+```python
+# Fetch the API schema
+client = CoreAPIClient()
+schema = client.get('http://testserver/schema/')
 
-    # Create a new organisation
-    params = {'name': 'MegaCorp', 'status': 'active'}
-    client.action(schema, ['organisations', 'create'], params)
+# Create a new organisation
+params = {'name': 'MegaCorp', 'status': 'active'}
+client.action(schema, ['organisations', 'create'], params)
 
-    # Ensure that the organisation exists in the listing
-    data = client.action(schema, ['organisations', 'list'])
-    assert(len(data) == 1)
-    assert(data == [{'name': 'MegaCorp', 'status': 'active'}])
+# Ensure that the organisation exists in the listing
+data = client.action(schema, ['organisations', 'list'])
+assert(len(data) == 1)
+assert(data == [{'name': 'MegaCorp', 'status': 'active'}])
+```
 
 Again, this will call directly into the application using the WSGI interface,
 rather than making actual network calls.
@@ -162,18 +241,28 @@ modify the style of API error messages.
 
 As an example, this allows for the following style of error responses:
 
-    {
-        "message": "You do not have permission to perform this action.",
-        "code": "permission_denied"
-    }
+```json
+{
+  "message": "You do not have permission to perform this action.",
+  "code": "permission_denied"
+}
+```
 
 This is particularly useful with validation errors, which use appropriate
 codes to identify differing kinds of failure...
 
-    {
-        "name": {"message": "This field is required.", "code": "required"},
-        "age": {"message": "A valid integer is required.", "code": "invalid"}
-    }
+```json
+{
+  "name": {
+    "message": "This field is required.",
+    "code": "required"
+  },
+  "age": {
+    "message": "A valid integer is required.",
+    "code": "invalid"
+  }
+}
+```
 
 ## Client upload & download support
 
@@ -194,15 +283,17 @@ the `get_schema_view()` function, and include the view in your URL conf.
 
 Make sure to include the view before your router urls. For example:
 
-    from rest_framework.schemas import get_schema_view
-    from my_project.routers import router
+```python
+from rest_framework.schemas import get_schema_view
+from my_project.routers import router
 
-    schema_view = get_schema_view(title='Example API')
+schema_view = get_schema_view(title='Example API')
 
-    urlpatterns = [
-        path('', schema_view),
-        path('', include(router.urls)),
-    ]
+urlpatterns = [
+    path('', schema_view),
+    path('', include(router.urls)),
+]
+```
 
 ### Schema path representations
 
@@ -231,8 +322,8 @@ included by the `django-filter` package.
 
 You should change your imports and REST framework filter settings as follows:
 
-* `rest_framework.filters.DjangoFilterBackend` becomes `django_filters.rest_framework.DjangoFilterBackend`.
-* `rest_framework.filters.FilterSet` becomes `django_filters.rest_framework.FilterSet`.
+- `rest_framework.filters.DjangoFilterBackend` becomes `django_filters.rest_framework.DjangoFilterBackend`.
+- `rest_framework.filters.FilterSet` becomes `django_filters.rest_framework.FilterSet`.
 
 The existing imports will continue to work but are now pending deprecation.
 
@@ -253,8 +344,6 @@ explicitly include all fields.
 
 Failing to set either `fields` or `exclude` raised a pending deprecation warning
 in version 3.3 and raised a deprecation warning in 3.4. Its usage is now mandatory.
-
----
 
 [sponsors]: https://fund.django-rest-framework.org/topics/funding/#our-sponsors
 [funding]: funding.md

@@ -4,31 +4,12 @@ keywords: ["django", "rest", "framework", "api", "announcement"]
 order: 11
 ---
 
-<style>
-.promo li a {
-    float: left;
-    width: 130px;
-    height: 20px;
-    text-align: center;
-    margin: 10px 30px;
-    padding: 150px 0 0 0;
-    background-position: 0 50%;
-    background-size: 130px auto;
-    background-repeat: no-repeat;
-    font-size: 120%;
-    color: black;
-}
-.promo li {
-    list-style: none;
-}
-</style>
-
 # Django REST framework 3.11
 
 The 3.11 release adds support for Django 3.0.
 
-* Our supported Python versions are now: 3.5, 3.6, 3.7, and 3.8.
-* Our supported Django versions are now: 1.11, 2.0, 2.1, 2.2, and 3.0.
+- Our supported Python versions are now: 3.5, 3.6, 3.7, and 3.8.
+- Our supported Django versions are now: 1.11, 2.0, 2.1, 2.2, and 3.0.
 
 This release will be the last to support Python 3.5 or Django 1.11.
 
@@ -37,11 +18,11 @@ This release will be the last to support Python 3.5 or Django 1.11.
 The OpenAPI schema generation continues to mature. Some highlights in 3.11
 include:
 
-* Automatic mapping of Django REST Framework renderers and parsers into OpenAPI
+- Automatic mapping of Django REST Framework renderers and parsers into OpenAPI
   request and response media-types.
-* Improved mapping JSON schema mapping types, for example in HStoreFields, and
+- Improved mapping JSON schema mapping types, for example in HStoreFields, and
   with large integer values.
-* Porting of the old CoreAPI parsing of docstrings to form OpenAPI operation
+- Porting of the old CoreAPI parsing of docstrings to form OpenAPI operation
   descriptions.
 
 In this example view operation descriptions for the `get` and `post` methods will
@@ -67,8 +48,8 @@ class DocStringExampleListView(APIView):
 
 In some circumstances a Validator class or a Default class may need to access the serializer field with which it is called, or the `.context` with which the serializer was instantiated. In particular:
 
-* Uniqueness validators need to be able to determine the name of the field to which they are applied, in order to run an appropriate database query.
-* The `CurrentUserDefault` needs to be able to determine the context with which the serializer was instantiated, in order to return the current user instance.
+- Uniqueness validators need to be able to determine the name of the field to which they are applied, in order to run an appropriate database query.
+- The `CurrentUserDefault` needs to be able to determine the context with which the serializer was instantiated, in order to return the current user instance.
 
 Our previous approach to this was that implementations could include a `set_context` method, which would be called prior to validation. However this approach had issues with potential race conditions. We have now move this approach into a pending deprecation state. It will continue to function, but will be escalated to a deprecated state in 3.12, and removed entirely in 3.13.
 
@@ -100,25 +81,91 @@ class CustomDefault:
 
 ## Funding
 
-REST framework is a *collaboratively funded project*. If you use
+REST framework is a _collaboratively funded project_. If you use
 REST framework commercially we strongly encourage you to invest in its
 continued development by **[signing up for a paid plan][funding]**.
 
-*Every single sign-up helps us make REST framework long-term financially sustainable.*
+_Every single sign-up helps us make REST framework long-term financially sustainable._
 
-<ul class="premium-promo promo">
-    <li><a href="https://getsentry.com/welcome/" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/sentry130.png)">Sentry</a></li>
-    <li><a href="https://getstream.io/try-the-api/?utm_source=drf&utm_medium=banner&utm_campaign=drf" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/stream-130.png)">Stream</a></li>
-    <li><a href="https://software.esg-usa.com" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/esg-new-logo.png)">ESG</a></li>
-    <li><a href="https://rollbar.com" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/rollbar2.png)">Rollbar</a></li>
-    <li><a href="https://cadre.com" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/cadre.png)">Cadre</a></li>
-    <li><a href="https://hubs.ly/H0f30Lf0" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/kloudless-plus-text.png)">Kloudless</a></li>
-    <li><a href="https://lightsonsoftware.com" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/lightson-dark.png)">Lights On Software</a></li>
-    <li><a href="https://retool.com/?utm_source=djangorest&utm_medium=sponsorship" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/retool-sidebar.png)">Retool</a></li>
+<ul
+  style={{
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(130px, 1fr))",
+    gap: "30px 20px",
+    padding: 0,
+    margin: 0,
+    listStyle: "none",
+    justifyItems: "center",
+  }}
+>
+  {[
+    {
+      href: "https://getsentry.com/welcome/",
+      img: "https://fund-rest-framework.s3.amazonaws.com/sentry130.png",
+      label: "Sentry",
+    },
+    {
+      href: "https://getstream.io/try-the-api/?utm_source=drf&utm_medium=banner&utm_campaign=drf",
+      img: "https://fund-rest-framework.s3.amazonaws.com/stream-130.png",
+      label: "Stream",
+    },
+    {
+      href: "https://software.esg-usa.com",
+      img: "https://fund-rest-framework.s3.amazonaws.com/esg-new-logo.png",
+      label: "ESG",
+    },
+    {
+      href: "https://rollbar.com",
+      img: "https://fund-rest-framework.s3.amazonaws.com/rollbar2.png",
+      label: "Rollbar",
+    },
+    {
+      href: "https://cadre.com",
+      img: "https://fund-rest-framework.s3.amazonaws.com/cadre.png",
+      label: "Cadre",
+    },
+    {
+      href: "https://hubs.ly/H0f30Lf0",
+      img: "https://fund-rest-framework.s3.amazonaws.com/kloudless-plus-text.png",
+      label: "Kloudless",
+    },
+    {
+      href: "https://lightsonsoftware.com",
+      img: "https://fund-rest-framework.s3.amazonaws.com/lightson-dark.png",
+      label: "Lights On Software",
+    },
+    {
+      href: "https://retool.com/?utm_source=djangorest&utm_medium=sponsorship",
+      img: "https://fund-rest-framework.s3.amazonaws.com/retool-sidebar.png",
+      label: "Retool",
+    },
+  ].map(({ href, img, label }) => (
+    <li key={label}>
+      <a
+        href={href}
+        style={{
+          display: "block",
+          width: "130px",
+          height: "20px",
+          paddingTop: "150px",
+          backgroundImage: `url(${img})`,
+          backgroundPosition: "0 50%",
+          backgroundSize: "130px auto",
+          backgroundRepeat: "no-repeat",
+          textAlign: "center",
+          fontSize: "120%",
+          color: "black",
+          textDecoration: "none",
+        }}
+      >
+        {label}
+      </a>
+    </li>
+  ))}
 </ul>
-<div style="clear: both; padding-bottom: 20px;"></div>
+<div style={{ clear: "both", paddingBottom: "20px" }} />
 
-*Many thanks to all our [wonderful sponsors][sponsors], and in particular to our premium backers, [Sentry](https://getsentry.com/welcome/), [Stream](https://getstream.io/?utm_source=drf&utm_medium=banner&utm_campaign=drf), [ESG](https://software.esg-usa.com/), [Rollbar](https://rollbar.com/?utm_source=django&utm_medium=sponsorship&utm_campaign=freetrial), [Cadre](https://cadre.com), [Kloudless](https://hubs.ly/H0f30Lf0), [Lights On Software](https://lightsonsoftware.com), and [Retool](https://retool.com/?utm_source=djangorest&utm_medium=sponsorship).*
+_Many thanks to all our [wonderful sponsors][sponsors], and in particular to our premium backers, [Sentry](https://getsentry.com/welcome/), [Stream](https://getstream.io/?utm_source=drf&utm_medium=banner&utm_campaign=drf), [ESG](https://software.esg-usa.com/), [Rollbar](https://rollbar.com/?utm_source=django&utm_medium=sponsorship&utm_campaign=freetrial), [Cadre](https://cadre.com), [Kloudless](https://hubs.ly/H0f30Lf0), [Lights On Software](https://lightsonsoftware.com), and [Retool](https://retool.com/?utm_source=djangorest&utm_medium=sponsorship)._
 
 [sponsors]: https://fund.django-rest-framework.org/topics/funding/#our-sponsors
 [funding]: funding.md

@@ -4,25 +4,6 @@ keywords: ["django", "rest", "framework", "api", "announcement"]
 order: 18
 ---
 
-<style>
-.promo li a {
-    float: left;
-    width: 130px;
-    height: 20px;
-    text-align: center;
-    margin: 10px 30px;
-    padding: 150px 0 0 0;
-    background-position: 0 50%;
-    background-size: 130px auto;
-    background-repeat: no-repeat;
-    font-size: 120%;
-    color: black;
-}
-.promo li {
-    list-style: none;
-}
-</style>
-
 # Django REST framework 3.4
 
 The 3.4 release is the first in a planned series that will be addressing schema
@@ -39,16 +20,88 @@ continued development by **[signing up for a paid plan][funding]**.
 
 The initial aim is to provide a single full-time position on REST framework.
 Right now we're over 60% of the way towards achieving that.
-*Every single sign-up makes a significant impact.*
+_Every single sign-up makes a significant impact._
 
-<ul class="premium-promo promo">
-    <li><a href="https://www.rover.com/careers/" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/rover_130x130.png)">Rover.com</a></li>
-    <li><a href="https://sentry.io/welcome/" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/sentry130.png)">Sentry</a></li>
-    <li><a href="https://getstream.io/?utm_source=drf&utm_medium=banner&utm_campaign=drf" style="background-image: url(https://fund-rest-framework.s3.amazonaws.com/stream-130.png)">Stream</a></li>
+<ul
+  style={{
+    display: "grid",
+    gridTemplateColumns: "repeat(3, 1fr)",
+    gap: "20px",
+    padding: 0,
+    margin: 0,
+    listStyle: "none",
+  }}
+>
+  <li>
+    <a
+      href="https://www.rover.com/careers/"
+      style={{
+        width: "130px",
+        height: "20px",
+        textAlign: "center",
+        margin: "10px auto",
+        padding: "150px 0 0 0",
+        backgroundPosition: "0 50%",
+        backgroundSize: "130px auto",
+        backgroundRepeat: "no-repeat",
+        fontSize: "120%",
+        color: "black",
+        backgroundImage:
+          "url(https://fund-rest-framework.s3.amazonaws.com/rover_130x130.png)",
+        display: "block",
+      }}
+    >
+      Rover.com
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://sentry.io/welcome/"
+      style={{
+        width: "130px",
+        height: "20px",
+        textAlign: "center",
+        margin: "10px auto",
+        padding: "150px 0 0 0",
+        backgroundPosition: "0 50%",
+        backgroundSize: "130px auto",
+        backgroundRepeat: "no-repeat",
+        fontSize: "120%",
+        color: "black",
+        backgroundImage:
+          "url(https://fund-rest-framework.s3.amazonaws.com/sentry130.png)",
+        display: "block",
+      }}
+    >
+      Sentry
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://getstream.io/?utm_source=drf&utm_medium=banner&utm_campaign=drf"
+      style={{
+        width: "130px",
+        height: "20px",
+        textAlign: "center",
+        margin: "10px auto",
+        padding: "150px 0 0 0",
+        backgroundPosition: "0 50%",
+        backgroundSize: "130px auto",
+        backgroundRepeat: "no-repeat",
+        fontSize: "120%",
+        color: "black",
+        backgroundImage:
+          "url(https://fund-rest-framework.s3.amazonaws.com/stream-130.png)",
+        display: "block",
+      }}
+    >
+      Stream
+    </a>
+  </li>
 </ul>
-<div style="clear: both; padding-bottom: 20px;"></div>
+<div style={{ paddingBottom: "20px" }} />
 
-*Many thanks to all our [awesome sponsors][sponsors], and in particular to our premium backers, [Rover](https://www.rover.com/careers/), [Sentry](https://sentry.io/welcome/), and [Stream](https://getstream.io/?utm_source=drf&utm_medium=banner&utm_campaign=drf).*
+_Many thanks to all our [awesome sponsors][sponsors], and in particular to our premium backers, [Rover](https://www.rover.com/careers/), [Sentry](https://sentry.io/welcome/), and [Stream](https://getstream.io/?utm_source=drf&utm_medium=banner&utm_campaign=drf)._
 
 ---
 
@@ -70,8 +123,8 @@ HTML documentation pages.
 
 Alongside the built-in schema support, we're also now providing the following:
 
-* A [command line tool][command-line-client] for interacting with APIs.
-* A [Python client library][client-library] for interacting with APIs.
+- A [command line tool][command-line-client] for interacting with APIs.
+- A [Python client library][client-library] for interacting with APIs.
 
 These API clients are dynamically driven, and able to interact with any API
 that exposes a supported schema format.
@@ -91,20 +144,51 @@ documentation generation and parameter annotation.
 
 Current support for schema formats is as follows:
 
-Name                             | Support                             | PyPI package
----------------------------------|-------------------------------------|--------------------------------
-[Core JSON][core-json]           | Schema generation & client support. | Built-in support in `coreapi`.
-[Swagger / OpenAPI][swagger]     | Schema generation & client support. | The `openapi-codec` package.
-[JSON Hyper-Schema][hyperschema] | Currently client support only.      | The `hyperschema-codec` package.
-[API Blueprint][api-blueprint]   | Not yet available.                  | Not yet available.
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Support</th>
+      <th>PyPI package</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>[Core JSON][core-json]</td>
+      <td>Schema generation &amp; client support.</td>
+      <td>
+        Built-in support in <code>coreapi</code>.
+      </td>
+    </tr>
+    <tr>
+      <td>[Swagger / OpenAPI][swagger]</td>
+      <td>Schema generation &amp; client support.</td>
+      <td>
+        The <code>openapi-codec</code> package.
+      </td>
+    </tr>
+    <tr>
+      <td>[JSON Hyper-Schema][hyperschema]</td>
+      <td>Currently client support only.</td>
+      <td>
+        The <code>hyperschema-codec</code> package.
+      </td>
+    </tr>
+    <tr>
+      <td>[API Blueprint][api-blueprint]</td>
+      <td>Not yet available.</td>
+      <td>Not yet available.</td>
+    </tr>
+  </tbody>
+</table>
 
 ---
 
 You can read more about any of this new functionality in the following:
 
-* New tutorial section on [schemas & client libraries][tut-7].
-* Documentation page on [schema generation][schema-generation].
-* Topic page on [API clients][api-clients].
+- New tutorial section on [schemas & client libraries][tut-7].
+- Documentation page on [schema generation][schema-generation].
+- Topic page on [API clients][api-clients].
 
 It is also worth noting that Marc Gibbons is currently working towards a 2.0 release of
 the popular Django REST Swagger package, which will tie in with our new built-in support.
@@ -117,8 +201,8 @@ The 3.4.0 release adds support for Django 1.10.
 
 The following versions of Python and Django are now supported:
 
-* Django versions 1.8, 1.9, and 1.10.
-* Python versions 2.7, 3.2(\*), 3.3(\*), 3.4, 3.5.
+- Django versions 1.8, 1.9, and 1.10.
+- Python versions 2.7, 3.2(\*), 3.3(\*), 3.4, 3.5.
 
 (\*) Note that Python 3.2 and 3.3 are not supported from Django 1.9 onwards.
 
@@ -145,7 +229,7 @@ instance will now render with microsecond precision (6 digits), rather than
 millisecond precision (3 digits). This makes the output format consistent with the
 default string output of `serializers.DateTimeField` and `serializers.TimeField`.
 
-This change *does not affect the default behavior when using serializers*,
+This change _does not affect the default behavior when using serializers_,
 which is to serialize `datetime` and `time` instances into strings with
 microsecond precision.
 
@@ -163,7 +247,7 @@ will result in a list of the available choices being returned in the response.
 In cases where there is a relational field, the previous behavior would be
 to return a list of available instances to choose from for that relational field.
 
-In order to minimise exposed information the behavior now is to *not* return
+In order to minimise exposed information the behavior now is to _not_ return
 choices information for relational fields.
 
 If you want to override this new behavior you'll need to [implement a custom
