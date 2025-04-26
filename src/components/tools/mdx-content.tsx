@@ -18,12 +18,10 @@ const mdxComponents: MDXComponents = {
         {children}
       </a>
     ),
-  pre: (props: any) => {
-    const child = props.children;
-    const className = child?.props?.className || "";
+  pre: ({ children }) => {
+    const className = children.props?.className || "";
     const language = className.replace("language-", "");
-
-    return <CodeBlock language={language}>{child}</CodeBlock>;
+    return <CodeBlock language={language}>{children}</CodeBlock>;
   },
 };
 

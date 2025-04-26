@@ -4,6 +4,13 @@ import { useState } from "react";
 import { Button } from "@heroui/react";
 import { Check, Copy } from "lucide-react";
 
+type ReactNodeWithProps = {
+  props: {
+    children?: React.ReactNode;
+    [key: string]: unknown;
+  };
+};
+
 export default function CodeBlock({
   children,
   language,
@@ -21,7 +28,8 @@ export default function CodeBlock({
       return node.map(extractText).join("");
     }
     if (typeof node === "object" && node !== null && "props" in node) {
-      return extractText((node as any).props.children);
+      const nodeWithProps = node as ReactNodeWithProps;
+      return extractText(nodeWithProps.props.children);
     }
     return "";
   };

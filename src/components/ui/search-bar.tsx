@@ -1,7 +1,8 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Modal,
   ModalContent,
@@ -9,6 +10,7 @@ import {
   Button,
   useDisclosure,
   Input,
+  Kbd,
 } from "@heroui/react";
 import { File, SearchIcon } from "lucide-react";
 
@@ -30,9 +32,25 @@ type Props = {
 
 export default function SearchBar({ mdxLinks }: Props) {
   const [query, setQuery] = useState<string>("");
+  const [highlightedIndex, setHighlightedIndex] = useState<number>(0);
+  const router = useRouter();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const results = searchMdx(query, mdxLinks);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === "k") {
+        e.preventDefault();
+        onOpen();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onOpen]);
 
   const handleCloseModal = () => {
     if (inputRef.current) inputRef.current.blur();
@@ -40,7 +58,7 @@ export default function SearchBar({ mdxLinks }: Props) {
 
   const handleOpenChange = (open: boolean) => {
     if (!open) handleCloseModal();
-    // @ts-expect-error ! TODO: Fix this error
+    // @ts-expect-error - TS doesn't know about onOpenChange
     onOpenChange(open);
   };
 
@@ -60,6 +78,7 @@ export default function SearchBar({ mdxLinks }: Props) {
               className="text-white pointer-events-none flex-shrink-0"
             />
           }
+          endContent={<Kbd keys={["command"]}>K</Kbd>}
           classNames={{
             innerWrapper: "bg-transparent",
             input: [
@@ -77,12 +96,6 @@ export default function SearchBar({ mdxLinks }: Props) {
         placement="center"
         backdrop="blur"
         onOpenChange={handleOpenChange}
-        // onOpenChange={(open) => {
-        //   if (!open) {
-        //     handleCloseModal();
-        //     onOpenChange(open);
-        //   }
-        // }}
         classNames={{
           body: "bg-neutral-darkgrey",
         }}
@@ -106,6 +119,7 @@ export default function SearchBar({ mdxLinks }: Props) {
                       className="text-white pointer-events-none flex-shrink-0"
                     />
                   }
+                  endContent={<Kbd keys={["escape"]}>esc</Kbd>}
                   classNames={{
                     input: [
                       "bg-transparent",
@@ -114,6 +128,35 @@ export default function SearchBar({ mdxLinks }: Props) {
                     ],
                     innerWrapper: "bg-transparent",
                   }}
+                  onKeyDown={(e) => {
+                    switch (e.key) {
+                      case "ArrowDown":
+                        e.preventDefault();
+                        setHighlightedIndex((prev) =>
+                          Math.min(prev + 1, results.length - 1)
+                        );
+                        break;
+                      case "ArrowUp":
+                        e.preventDefault();
+                        setHighlightedIndex((prev) => Math.max(prev - 1, 0));
+                        break;
+                      case "Enter":
+                        e.preventDefault();
+                        const selected = results[highlightedIndex];
+                        if (selected) {
+                          router.push(selected.path);
+                          handleCloseModal();
+                          onClose();
+                        }
+                        break;
+                      case "Escape":
+                        handleCloseModal();
+                        onClose();
+                        break;
+                      default:
+                        break;
+                    }
+                  }}
                 />
                 <section className="h-60 overflow-y-auto">
                   {results.length === 0 && (
@@ -121,12 +164,16 @@ export default function SearchBar({ mdxLinks }: Props) {
                       No results found.
                     </p>
                   )}
-                  {results.map((result) => (
+                  {results.map((result, index) => (
                     <div key={result.path} className="my-2">
                       <Button
                         as={Link}
                         href={result.path}
-                        className="w-full justify-start"
+                        className={`w-full justify-start ${
+                          index === highlightedIndex
+                            ? "bg-primary text-white"
+                            : ""
+                        }`}
                         onPress={() => {
                           handleCloseModal();
                           onClose();
