@@ -2,7 +2,14 @@ import type { Metadata } from "next";
 
 import { Geist, Geist_Mono } from "next/font/google";
 import { getMdxLinks } from "@/lib/mdx";
-import { Navigation, Sidebar, TableContents } from "@/components/ui";
+import {
+  BackToTop,
+  DocumentNavigation,
+  Navigation,
+  NavigationTrail,
+  Sidebar,
+  TableContents,
+} from "@/components/ui";
 import { PROJECT_NAME } from "@/config/constants";
 import Providers from "./providers";
 
@@ -63,8 +70,16 @@ export default function RootLayout({ children }: Props) {
               topics={topics}
               communities={communities}
             />
-            <div className="mt-6 w-full max-w-screen-md min-w-0 px-1 md:px-6">
+            <div className="mt-16 w-full max-w-screen-md min-w-0 px-1 md:px-6">
+              <NavigationTrail />
               {children}
+              <DocumentNavigation
+                tutorials={tutorials}
+                apiGuides={apiGuides}
+                topics={topics}
+                communities={communities}
+              />
+              <BackToTop />
             </div>
             <TableContents />
           </div>

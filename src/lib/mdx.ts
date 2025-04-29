@@ -61,7 +61,7 @@ export async function getMdxBySlug({ type, slug, prism = true }: Props) {
   };
 }
 
-export function getMdxLinks(type?: string): { path: string; title: string }[] {
+export function getMdxLinks(type?: string) {
   const basePath = path.join(process.cwd(), "src/content");
   if (!fs.existsSync(basePath)) {
     throw new Error(`Directory ${basePath} does not exist`);
