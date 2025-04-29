@@ -8,7 +8,6 @@ import {
   ModalContent,
   ModalBody,
   Button,
-  useDisclosure,
   Input,
   Kbd,
 } from "@heroui/react";
@@ -28,13 +27,20 @@ const searchMdx = (
 
 type Props = {
   mdxLinks: { title: string; path: string }[];
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  onOpen: () => void;
 };
 
-export default function SearchBar({ mdxLinks }: Props) {
+export default function SearchBar({
+  mdxLinks,
+  isOpen,
+  onOpenChange,
+  onOpen,
+}: Props) {
   const [query, setQuery] = useState<string>("");
   const [highlightedIndex, setHighlightedIndex] = useState<number>(0);
   const router = useRouter();
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const results = searchMdx(query, mdxLinks);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -58,7 +64,6 @@ export default function SearchBar({ mdxLinks }: Props) {
 
   const handleOpenChange = (open: boolean) => {
     if (!open) handleCloseModal();
-    // @ts-expect-error - TS doesn't know about onOpenChange
     onOpenChange(open);
   };
 
@@ -165,13 +170,14 @@ export default function SearchBar({ mdxLinks }: Props) {
                     </p>
                   )}
                   {results.map((result, index) => (
-                    <div key={result.path} className="my-2">
+                    <div key={result.path} className="my-2 pr-2">
                       <Button
                         as={Link}
+                        variant="light"
                         href={result.path}
                         className={`w-full justify-start ${
                           index === highlightedIndex
-                            ? "bg-primary text-white"
+                            ? "bg-white text-neutral-dark"
                             : ""
                         }`}
                         onPress={() => {
