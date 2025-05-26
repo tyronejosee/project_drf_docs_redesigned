@@ -1,20 +1,21 @@
-import type { Metadata } from "next";
-
 import { Geist, Geist_Mono } from "next/font/google";
+
 import { getMdxLinks } from "@/lib/mdx";
 import {
   BackToTop,
   DocumentNavigation,
   Navigation,
   NavigationTrail,
+  ScrollProgress,
   Sidebar,
   TableContents,
 } from "@/components/ui";
 import { PROJECT_NAME } from "@/config/constants";
 import Providers from "./providers";
-
 import "./globals.css";
 import "prismjs/themes/prism-tomorrow.css";
+
+import type { Metadata } from "next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -79,6 +80,7 @@ export default function RootLayout({ children }: Props) {
                 topics={topics}
                 communities={communities}
               />
+              <ScrollProgress />
               <BackToTop />
             </div>
             <TableContents />

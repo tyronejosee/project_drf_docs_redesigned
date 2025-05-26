@@ -75,7 +75,7 @@ export default function SearchBar({
           ref={inputRef}
           type="text"
           size="sm"
-          radius="lg"
+          radius="sm"
           placeholder="Type to search..."
           startContent={
             <SearchIcon
