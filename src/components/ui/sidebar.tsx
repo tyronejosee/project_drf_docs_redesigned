@@ -45,7 +45,7 @@ export default function Sidebar({
                     className={`text-sm pl-4 py-1 ${
                       isActive(tutorial.path)
                         ? "text-white border-l border-primary"
-                        : "text-neutral-500 border-l border-neutral-800"
+                        : "text-neutral-500 border-l border-neutral-800 hover:text-white"
                     }`}
                   >
                     {tutorial.title}
@@ -67,7 +67,7 @@ export default function Sidebar({
                     className={`text-sm pl-4 py-1 ${
                       isActive(apiGuide.path)
                         ? "text-white border-l border-primary"
-                        : "text-neutral-500 border-l border-neutral-800"
+                        : "text-neutral-500 border-l border-neutral-800 hover:text-white"
                     }`}
                   >
                     {apiGuide.title}
@@ -89,7 +89,7 @@ export default function Sidebar({
                     className={`text-sm pl-4 py-1 ${
                       isActive(topic.path)
                         ? "text-white border-l border-primary"
-                        : "text-neutral-500 border-l border-neutral-800"
+                        : "text-neutral-500 border-l border-neutral-800 hover:text-white"
                     }`}
                   >
                     {topic.title}
@@ -111,7 +111,7 @@ export default function Sidebar({
                     className={`text-sm pl-4 py-1 ${
                       isActive(community.path)
                         ? "text-white border-l border-primary"
-                        : "text-neutral-500 border-l border-neutral-800"
+                        : "text-neutral-500 border-l border-neutral-800 hover:text-white"
                     }`}
                   >
                     {community.title}

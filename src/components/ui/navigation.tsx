@@ -15,10 +15,11 @@ import {
   AccordionItem,
   useDisclosure,
 } from "@heroui/react";
-import { Menu, Search, X } from "lucide-react";
+import { HeartHandshake, Menu, Search, X } from "lucide-react";
 import { GitHubIcon, Logo } from "@/components/icons";
 import { SearchBar } from "@/components/ui";
 import { PROJECT_NAME_SHORT } from "@/config/constants";
+import { headerNavigation } from "@/config/navigation";
 
 type NavigationProps = {
   mdxLinks: { title: string; path: string }[];
@@ -181,6 +182,23 @@ export default function Navigation({
               </span>
             </NavbarBrand>
           </Link>
+          {headerNavigation.map((item, idx) => {
+            const isActive = pathname.startsWith(
+              item.path.split("/").slice(0, 2).join("/")
+            );
+
+            return (
+              <Link
+                key={idx}
+                href={item.path}
+                className={`hidden md:block text-sm hover:text-white ${
+                  isActive ? "text-white font-medium" : "text-neutral-500"
+                }`}
+              >
+                {item.title}
+              </Link>
+            );
+          })}
         </NavbarContent>
 
         <NavbarContent justify="end">
@@ -196,7 +214,17 @@ export default function Navigation({
               <Search size={20} />
             </Button>
           </NavbarItem>
-          <NavbarItem className="hidden sm:flex">
+          <NavbarItem className="hidden sm:flex gap-2">
+            <Button
+              as={Link}
+              href="https://github.com/tyronejosee/project_drf_docs_redesigned"
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="light"
+              size="sm"
+              startContent={<HeartHandshake className="w-4 h-4" />}
+              isIconOnly
+            ></Button>
             <SearchBar
               mdxLinks={mdxLinks}
               isOpen={isOpen}
