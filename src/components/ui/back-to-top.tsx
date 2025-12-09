@@ -6,7 +6,7 @@ import {
   AnimatePresence,
   useScroll,
   useMotionValueEvent,
-} from "framer-motion";
+} from "motion/react";
 import { Button } from "@heroui/button";
 import { ChevronUp } from "lucide-react";
 
