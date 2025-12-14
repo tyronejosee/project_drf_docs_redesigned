@@ -1,0 +1,273 @@
+---
+title: "T4: Autenticación y Permisos"
+keywords: ["django", "rest", "framework", "api", "autenticación", "permisos"]
+order: 5
+---
+
+# Tutorial 4: Autenticación y Permisos
+
+Actualmente, nuestra API no tiene restricciones sobre quién puede editar o eliminar fragmentos de código. Nos gustaría tener un comportamiento más avanzado para asegurar que:
+
+- Los fragmentos de código siempre estén asociados a un creador.
+- Solo los usuarios autenticados puedan crear fragmentos.
+- Solo el creador de un fragmento pueda actualizarlo o eliminarlo.
+- Las solicitudes no autenticadas tengan acceso de solo lectura completo.
+
+## Añadiendo información a nuestro modelo
+
+Vamos a hacer un par de cambios a nuestra clase de modelo `Snippet`.
+Primero, añadamos un par de campos. Uno de estos campos se usará para representar al usuario que creó el fragmento de código. El otro campo se utilizará para almacenar la representación HTML resaltada del código.
+
+Añade los siguientes dos campos al modelo `Snippet` en `models.py`:
+
+```python
+owner = models.ForeignKey('auth.User', related_name='snippets', on_delete=models.CASCADE)
+highlighted = models.TextField()
+```
+
+También necesitamos asegurarnos de que cuando se guarde el modelo, se rellene el campo `highlighted` usando la biblioteca de resaltado de código `pygments`.
+
+Necesitaremos algunas importaciones adicionales:
+
+```python
+from pygments.lexers import get_lexer_by_name
+from pygments.formatters.html import HtmlFormatter
+from pygments import highlight
+```
+
+Y ahora podemos añadir un método `.save()` a nuestra clase de modelo:
+
+```python
+def save(self, *args, **kwargs):
+    """
+    Usa la biblioteca `pygments` para crear una representación HTML
+    resaltada del fragmento de código.
+    """
+    lexer = get_lexer_by_name(self.language)
+    linenos = 'table' if self.linenos else False
+    options = {'title': self.title} if self.title else {}
+    formatter = HtmlFormatter(style=self.style, linenos=linenos,
+                                full=True, **options)
+    self.highlighted = highlight(self.code, lexer, formatter)
+    super().save(*args, **kwargs)
+```
+
+Una vez hecho esto, necesitaremos actualizar nuestras tablas de base de datos.
+Normalmente crearíamos una migración de base de datos para hacer esto, pero para los propósitos de este tutorial, simplemente eliminemos la base de datos y empecemos de nuevo.
+
+```bash
+rm -f db.sqlite3
+rm -r snippets/migrations
+python manage.py makemigrations snippets
+python manage.py migrate
+```
+
+También podrías querer crear algunos usuarios diferentes para probar la API. La forma más rápida de hacerlo es con el comando `createsuperuser`.
+
+```bash
+python manage.py createsuperuser
+```
+
+## Añadiendo endpoints para nuestros modelos de Usuario
+
+Ahora que tenemos algunos usuarios con los que trabajar, es mejor agregar representaciones de esos usuarios a nuestra API. Crear un nuevo serializador es fácil. En `serializers.py` agrega:
+
+```python
+from django.contrib.auth.models import User
+
+class UserSerializer(serializers.ModelSerializer):
+    snippets = serializers.PrimaryKeyRelatedField(many=True, queryset=Snippet.objects.all())
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'snippets']
+```
+
+Dado que `'snippets'` es una relación _inversa_ en el modelo User, no se incluirá por defecto al usar la clase `ModelSerializer`, por lo que necesitamos agregar un campo explícito para ella.
+
+También agregaremos un par de vistas a `views.py`. Queremos usar vistas de solo lectura para las representaciones de usuario, por lo que usaremos las vistas genéricas basadas en clases `ListAPIView` y `RetrieveAPIView`.
+
+```python
+from django.contrib.auth.models import User
+
+
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class UserDetail(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+```
+
+Asegúrate de importar también la clase `UserSerializer`:
+
+```python
+from snippets.serializers import UserSerializer
+```
+
+Finalmente, necesitamos agregar estas vistas a la API, haciendo referencia a ellas desde la configuración de URL. Agrega lo siguiente a los patrones en `snippets/urls.py`:
+
+```python
+path('users/', views.UserList.as_view()),
+path('users/<int:pk>/', views.UserDetail.as_view()),
+```
+
+## Asociando Fragmentos con Usuarios
+
+En este momento, si creáramos un fragmento de código, no habría forma de asociar al usuario que lo creó con la instancia del fragmento. El usuario no se envía como parte de la representación serializada, sino que es una propiedad de la solicitud entrante.
+
+La forma en que manejamos esto es sobrescribiendo un método `.perform_create()` en nuestras vistas de fragmentos, lo que nos permite modificar cómo se gestiona el guardado de la instancia y manejar cualquier información que esté implícita en la solicitud entrante o en la URL solicitada.
+
+En la clase de vista `SnippetList`, agrega el siguiente método:
+
+```python
+def perform_create(self, serializer):
+    serializer.save(owner=self.request.user)
+```
+
+Ahora, al método `create()` de nuestro serializador se le pasará un campo adicional `'owner'`, junto con los datos validados de la solicitud.
+
+## Actualizando nuestro serializador
+
+Ahora que los fragmentos están asociados con el usuario que los creó, actualicemos nuestro `SnippetSerializer` para reflejar eso. Agrega el siguiente campo a la definición del serializador en `serializers.py`:
+
+```python
+owner = serializers.ReadOnlyField(source='owner.username')
+```
+
+**Nota**: Asegúrate de agregar también `'owner',` a la lista de campos en la clase `Meta` interna.
+
+Este campo está haciendo algo bastante interesante. El argumento `source` controla qué atributo se utiliza para poblar un campo y puede apuntar a cualquier atributo en la instancia serializada. También puede tomar la notación de puntos que se muestra arriba, en cuyo caso recorrerá los atributos dados, de manera similar a como se usa con el lenguaje de plantillas de Django.
+
+El campo que hemos añadido es la clase `ReadOnlyField` sin tipo, en contraste con otros campos tipados como `CharField`, `BooleanField`, etc. El `ReadOnlyField` sin tipo siempre es de solo lectura y se utilizará para representaciones serializadas, pero no se utilizará para actualizar instancias de modelo cuando se deserialicen. También podríamos haber usado `CharField(read_only=True)` aquí.
+
+## Añadiendo permisos requeridos a las vistas
+
+Ahora que los fragmentos de código están asociados con usuarios, queremos asegurarnos de que solo los usuarios autenticados puedan crear, actualizar y eliminar fragmentos de código.
+
+El framework REST incluye varias clases de permisos que podemos usar para restringir quién puede acceder a una vista determinada. En este caso, la que buscamos es `IsAuthenticatedOrReadOnly`, que garantizará que las solicitudes autenticadas obtengan acceso de lectura-escritura, mientras que las solicitudes no autenticadas solo tendrán acceso de lectura.
+
+Primero, agrega la siguiente importación en el módulo de vistas:
+
+```python
+from rest_framework import permissions
+```
+
+Luego, agrega la siguiente propiedad a **ambas** clases de vista `SnippetList` y `SnippetDetail`:
+
+```python
+permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+```
+
+## Añadiendo inicio de sesión a la API navegable
+
+Si abres un navegador y navegas a la API navegable en este momento, notarás que ya no puedes crear nuevos fragmentos de código. Para hacerlo, necesitamos poder iniciar sesión como usuario.
+
+Podemos agregar una vista de inicio de sesión para usar con la API navegable editando la configuración de URL en nuestro archivo `urls.py` a nivel de proyecto.
+
+Agrega la siguiente importación al principio del archivo:
+
+```python
+from django.urls import path, include
+```
+
+Y, al final del archivo, agrega un patrón para incluir las vistas de inicio y cierre de sesión para la API navegable:
+
+```python
+urlpatterns += [
+    path('api-auth/', include('rest_framework.urls')),
+]
+```
+
+La parte `'api-auth/'` del patrón puede ser cualquier URL que desees utilizar.
+
+Ahora, si abres el navegador nuevamente y actualizas la página, verás un enlace 'Iniciar sesión' en la esquina superior derecha. Si inicias sesión como uno de los usuarios que creaste anteriormente, podrás crear fragmentos de código nuevamente.
+
+Una vez que hayas creado algunos fragmentos de código, navega al punto final '/users/' y observa que la representación incluye una lista de los IDs de fragmentos asociados con cada usuario en el campo 'snippets' de cada usuario.
+
+## Permisos a nivel de objeto
+
+Realmente nos gustaría que todos los fragmentos de código fueran visibles para cualquiera, pero también asegurarnos de que solo el usuario que creó un fragmento de código pueda actualizarlo o eliminarlo.
+
+Para hacer eso, necesitaremos crear un permiso personalizado.
+
+En la aplicación snippets, crea un nuevo archivo `permissions.py`:
+
+```python
+from rest_framework import permissions
+
+
+class IsOwnerOrReadOnly(permissions.BasePermission):
+    """
+    Permiso personalizado para permitir que solo los propietarios de un objeto puedan editarlo.
+    """
+
+    def has_object_permission(self, request, view, obj):
+        # Los permisos de lectura están permitidos para cualquier solicitud,
+        # por lo que siempre permitiremos solicitudes GET, HEAD o OPTIONS.
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        # Los permisos de escritura solo están permitidos para el propietario del fragmento.
+        return obj.owner == request.user
+```
+
+Ahora podemos agregar ese permiso personalizado a nuestro punto final de instancia de fragmento, editando la propiedad `permission_classes` en la clase de vista `SnippetDetail`:
+
+```python
+permission_classes = [permissions.IsAuthenticatedOrReadOnly,
+                     IsOwnerOrReadOnly]
+```
+
+Asegúrate de importar también la clase `IsOwnerOrReadOnly`:
+
+```python
+from snippets.permissions import IsOwnerOrReadOnly
+```
+
+Ahora, si abres un navegador nuevamente, encontrarás que las acciones 'ELIMINAR' y 'ACTUALIZAR' solo aparecen en un punto final de instancia de fragmento si has iniciado sesión como el mismo usuario que creó el fragmento de código.
+
+## Autenticación con la API
+
+Dado que ahora tenemos un conjunto de permisos en la API, necesitamos autenticar nuestras solicitudes si queremos editar algún fragmento. No hemos configurado ninguna [clase de autenticación][authentication], por lo que actualmente se aplican los valores predeterminados, que son `SessionAuthentication` y `BasicAuthentication`.
+
+Cuando interactuamos con la API a través del navegador web, podemos iniciar sesión y la sesión del navegador proporcionará la autenticación necesaria para las solicitudes.
+
+Si estamos interactuando con la API mediante programación, necesitamos proporcionar explícitamente las credenciales de autenticación en cada solicitud.
+
+Si intentamos crear un fragmento sin autenticarnos, obtendremos un error:
+
+```bash
+http POST http://127.0.0.1:8000/snippets/ code="print(123)"
+
+{
+    "detail": "No se proporcionaron las credenciales de autenticación."
+}
+```
+
+Podemos hacer una solicitud exitosa incluyendo el nombre de usuario y la contraseña de uno de los usuarios que creamos anteriormente:
+
+```bash
+http -a admin:contraseña123 POST http://127.0.0.1:8000/snippets/ code="print(789)"
+
+{
+    "id": 1,
+    "owner": "admin",
+    "title": "ejemplo",
+    "code": "print(789)",
+    "linenos": false,
+    "language": "python",
+    "style": "friendly"
+}
+```
+
+## Resumen
+
+Ahora tenemos un conjunto bastante detallado de permisos en nuestra API web, y puntos finales para los usuarios del sistema y para los fragmentos de código que han creado.
+
+En la [parte 5][tut-5] del tutorial, veremos cómo podemos unir todo creando un punto final HTML para nuestros fragmentos resaltados y mejoraremos la cohesión de nuestra API utilizando hipervínculos para las relaciones dentro del sistema.
+
+[authentication]: ../api-guide/authentication.md
+[tut-5]: 5-relationships-and-hyperlinked-apis.md

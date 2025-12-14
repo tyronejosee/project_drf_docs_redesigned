@@ -8,8 +8,10 @@ type HeadingsState = {
   clearHeadings: () => void;
 };
 
-export const useHeadingsStore = create<HeadingsState>((set) => ({
+const useHeadingsStore = create<HeadingsState>((set) => ({
   headings: [],
   setHeadings: (headings) => set({ headings }),
   clearHeadings: () => set({ headings: [] }),
 }));
+
+export { useHeadingsStore };

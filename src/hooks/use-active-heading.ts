@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-export default function useActiveHeading(headings: { id: string }[]) {
+function useActiveHeading(headings: { id: string }[]): string | null {
   const [activeId, setActiveId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -40,3 +40,5 @@ export default function useActiveHeading(headings: { id: string }[]) {
 
   return activeId;
 }
+
+export { useActiveHeading };

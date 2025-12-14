@@ -1,21 +1,12 @@
+import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
-import { getMdxLinks } from "@/lib/mdx";
-import {
-  BackToTop,
-  DocumentNavigation,
-  Navigation,
-  NavigationTrail,
-  ScrollProgress,
-  Sidebar,
-  TableContents,
-} from "@/components/ui";
 import { PROJECT_NAME } from "@/config/constants";
-import Providers from "./providers";
-import "./globals.css";
-import "prismjs/themes/prism-tomorrow.css";
+import { defaultLocale } from "@/config/i18n";
 
-import type { Metadata } from "next";
+import "prismjs/themes/prism-tomorrow.css";
+import "./globals.css";
+import { Providers } from "./providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,53 +30,24 @@ export const metadata: Metadata = {
   robots: {},
 };
 
-type Props = {
+type RootLayoutProps = {
   children: Readonly<React.ReactNode>;
+  params: Promise<{ locale?: string }>;
 };
 
-export default function RootLayout({ children }: Props) {
-  const tutorials = getMdxLinks("tutorial");
-  const apiGuides = getMdxLinks("api-guide");
-  const topics = getMdxLinks("topics");
-  const communities = getMdxLinks("community");
-
-  const allMdxLinks = [...tutorials, ...apiGuides, ...topics, ...communities];
+export default async function RootLayout({
+  children,
+  params,
+}: RootLayoutProps) {
+  const { locale: localeParam } = await params;
+  const locale = localeParam || defaultLocale;
 
   return (
-    <html lang="en" className="dark">
+    <html lang={locale} className="dark">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Providers>
-          <Navigation
-            mdxLinks={allMdxLinks}
-            tutorials={tutorials}
-            apiGuides={apiGuides}
-            topics={topics}
-            communities={communities}
-          />
-          <div className="relative mx-auto max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
-            <Sidebar
-              tutorials={tutorials}
-              apiGuides={apiGuides}
-              topics={topics}
-              communities={communities}
-            />
-            <div className="mt-16 w-full max-w-screen-md min-w-0 px-1 md:px-6">
-              <NavigationTrail />
-              {children}
-              <DocumentNavigation
-                tutorials={tutorials}
-                apiGuides={apiGuides}
-                topics={topics}
-                communities={communities}
-              />
-              <ScrollProgress />
-              <BackToTop />
-            </div>
-            <TableContents />
-          </div>
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-export function generateMdxStaticParams(contentType: string) {
+function generateMdxStaticParams(contentType: string): { slug: string }[] {
   const contentDir = path.join(process.cwd(), `src/content/${contentType}`);
 
   try {
@@ -16,3 +16,5 @@ export function generateMdxStaticParams(contentType: string) {
     return [];
   }
 }
+
+export { generateMdxStaticParams };

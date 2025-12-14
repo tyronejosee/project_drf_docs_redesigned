@@ -1,0 +1,247 @@
+---
+title: "Inicio Rápido"
+keywords: ["django", "rest", "framework", "inicio rápido"]
+order: 1
+---
+
+# Inicio Rápido
+
+Vamos a crear una API simple que permita a los usuarios administradores ver y editar los usuarios y grupos del sistema.
+
+## Configuración del Proyecto
+
+Crea un nuevo proyecto de Django llamado `tutorial` y luego inicia una nueva aplicación llamada `quickstart`.
+
+```bash
+# Crear el directorio del proyecto
+mkdir tutorial
+cd tutorial
+
+# Crear un entorno virtual para aislar las dependencias
+python3 -m venv env
+source env/bin/activate  # En Windows usa `env\Scripts\activate`
+
+# Instalar Django y Django REST framework en el entorno virtual
+pip install djangorestframework
+
+# Configurar un nuevo proyecto con una sola aplicación
+django-admin startproject tutorial .  # Nota el '.' al final
+cd tutorial
+django-admin startapp quickstart
+cd ..
+```
+
+La estructura del proyecto debería verse así:
+
+```txt
+<ruta cualquiera>/tutorial
+├── manage.py
+├── env
+│   └── ...
+└── tutorial
+    ├── __init__.py
+    ├── asgi.py
+    ├── settings.py
+    ├── urls.py
+    ├── wsgi.py
+    └── quickstart
+        ├── __init__.py
+        ├── admin.py
+        ├── apps.py
+        ├── models.py
+        ├── tests.py
+        ├── views.py
+        └── migrations
+            └── __init__.py
+```
+
+Puede parecer inusual que la aplicación se haya creado dentro del directorio del proyecto. Usar el espacio de nombres del proyecto evita conflictos con módulos externos (un tema que va más allá del alcance de esta guía rápida).
+
+Ahora sincroniza tu base de datos por primera vez:
+
+```bash
+python manage.py migrate
+```
+
+También crearemos un usuario inicial llamado `admin` con una contraseña. Nos autenticaremos como este usuario más adelante en nuestro ejemplo.
+
+```bash
+python manage.py createsuperuser --username admin --email admin@example.com
+```
+
+Una vez que hayas configurado la base de datos y el usuario inicial esté creado y listo, abre el directorio de la aplicación y comenzaremos a programar...
+
+## Serializadores
+
+Primero, vamos a definir algunos serializadores. Creemos un nuevo módulo llamado `tutorial/quickstart/serializers.py` que usaremos para nuestras representaciones de datos.
+
+```python
+from django.contrib.auth.models import Group, User
+from rest_framework import serializers
+
+
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = ['url', 'username', 'email', 'groups']
+
+
+class GroupSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Group
+        fields = ['url', 'name']
+```
+
+Observa que estamos usando relaciones hipervinculadas en este caso con `HyperlinkedModelSerializer`. También podrías usar claves primarias y varios otros tipos de relaciones, pero el uso de hipervínculos es una buena práctica en el diseño RESTful.
+
+## Vistas
+
+Muy bien, es hora de escribir algunas vistas. Abre `tutorial/quickstart/views.py` y comencemos a escribir.
+
+```python
+from django.contrib.auth.models import Group, User
+from rest_framework import permissions, viewsets
+
+from tutorial.quickstart.serializers import GroupSerializer, UserSerializer
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    Punto final de la API que permite ver o editar usuarios.
+    """
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class GroupViewSet(viewsets.ModelViewSet):
+    """
+    Punto final de la API que permite ver o editar grupos.
+    """
+    queryset = Group.objects.all().order_by('name')
+    serializer_class = GroupSerializer
+    permission_classes = [permissions.IsAuthenticated]
+```
+
+En lugar de escribir múltiples vistas, estamos agrupando todo el comportamiento común en clases llamadas `ViewSets`.
+
+Si es necesario, podemos desglosarlas fácilmente en vistas individuales, pero el uso de viewsets mantiene la lógica de las vistas bien organizada y muy concisa.
+
+## URLs
+
+Bien, ahora vamos a configurar las URLs de la API. Vamos a `tutorial/urls.py`...
+
+```python
+from django.urls import include, path
+from rest_framework import routers
+
+from tutorial.quickstart import views
+
+router = routers.DefaultRouter()
+router.register(r'users', views.UserViewSet)
+router.register(r'groups', views.GroupViewSet)
+
+# Conectamos nuestra API usando el enrutamiento automático de URLs.
+# Además, incluimos las URLs de inicio de sesión para la API navegable.
+urlpatterns = [
+    path('', include(router.urls)),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+]
+```
+
+Como estamos usando viewsets en lugar de vistas normales, podemos generar automáticamente la configuración de URLs para nuestra API simplemente registrando los viewsets con una clase enrutadora.
+
+Nuevamente, si necesitamos más control sobre las URLs de la API, podemos optar por usar vistas basadas en clases normales y escribir la configuración de URLs de manera explícita.
+
+Finalmente, estamos incluyendo las vistas de inicio y cierre de sesión predeterminadas para usar con la API navegable. Esto es opcional, pero es útil si tu API requiere autenticación y deseas utilizar la interfaz navegable.
+
+## Paginación
+
+La paginación te permite controlar cuántos objetos se devuelven por página. Para habilitarla, añade las siguientes líneas en `tutorial/settings.py`:
+
+```python
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
+```
+
+## Configuración
+
+Añade `'rest_framework'` a `INSTALLED_APPS`. El módulo de configuración está en `tutorial/settings.py`:
+
+```python
+INSTALLED_APPS = [
+    ...
+    'rest_framework',
+]
+```
+
+¡Perfecto, hemos terminado!
+
+---
+
+## Probando nuestra API
+
+Ahora estamos listos para probar la API que hemos construido. Iniciemos el servidor desde la línea de comandos.
+
+```bash
+python manage.py runserver
+```
+
+Ahora podemos acceder a nuestra API tanto desde la línea de comandos, usando herramientas como `curl`...
+
+```bash
+bash: curl -u admin -H 'Accept: application/json; indent=4' http://127.0.0.1:8000/users/
+Ingrese la contraseña para el usuario 'admin':
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "url": "http://127.0.0.1:8000/users/1/",
+            "username": "admin",
+            "email": "admin@example.com",
+            "groups": []
+        }
+    ]
+}
+```
+
+O usando la herramienta de línea de comandos [httpie][httpie]...
+
+```bash
+bash: http -a admin http://127.0.0.1:8000/users/
+http: contraseña para admin@127.0.0.1:8000::
+$HTTP/1.1 200 OK
+...
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "email": "admin@example.com",
+            "groups": [],
+            "url": "http://127.0.0.1:8000/users/1/",
+            "username": "admin"
+        }
+    ]
+}
+```
+
+O directamente a través del navegador, yendo a la URL `http://127.0.0.1:8000/users/`...
+
+![Imagen de inicio rápido][image]
+
+Si estás trabajando a través del navegador, asegúrate de iniciar sesión usando el control en la esquina superior derecha.
+
+¡Excelente, eso fue fácil!
+
+Si deseas obtener una comprensión más profunda de cómo se integra el framework REST, dirígete al [tutorial][tutorial] o comienza a explorar la [guía de la API][guide].
+
+[image]: ../img/quickstart.png
+[tutorial]: 1-serialization.md
+[guide]: ../api-guide/requests.md
+[httpie]: https://httpie.io/docs#installation

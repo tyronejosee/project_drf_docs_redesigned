@@ -16,25 +16,25 @@ Includes contextual navigation, quick search (<code>Ctrl+K</code>), a dynamic ta
 
 <p align="center">
   <a href="https://www.typescriptlang.org/">
-    <img src="https://img.shields.io/badge/typescript-5.6-007ACC" alt="typescript-version">
+    <img src="https://img.shields.io/badge/typescript-5.9.3-007ACC" alt="typescript-version">
   </a>
   <a href="https://nextjs.org/">
-    <img src="https://img.shields.io/badge/nextjs-15.3.1-000000" alt="nextjs-version">
+    <img src="https://img.shields.io/badge/nextjs-16.0.10-000000" alt="nextjs-version">
   </a>
   <a href="https://react.dev/">
-    <img src="https://img.shields.io/badge/react-19.0.0-61DAFB" alt="react-version">
+    <img src="https://img.shields.io/badge/react-19.2.3-61DAFB" alt="react-version">
   </a>
   <a href="https://tailwindcss.com/">
     <img src="https://img.shields.io/badge/tailwindcss-3.4.13-38B2AC" alt="tailwind-version">
   </a>
   <a href="https://heroui.io/">
-    <img src="https://img.shields.io/badge/heroui-2.7.6-9333ea" alt="heroui-version">
+    <img src="https://img.shields.io/badge/heroui-2.8.5-9333ea" alt="heroui-version">
   </a>
   <a href="https://mdxjs.com/">
-    <img src="https://img.shields.io/badge/mdx-3.1.0-fcb32c" alt="mdx-version">
+    <img src="https://img.shields.io/badge/mdx-3.1.1-fcb32c" alt="mdx-version">
   </a>
   <a href="https://zustand-demo.pmnd.rs/">
-    <img src="https://img.shields.io/badge/zustand-5.0.3-ff8a65" alt="zustand-version">
+    <img src="https://img.shields.io/badge/zustand-5.0.9-ff8a65" alt="zustand-version">
   </a>
 </p>
 

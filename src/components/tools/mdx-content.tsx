@@ -1,11 +1,16 @@
 "use client";
 
-import type { MDXComponents } from "mdx/types";
-
-import { useMemo } from "react";
-import Link from "next/link";
 import { getMDXComponent } from "mdx-bundler/client";
-import { CodeBlock } from "@/components/tools";
+import type { MDXComponents } from "mdx/types";
+import Link from "next/link";
+import { useMemo } from "react";
+
+import { CodeBlock } from "@/components/tools/code-block";
+
+type MDXContentProps = {
+  code: string;
+  components?: MDXComponents;
+};
 
 const mdxComponents: MDXComponents = {
   a: ({ href = "", children, ...props }) =>
@@ -25,13 +30,9 @@ const mdxComponents: MDXComponents = {
   },
 };
 
-export default function MDXContent({
-  code,
-  components = mdxComponents,
-}: {
-  code: string;
-  components?: MDXComponents;
-}) {
+function MDXContent({ code, components = mdxComponents }: MDXContentProps) {
   const Component = useMemo(() => getMDXComponent(code), [code]);
   return <Component components={components} />;
 }
+
+export { MDXContent };

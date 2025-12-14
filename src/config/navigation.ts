@@ -1,18 +1,22 @@
-export const headerNavigation = [
+import type { MDXLink } from "@/types";
+
+const headerNavigation: MDXLink[] = [
   {
-    title: "Tutorial",
+    title: "tutorial",
     path: "/tutorial/quickstart",
   },
   {
-    title: "API Guide",
+    title: "apiGuide",
     path: "/api-guide/requests",
   },
   {
-    title: "Topics",
+    title: "topics",
     path: "/topics/documenting-your-api",
   },
   {
-    title: "Community",
+    title: "community",
     path: "/community/tutorials-and-resources",
   },
 ];
+
+export { headerNavigation };

@@ -1,0 +1,47 @@
+---
+title: "Trabajando con AJAX, CSRF y CORS"
+keywords: ["django", "rest", "framework", "api", "ajax", "csrf", "cors"]
+order: 3
+---
+
+# Trabajando con AJAX, CSRF y CORS
+
+> "Examina de cerca las posibles vulnerabilidades CSRF/XSRF en tus propios sitios web. Son el peor tipo de vulnerabilidad: muy fáciles de explotar por atacantes, pero no tan intuitivamente fáciles de entender para los desarrolladores de software, al menos hasta que te hayas visto afectado por una."
+>
+> &mdash; [Jeff Atwood][cite]
+
+## Clientes JavaScript
+
+Si estás construyendo un cliente JavaScript para interactuar con tu API web, deberás considerar si el cliente puede usar la misma política de autenticación que el resto del sitio web, y también determinar si necesitas usar tokens CSRF o cabeceras CORS.
+
+Las solicitudes AJAX que se realizan dentro del mismo contexto que la API con la que interactúan normalmente usarán `SessionAuthentication`. Esto asegura que una vez que un usuario haya iniciado sesión, cualquier solicitud AJAX pueda autenticarse utilizando la misma autenticación basada en sesión que se usa para el resto del sitio web.
+
+Las solicitudes AJAX que se realizan en un sitio diferente al de la API con la que se comunican normalmente necesitarán usar un esquema de autenticación que no sea basado en sesión, como `TokenAuthentication`.
+
+## Protección CSRF
+
+La protección contra [Falsificación de Petición en Sitios Cruzados (CSRF)][csrf] es un mecanismo que protege contra un tipo particular de ataque, que puede ocurrir cuando un usuario no ha cerrado la sesión en un sitio web y continúa teniendo una sesión válida. En estas circunstancias, un sitio malicioso podría realizar acciones contra el sitio objetivo dentro del contexto de la sesión iniciada.
+
+Para protegerte contra este tipo de ataques, necesitas hacer dos cosas:
+
+1. Asegurarte de que las operaciones HTTP 'seguras', como `GET`, `HEAD` y `OPTIONS` no puedan usarse para alterar ningún estado del servidor.
+2. Asegurarte de que cualquier operación HTTP 'insegura', como `POST`, `PUT`, `PATCH` y `DELETE`, siempre requiera un token CSRF válido.
+
+Si estás utilizando `SessionAuthentication`, deberás incluir tokens CSRF válidos para cualquier operación `POST`, `PUT`, `PATCH` o `DELETE`.
+
+Para realizar solicitudes AJAX, necesitas incluir el token CSRF en la cabecera HTTP, como se [describe en la documentación de Django][csrf-ajax].
+
+## CORS (Intercambio de Recursos de Origen Cruzado)
+
+[El Intercambio de Recursos de Origen Cruzado (CORS)][cors] es un mecanismo que permite a los clientes interactuar con APIs que están alojadas en un dominio diferente. CORS funciona requiriendo que el servidor incluya un conjunto específico de cabeceras que permiten al navegador determinar si y cuándo se deben permitir las solicitudes entre dominios.
+
+La mejor manera de manejar CORS en REST framework es agregar las cabeceras de respuesta necesarias en un middleware. Esto asegura que CORS sea compatible de forma transparente, sin tener que cambiar ningún comportamiento en tus vistas.
+
+[Adam Johnson][adamchainz] mantiene el paquete [django-cors-headers], que es conocido por funcionar correctamente con las APIs de REST framework.
+
+[cite]: https://blog.codinghorror.com/preventing-csrf-and-xsrf-attacks/
+[csrf]: https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)
+[csrf-ajax]: https://docs.djangoproject.com/en/stable/howto/csrf/#using-csrf-protection-with-ajax
+[cors]: https://www.w3.org/TR/cors/
+[adamchainz]: https://github.com/adamchainz
+[django-cors-headers]: https://github.com/adamchainz/django-cors-headers

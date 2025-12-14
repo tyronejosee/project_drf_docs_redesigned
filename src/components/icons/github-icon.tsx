@@ -1,8 +1,8 @@
-type Props = {
+type GitHubIconProps = {
   className?: string;
 };
 
-export default function GitHubIcon({ className }: Props) {
+function GitHubIcon({ className }: GitHubIconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -18,3 +18,5 @@ export default function GitHubIcon({ className }: Props) {
     </svg>
   );
 }
+
+export { GitHubIcon };

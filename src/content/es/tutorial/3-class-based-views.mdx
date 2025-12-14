@@ -1,0 +1,169 @@
+---
+title: "T3: Vistas Basadas en Clases"
+keywords:
+  ["django", "rest", "framework", "api", "vistas-basadas-en-clases", "vistas"]
+order: 4
+---
+
+# Tutorial 3: Vistas Basadas en Clases
+
+También podemos escribir nuestras vistas de API utilizando vistas basadas en clases, en lugar de vistas basadas en funciones. Como veremos, este es un patrón poderoso que nos permite reutilizar funcionalidad común y nos ayuda a mantener nuestro código [DRY][dry] (No Te Repitas).
+
+## Reescribiendo nuestra API usando vistas basadas en clases
+
+Comenzaremos reescribiendo la vista raíz como una vista basada en clase. Todo lo que esto implica es un poco de refactorización en `views.py`.
+
+```python
+from snippets.models import Snippet
+from snippets.serializers import SnippetSerializer
+from django.http import Http404
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+
+
+class SnippetList(APIView):
+    """
+    Lista todos los fragmentos o crea uno nuevo.
+    """
+    def get(self, request, format=None):
+        snippets = Snippet.objects.all()
+        serializer = SnippetSerializer(snippets, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = SnippetSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+```
+
+Hasta aquí todo bien. Se ve bastante similar al caso anterior, pero tenemos una mejor separación entre los diferentes métodos HTTP. También necesitaremos actualizar la vista de instancia en `views.py`.
+
+```python
+class SnippetDetail(APIView):
+    """
+    Recupera, actualiza o elimina una instancia de fragmento.
+    """
+    def get_object(self, pk):
+        try:
+            return Snippet.objects.get(pk=pk)
+        except Snippet.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        snippet = self.get_object(pk)
+        serializer = SnippetSerializer(snippet)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        snippet = self.get_object(pk)
+        serializer = SnippetSerializer(snippet, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        snippet = self.get_object(pk)
+        snippet.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+```
+
+Todo se ve bien. Nuevamente, sigue siendo bastante similar a la vista basada en funciones que teníamos antes.
+
+También necesitaremos refactorizar ligeramente nuestro `snippets/urls.py` ahora que estamos usando vistas basadas en clases.
+
+```python
+from django.urls import path
+from rest_framework.urlpatterns import format_suffix_patterns
+from snippets import views
+
+urlpatterns = [
+    path('snippets/', views.SnippetList.as_view()),
+    path('snippets/<int:pk>/', views.SnippetDetail.as_view()),
+]
+
+urlpatterns = format_suffix_patterns(urlpatterns)
+```
+
+Listo. Si ejecutas el servidor de desarrollo, todo debería funcionar exactamente igual que antes.
+
+## Usando mixins
+
+Una de las grandes ventajas de usar vistas basadas en clases es que nos permite componer fácilmente fragmentos reutilizables de comportamiento.
+
+Las operaciones de crear/recuperar/actualizar/eliminar que hemos estado usando hasta ahora serán bastante similares para cualquier vista de API respaldada por un modelo que creemos. Estos fragmentos de comportamiento común están implementados en las clases mixin del framework REST.
+
+Echemos un vistazo a cómo podemos componer las vistas usando las clases mixin. Aquí está nuestro módulo `views.py` nuevamente.
+
+```python
+from snippets.models import Snippet
+from snippets.serializers import SnippetSerializer
+from rest_framework import mixins
+from rest_framework import generics
+
+class SnippetList(mixins.ListModelMixin,
+                    mixins.CreateModelMixin,
+                    generics.GenericAPIView):
+    queryset = Snippet.objects.all()
+    serializer_class = SnippetSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+```
+
+Tomémonos un momento para examinar exactamente qué está sucediendo aquí. Estamos construyendo nuestra vista usando `GenericAPIView` y agregando `ListModelMixin` y `CreateModelMixin`.
+
+La clase base proporciona la funcionalidad central, y las clases mixin proporcionan las acciones `.list()` y `.create()`. Luego, estamos vinculando explícitamente los métodos `get` y `post` a las acciones apropiadas. Hasta ahora, todo bastante sencillo.
+
+```python
+class SnippetDetail(mixins.RetrieveModelMixin,
+                    mixins.UpdateModelMixin,
+                    mixins.DestroyModelMixin,
+                    generics.GenericAPIView):
+    queryset = Snippet.objects.all()
+    serializer_class = SnippetSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+```
+
+Bastante similar. Nuevamente estamos usando la clase `GenericAPIView` para proporcionar la funcionalidad central, y agregando mixins para proporcionar las acciones `.retrieve()`, `.update()` y `.destroy()`.
+
+## Usando vistas genéricas basadas en clases
+
+Usando las clases mixin, hemos reescrito las vistas para usar un poco menos de código que antes, pero podemos ir un paso más allá. El framework REST proporciona un conjunto de vistas genéricas ya preparadas que podemos usar para reducir aún más nuestro módulo `views.py`.
+
+```python
+from snippets.models import Snippet
+from snippets.serializers import SnippetSerializer
+from rest_framework import generics
+
+
+class SnippetList(generics.ListCreateAPIView):
+    queryset = Snippet.objects.all()
+    serializer_class = SnippetSerializer
+
+
+class SnippetDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Snippet.objects.all()
+    serializer_class = SnippetSerializer
+```
+
+¡Vaya, eso es bastante conciso! Hemos obtenido una gran cantidad de funcionalidad de forma gratuita, y nuestro código se ve limpio y sigue las convenciones de Django.
+
+A continuación, pasaremos a la [parte 4 del tutorial][tut-4], donde veremos cómo podemos manejar la autenticación y los permisos para nuestra API.
+
+[dry]: https://es.wikipedia.org/wiki/No_te_repitas
+[tut-4]: 4-authentication-and-permissions.md

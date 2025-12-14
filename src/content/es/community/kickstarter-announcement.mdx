@@ -1,0 +1,1326 @@
+---
+title: "Kickstarter Django REST framework 3"
+keywords: ["django", "rest", "framework", "api", "kickstarter"]
+order: 23
+---
+
+# Kickstarting Django REST framework 3
+
+---
+
+<iframe
+  style={{ width: "480", height: "360" }}
+  width="480"
+  height="360"
+  src="https://www.kickstarter.com/projects/tomchristie/django-rest-framework-3/widget/video.html"
+></iframe>
+
+---
+
+In order to continue to drive the project forward, I'm launching a Kickstarter campaign to help fund the development of a major new release - Django REST framework 3.
+
+## Project details
+
+This new release will allow us to comprehensively address some of the shortcomings of the framework, and will aim to include the following:
+
+- Faster, simpler and easier-to-use serializers.
+- An alternative admin-style interface for the browsable API.
+- Search and filtering controls made accessible in the browsable API.
+- Alternative API pagination styles.
+- Documentation around API versioning.
+- Triage of outstanding tickets.
+- Improving the ongoing quality and maintainability of the project.
+
+Full details are available now on the [project page](https://www.kickstarter.com/projects/tomchristie/django-rest-framework-3).
+
+If you're interested in helping make sustainable open source development a reality please [visit the Kickstarter page](https://www.kickstarter.com/projects/tomchristie/django-rest-framework-3) and consider funding the project.
+
+I can't wait to see where this takes us!
+
+Many thanks to everyone for your support so far,
+
+Tom Christie ☺️
+
+---
+
+## Sponsors
+
+We've now blazed way past all our goals, with a staggering £30,000 (~$50,000), meaning I'll be in a position to work on the project significantly beyond what we'd originally planned for. I owe a huge debt of gratitude to all the wonderful companies and individuals who have been backing the project so generously, and making this possible.
+
+---
+
+### Platinum sponsors
+
+Our platinum sponsors have each made a hugely substantial contribution to the future development of Django REST framework, and I simply can't thank them enough.
+
+<ul className="list-none">
+  <li>
+    <a
+      href="https://www.eventbrite.com/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/0-eventbrite.png)",
+        display: "block",
+        height: "200px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Eventbrite
+    </a>
+  </li>
+</ul>
+
+<ul
+  style={{
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(80px, 1fr))",
+    gap: "1rem",
+    listStyle: "none",
+    padding: 0,
+    margin: 0,
+  }}
+>
+  <li>
+    <a
+      href="https://www.divio.com/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/1-divio.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Divio
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://onlulu.com"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/1-lulu.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Lulu
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://p.ota.to/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/1-potato.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Potato
+    </a>
+  </li>
+  <li>
+    <a
+      href="http://www.wiredrive.com/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/1-wiredrive.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Wiredrive
+    </a>
+  </li>
+  <li>
+    <a
+      href="http://www.cyaninc.com/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/1-cyan.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Cyan
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.runscope.com/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/1-runscope.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Runscope
+    </a>
+  </li>
+  <li>
+    <a
+      href="http://simpleenergy.com/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/1-simple-energy.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Simple Energy
+    </a>
+  </li>
+  <li>
+    <a
+      href="http://vokalinteractive.com/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/1-vokal_interactive.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      VOKAL Interactive
+    </a>
+  </li>
+  <li>
+    <a
+      href="http://www.purplebit.com/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/1-purplebit.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Purple Bit
+    </a>
+  </li>
+  <li>
+    <a
+      href="http://www.kuwaitnet.net/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/1-kuwaitnet.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      KuwaitNET
+    </a>
+  </li>
+</ul>
+
+<div style={{ clear: "both" }}></div>
+
+---
+
+### Gold sponsors
+
+Our gold sponsors include companies large and small. Many thanks for their significant funding of the project and their commitment to sustainable open-source development.
+
+<ul
+  style={{
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(80px, 1fr))",
+    gap: "1rem",
+    listStyle: "none",
+    padding: 0,
+    margin: 0,
+  }}
+>
+  <li>
+    <a
+      href="https://laterpay.net/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/2-laterpay.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      LaterPay
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.schubergphilis.com/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/2-schuberg_philis.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Schuberg Philis
+    </a>
+  </li>
+  <li>
+    <a
+      href="http://prorenata.se/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/2-prorenata.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      ProReNata AB
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.sgawebsites.com/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/2-sga.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      SGA Websites
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.sirono.com/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/2-sirono.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Sirono
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.vinta.com.br/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/2-vinta.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Vinta Software Studio
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.rapasso.nl/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/2-rapasso.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Rapasso
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://mirusresearch.com/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/2-mirus_research.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Mirus Research
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://hipolabs.com/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/2-hipo.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Hipo
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.byte.nl/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/2-byte.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Byte
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.lightningkite.com/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/2-lightning_kite.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Lightning Kite
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://opbeat.com/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/2-opbeat.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Opbeat
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://koordinates.com"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/2-koordinates.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Koordinates
+    </a>
+  </li>
+  <li>
+    <a
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/2-pulsecode.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Pulsecode Inc.
+    </a>
+  </li>
+  <li>
+    <a
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/2-singing-horse.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Singing Horse Studio Ltd.
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.heroku.com/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/2-heroku.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Heroku
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.rheinwerk-verlag.de/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/2-rheinwerk_verlag.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Rheinwerk Verlag
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.securitycompass.com/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/2-security_compass.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Security Compass
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.djangoproject.com/foundation/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/2-django.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Django Software Foundation
+    </a>
+  </li>
+  <li>
+    <a
+      href="http://www.hipflaskapp.com"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/2-hipflask.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Hipflask
+    </a>
+  </li>
+  <li>
+    <a
+      href="http://www.crate.io/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/2-crate.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Crate
+    </a>
+  </li>
+  <li>
+    <a
+      href="http://crypticocorp.com/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/2-cryptico.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Cryptico Corp
+    </a>
+  </li>
+  <li>
+    <a
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/2-nexthub.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      NextHub
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.compile.com/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/2-compile.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Compile
+    </a>
+  </li>
+  <li>
+    <a
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/2-wusawork.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      WusaWork
+    </a>
+  </li>
+  <li>
+    <a
+      href="http://envisionlinux.org/blog"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/2-envision_linux.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Envision Linux
+    </a>
+  </li>
+</ul>
+
+<div style={{ clear: "both", paddingBottom: "40px" }}></div>
+
+---
+
+### Silver sponsors
+
+The serious financial contribution that our silver sponsors have made is very much appreciated. I'd like to say a particular thank&nbsp;you to individuals who have chosen to privately support the project at this level.
+
+<ul
+  style={{
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(80px, 1fr))",
+    gap: "1rem",
+    listStyle: "none",
+    padding: 0,
+    margin: 0,
+  }}
+>
+  <li>
+    <a
+      href="https://www.imtapps.com/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/3-imt_computer_services.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      IMT Computer Services
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://wildfish.com/"
+      rel="nofollow"
+      style={{ backgroundImage: "url(../../img/sponsors/3-wildfish.png)",
+      display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      Wildfish
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.thermondo.de/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/3-thermondo-gmbh.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+
+      }}
+    >
+      Thermondo GmbH
+    </a>
+
+  </li>
+  <li>
+    <a
+      href="https://providenz.fr/"
+      rel="nofollow"
+      style={{ backgroundImage: "url(../../img/sponsors/3-providenz.png)",
+      display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      Providenz
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.alwaysdata.com"
+      rel="nofollow"
+      style={{ backgroundImage: "url(../../img/sponsors/3-alwaysdata.png)",
+      display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      alwaysdata.com
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.freshrelevance.com/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/3-triggered_messaging.png)",
+display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+
+      }}
+    >
+      Triggered Messaging
+    </a>
+
+  </li>
+  <li>
+    <a
+      href="https://www.ipushpull.com/"
+      rel="nofollow"
+      style={{ backgroundImage: "url(../../img/sponsors/3-ipushpull.png)",
+      display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      PushPull Technology Ltd
+    </a>
+  </li>
+  <li>
+    <a
+      href="http://www.transcode.de/"
+      rel="nofollow"
+      style={{ backgroundImage: "url(../../img/sponsors/3-transcode.png)",
+      display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      Transcode
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://garfo.io/"
+      rel="nofollow"
+      style={{ backgroundImage: "url(../../img/sponsors/3-garfo.png)",
+      display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      Garfo
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://goshippo.com/"
+      rel="nofollow"
+      style={{ backgroundImage: "url(../../img/sponsors/3-shippo.png)",
+      display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      Shippo
+    </a>
+  </li>
+  <li>
+    <a
+      href="http://www.gizmag.com/"
+      rel="nofollow"
+      style={{ backgroundImage: "url(../../img/sponsors/3-gizmag.png)",
+      display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      Gizmag
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.tivix.com/"
+      rel="nofollow"
+      style={{ backgroundImage: "url(../../img/sponsors/3-tivix.png)",
+      display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      Tivix
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.safaribooksonline.com/"
+      rel="nofollow"
+      style={{ backgroundImage: "url(../../img/sponsors/3-safari.png)",
+      display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      Safari
+    </a>
+  </li>
+  <li>
+    <a
+      href="http://brightloop.com/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/3-brightloop.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      Bright Loop
+    </a>
+  </li>
+  <li>
+    <a
+      href="http://www.aba-systems.com.au/"
+      rel="nofollow"
+      style={{ backgroundImage: "url(../../img/sponsors/3-aba.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      ABA Systems
+    </a>
+  </li>
+  <li>
+    <a
+      href="http://beefarm.ru/"
+      rel="nofollow"
+      style={{ backgroundImage: "url(../../img/sponsors/3-beefarm.png)",
+      display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      beefarm.ru
+    </a>
+  </li>
+  <li>
+    <a
+      href="http://www.vzzual.com/"
+      rel="nofollow"
+      style={{ backgroundImage: "url(../../img/sponsors/3-vzzual.png)",
+      display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      Vzzual.com
+    </a>
+  </li>
+  <li>
+    <a
+      href="http://infinite-code.com/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/3-infinite_code.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      Infinite Code
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://crosswordtracker.com/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/3-crosswordtracker.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Crossword Tracker
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.pkgfarm.com/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/3-pkgfarm.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      PkgFarm
+    </a>
+  </li>
+  <li>
+    <a
+      href="http://life.tl/"
+      rel="nofollow"
+      style={{ backgroundImage: "url(../../img/sponsors/3-life_the_game.png)",
+      display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      Life. The Game.
+    </a>
+  </li>
+  <li>
+    <a
+      href="http://blimp.io/"
+      rel="nofollow"
+      style={{ backgroundImage: "url(../../img/sponsors/3-blimp.png)",
+      display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      Blimp
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.pathwright.com/"
+      rel="nofollow"
+      style={{ backgroundImage: "url(../../img/sponsors/3-pathwright.png)",
+      display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      Pathwright
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://fluxility.com/"
+      rel="nofollow"
+      style={{
+        backgroundImage: "url(../../img/sponsors/3-fluxility.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      Fluxility
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://teonite.com/"
+      rel="nofollow"
+      style={{ backgroundImage: "url(../../img/sponsors/3-teonite.png)",
+      display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      Teonite
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://trackmaven.com/"
+      rel="nofollow"
+      style={{ backgroundImage: "url(../../img/sponsors/3-trackmaven.png)",
+      display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      TrackMaven
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.phurba.net/"
+      rel="nofollow"
+      style={{ backgroundImage: "url(../../img/sponsors/3-phurba.png)",
+      display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      Phurba
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.nephila.it/it/"
+      rel="nofollow"
+      style={{ backgroundImage: "url(../../img/sponsors/3-nephila.png)",
+      display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      Nephila
+    </a>
+  </li>
+  <li>
+    <a
+      href="http://www.aditium.com/"
+      rel="nofollow"
+      style={{ backgroundImage: "url(../../img/sponsors/3-aditium.png)",
+      display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      Aditium
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.eyesopen.com/"
+      rel="nofollow"
+      style={{ backgroundImage: "url(../../img/sponsors/3-openeye.png)",
+      display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      OpenEye Scientific Software
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://holvi.com/"
+      rel="nofollow"
+      style={{ backgroundImage: "url(../../img/sponsors/3-holvi.png)",
+      display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      Holvi
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.cantemo.com/"
+      rel="nofollow"
+      style={{ backgroundImage: "url(../../img/sponsors/3-cantemo.gif)",
+      display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      Cantemo
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.makespace.com/"
+      rel="nofollow"
+      style={{ backgroundImage: "url(../../img/sponsors/3-makespace.png)",
+      display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      MakeSpace
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.ax-semantics.com/"
+      rel="nofollow"
+      style={{ backgroundImage: "url(../../img/sponsors/3-ax_semantics.png)",
+      display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      AX Semantics
+    </a>
+  </li>
+  <li>
+    <a
+      href="http://istrategylabs.com/"
+      rel="nofollow"
+      style={{ backgroundImage: "url(../../img/sponsors/3-isl.png)",
+      display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+       }}
+    >
+      ISL
+    </a>
+  </li>
+</ul>
+
+<div style={{ clear: "both", paddingBottom: "40px" }}></div>
+
+**Individual backers**: Paul Hallett, <a href="http://www.paulwhippconsulting.com/">Paul Whipp</a>, Dylan Roy, Jannis Leidel, <a href="https://linovia.com/en/">Xavier Ordoquy</a>, <a href="http://spielmannsolutions.com/">Johannes Spielmann</a>, <a href="http://brooklynhacker.com/">Rob Spectre</a>, <a href="https://chrisheisel.com/">Chris Heisel</a>, Marwan Alsabbagh, Haris Ali, Tuomas Toivonen.
+
+---
+
+### Advocates
+
+The following individuals made a significant financial contribution to the development of Django REST framework 3, for which I can only offer a huge, warm and sincere thank you!
+
+**Individual backers**: Jure Cuhalev, Kevin Brolly, Ferenc Szalai, Dougal Matthews, Stefan Foulis, Carlos Hernando, Alen Mujezinovic, Ross Crawford-d'Heureuse, George Kappel, Alasdair Nicol, John Carr, Steve Winton, Trey, Manuel Miranda, David Horn, Vince Mi, Daniel Sears, Jamie Matthews, Ryan Currah, Marty Kemka, Scott Nixon, Moshin Elahi, Kevin Campbell, Jose Antonio Leiva Izquierdo, Kevin Stone, Andrew Godwin, Tijs Teulings, Roger Boardman, Xavier Antoviaque, Darian Moody, Lujeni, Jon Dugan, Wiley Kestner, Daniel C. Silverstein, Daniel Hahler, Subodh Nijsure, Philipp Weidenhiller, Yusuke Muraoka, Danny Roa, Reto Aebersold, Kyle Getrost, Décébal Hormuz, James Dacosta, Matt Long, Mauro Rocco, Tyrel Souza, Ryan Campbell, Ville Jyrkkä, Charalampos Papaloizou, Nikolai Røed Kristiansen, Antoni Aloy López, Celia Oakley, Michał Krawczak, Ivan VenOsdel, Tim Watts, Martin Warne, Nicola Jordan, Ryan Kaskel.
+
+**Corporate backers**: Savannah Informatics, Prism Skylabs, Musical Operating Devices.
+
+---
+
+### Supporters
+
+There were also almost 300 further individuals choosing to help fund the project at other levels or choosing to give anonymously. Again, thank you, thank you, thank you!

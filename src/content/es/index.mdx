@@ -1,0 +1,455 @@
+---
+title: "Página de inicio"
+keywords: ["django", "rest", "framework"]
+order: 1
+---
+
+<div>
+  <img alt="Django REST Framework" title="Logo por Jake 'Sid' Smith" src="/img/logo.png" width="600px" />
+  <div style={{
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "10px",
+  flexWrap: "wrap",
+  width: "100%",
+  margin: "20px 0"
+  }}>
+  <iframe 
+    src="https://ghbtns.com/github-btn.html?user=encode&amp;repo=django-rest-framework&amp;type=watch&amp;count=true"
+    width="110px"
+    height="20px"
+    style={{ border: "none" }}
+  />
+
+{" "}
+
+<a href="https://github.com/encode/django-rest-framework/actions/workflows/main.yml">
+  <img
+    src="https://github.com/encode/django-rest-framework/actions/workflows/main.yml/badge.svg"
+    alt="Estado del flujo de trabajo en GitHub"
+  />
+</a>
+
+  <a href="https://pypi.org/project/djangorestframework/">
+    <img src="https://img.shields.io/pypi/v/djangorestframework.svg" alt="Versión en PyPI" />
+  </a>
+  </div>
+</div>
+
+# Django REST Framework
+
+Django REST framework es un conjunto de herramientas potente y flexible para construir APIs web.
+
+Algunas razones por las que podrías querer usar REST framework:
+
+- La API navegable es una gran ventaja de usabilidad para tus desarrolladores.
+- [Políticas de autenticación][authentication] que incluyen paquetes para [OAuth1a][oauth1-section] y [OAuth2][oauth2-section].
+- [Serialización][serializers] que admite tanto fuentes de datos [ORM][modelserializer-section] como [no ORM][serializer-section].
+- Personalizable en todos los niveles - simplemente usa [vistas basadas en funciones regulares][functionview-section] si no necesitas las características [más][generic-views] [potentes][viewsets] de los [enrutadores][routers].
+- Documentación extensa y [gran soporte de la comunidad][group].
+- Utilizado y confiado por empresas reconocidas internacionalmente como [Mozilla][mozilla], [Red Hat][redhat], [Heroku][heroku] y [Eventbrite][eventbrite].
+
+---
+
+## Financiación
+
+REST framework es un _proyecto financiado de forma colaborativa_. Si utilizas
+REST framework comercialmente, te animamos encarecidamente a invertir en su
+desarrollo continuo **[suscribiéndote a un plan de pago][funding]**.
+
+_Cada registro nos ayuda a hacer que REST framework sea financieramente sostenible a largo plazo._
+
+<ul
+  style={{
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(80px, 1fr))",
+    gap: "1rem",
+    listStyle: "none",
+    padding: 0,
+    margin: 0,
+  }}
+>
+  <li>
+    <a
+      href="https://getsentry.com/welcome/"
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        backgroundImage:
+          "url(https://fund-rest-framework.s3.amazonaws.com/sentry130.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Sentry
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://getstream.io/?utm_source=DjangoRESTFramework&utm_medium=Webpage_Logo_Ad&utm_content=Developer&utm_campaign=DjangoRESTFramework_Jan2022_HomePage"
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        backgroundImage:
+          "url(https://fund-rest-framework.s3.amazonaws.com/stream-130.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Stream
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.spacinov.com/"
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        backgroundImage:
+          "url(https://fund-rest-framework.s3.amazonaws.com/thicknov.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Spacinov
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://retool.com/?utm_source=djangorest&utm_medium=sponsorship"
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        backgroundImage:
+          "url(https://fund-rest-framework.s3.amazonaws.com/retool-sidebar.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Retool
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://bit.io/jobs?utm_source=DRF&utm_medium=sponsor&utm_campaign=DRF_sponsorship"
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        backgroundImage:
+          "url(https://fund-rest-framework.s3.amazonaws.com/bitio_logo_gold_background.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      bit.io
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://posthog.com?utm_source=DRF&utm_medium=sponsor&utm_campaign=DRF_sponsorship"
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        backgroundImage:
+          "url(https://fund-rest-framework.s3.amazonaws.com/135996800-d49fe024-32d9-441a-98d9-4c7596287a67.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      PostHog
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://cryptapi.io"
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        backgroundImage:
+          "url(https://fund-rest-framework.s3.amazonaws.com/cryptapi.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      CryptAPI
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.fezto.xyz/?utm_source=DjangoRESTFramework"
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        backgroundImage:
+          "url(https://fund-rest-framework.s3.amazonaws.com/fezto.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      FEZTO
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://www.svix.com/?utm_source=django-REST&utm_medium=sponsorship"
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        backgroundImage:
+          "url(https://fund-rest-framework.s3.amazonaws.com/svix.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Svix
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://zuplo.link/django-web"
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        backgroundImage:
+          "url(https://fund-rest-framework.s3.amazonaws.com/zuplo.png)",
+        display: "block",
+        height: "80px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "contain",
+        textIndent: "-9999px",
+      }}
+    >
+      Zuplo
+    </a>
+  </li>
+</ul>
+
+_Muchas gracias a todos nuestros [maravillosos patrocinadores][sponsors], y en particular a nuestros patrocinadores premium: [Sentry](https://getsentry.com/welcome/), [Stream](https://getstream.io/?utm_source=DjangoRESTFramework&utm_medium=Webpage_Logo_Ad&utm_content=Developer&utm_campaign=DjangoRESTFramework_Jan2022_HomePage), [Spacinov](https://www.spacinov.com/), [Retool](https://retool.com/?utm_source=djangorest&utm_medium=sponsorship), [bit.io](https://bit.io/jobs?utm_source=DRF&utm_medium=sponsor&utm_campaign=DRF_sponsorship), [PostHog](https://posthog.com?utm_source=DRF&utm_medium=sponsor&utm_campaign=DRF_sponsorship), [CryptAPI](https://cryptapi.io), [FEZTO](https://www.fezto.xyz/?utm_source=DjangoRESTFramework), [Svix](https://www.svix.com/?utm_source=django-REST&utm_medium=sponsorship) y [Zuplo](https://zuplo.link/django-web)._
+
+---
+
+## Requisitos
+
+REST framework requiere lo siguiente:
+
+- Django (4.2, 5.0, 5.1, 5.2)
+- Python (3.9, 3.10, 3.11, 3.12, 3.13)
+
+**Recomendamos encarecidamente** y solo admitimos oficialmente la última versión de parche de cada serie de Python y Django.
+
+Los siguientes paquetes son opcionales:
+
+- [PyYAML][pyyaml], [uritemplate][uriteemplate] (5.1+, 3.0.0+) - Soporte para generación de esquemas.
+- [Markdown][markdown] (3.3.0+) - Soporte para Markdown en la API navegable.
+- [Pygments][pygments] (2.7.0+) - Añade resaltado de sintaxis al procesamiento de Markdown.
+- [django-filter][django-filter] (1.0.1+) - Soporte para filtrado.
+- [django-guardian][django-guardian] (1.1.1+) - Soporte para permisos a nivel de objeto.
+
+## Instalación
+
+Instala usando `pip`, incluyendo los paquetes opcionales que necesites...
+
+```bash
+pip install djangorestframework
+pip install markdown       # Soporte para Markdown en la API navegable
+pip install django-filter  # Soporte para filtrado
+```
+
+...o clona el proyecto desde GitHub.
+
+```bash
+git clone https://github.com/encode/django-rest-framework
+```
+
+Añade `'rest_framework'` a tu configuración `INSTALLED_APPS`.
+
+```python
+INSTALLED_APPS = [
+    ...
+    'rest_framework',
+]
+```
+
+Si planeas usar la API navegable, probablemente también quieras añadir las vistas de inicio y cierre de sesión de REST framework. Añade lo siguiente a tu archivo raíz `urls.py`:
+
+```python
+urlpatterns = [
+    ...
+    path('api-auth/', include('rest_framework.urls'))
+]
+```
+
+Ten en cuenta que la ruta de la URL puede ser la que prefieras.
+
+## Ejemplo
+
+Veamos un ejemplo rápido de cómo usar REST framework para construir una API simple basada en modelos.
+
+Crearemos una API de lectura/escritura para acceder a la información de los usuarios de nuestro proyecto.
+
+Todas las configuraciones globales para una API de REST framework se guardan en un único diccionario de configuración llamado `REST_FRAMEWORK`. Comienza añadiendo lo siguiente a tu módulo `settings.py`:
+
+```python
+REST_FRAMEWORK = {
+    # Usa los permisos estándar de `django.contrib.auth`,
+    # o permite acceso de solo lectura a usuarios no autenticados.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
+```
+
+No olvides asegurarte de que has añadido `rest_framework` a tu `INSTALLED_APPS`.
+
+Ahora estamos listos para crear nuestra API. Aquí está el módulo raíz `urls.py` de nuestro proyecto:
+
+```python
+from django.urls import path, include
+from django.contrib.auth.models import User
+from rest_framework import routers, serializers, viewsets
+
+# Los serializadores definen la representación de la API.
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = ['url', 'username', 'email', 'is_staff']
+
+# Los ViewSets definen el comportamiento de la vista.
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+# Los enrutadores proporcionan una forma fácil de determinar automáticamente la configuración de URL.
+router = routers.DefaultRouter()
+router.register(r'users', UserViewSet)
+
+# Conecta nuestra API usando el enrutamiento automático de URL.
+# Además, incluimos las URLs de inicio de sesión para la API navegable.
+urlpatterns = [
+    path('', include(router.urls)),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+]
+```
+
+Ahora puedes abrir la API en tu navegador en [http://127.0.0.1:8000/](http://127.0.0.1:8000/) y ver tu nueva API de 'usuarios'. Si usas el control de inicio de sesión en la esquina superior derecha, también podrás agregar, crear y eliminar usuarios del sistema.
+
+## Guía Rápida
+
+¿No puedes esperar para comenzar? La [guía rápida][quickstart] es la forma más rápida de comenzar y construir APIs con REST framework.
+
+## Development
+
+See the [Contribution guidelines][contributing] for information on how to clone
+the repository, run the test suite and help maintain the code base of REST
+Framework.
+
+## Soporte
+
+Para soporte, por favor, vea el [grupo de discusión de REST framework][group], intente el canal `#restframework` en `irc.libera.chat`, o haga una pregunta en [Stack Overflow][stack-overflow], asegurándose de incluir la etiqueta ['django-rest-framework'][django-rest-framework-tag].
+
+Para soporte de prioridad, por favor, suscríbete a un [plan de patrocinio profesional o premium](https://fund.django-rest-framework.org/topics/funding/).
+
+## Seguridad
+
+**Por favor, reporte problemas de seguridad enviando un correo electrónico a security@encode.io**.
+
+Los mantenedores del proyecto trabajarán contigo para resolver cualquier problema que requiera, antes de cualquier divulgación pública.
+
+## Licencia
+
+Derechos de autor © 2011-presente, [Encode OSS Ltd](https://www.encode.io/).
+Todos los derechos reservados.
+
+Se permite la redistribución y el uso en forma de código fuente y binaria, con o sin
+modificación, siempre que se cumplan las siguientes condiciones:
+
+- Las redistribuciones del código fuente deben conservar el aviso de copyright anterior, esta
+  lista de condiciones y el siguiente descargo de responsabilidad.
+
+- Las redistribuciones en formato binario deben reproducir el aviso de copyright anterior,
+  esta lista de condiciones y el siguiente descargo de responsabilidad en la documentación
+  y/u otros materiales que se proporcionen con la distribución.
+
+- Ni el nombre del titular de los derechos de autor ni los nombres de sus
+  colaboradores podrán ser utilizados para respaldar o promocionar productos derivados de
+  este software sin permiso previo por escrito específico.
+
+ESTE SOFTWARE ES PROPORCIONADO POR LOS TITULARES DE DERECHOS DE AUTOR Y COLABORADORES "TAL CUAL" Y
+CUALESQUIERA GARANTÍAS EXPRESAS O IMPLÍCITAS, INCLUYENDO, PERO NO LIMITADO A, LAS GARANTÍAS
+IMPLÍCITAS DE COMERCIABILIDAD Y APTITUD PARA UN PROPÓSITO DETERMINADO QUEDAN
+RECHAZADAS. EN NINGÚN CASO EL TITULAR DE LOS DERECHOS DE AUTOR O LOS COLABORADORES SERÁN RESPONSABLES
+DE NINGÚN DAÑO DIRECTO, INDIRECTO, INCIDENTAL, ESPECIAL, EJEMPLAR O CONSECUENTE
+(INCLUYENDO, PERO NO LIMITADO A, ADQUISICIÓN DE BIENES O SERVICIOS SUSTITUTOS;
+PÉRDIDA DE USO, DATOS O BENEFICIOS; O INTERRUPCIÓN DEL NEGOCIO) SIN EMBARGO
+CAUSADO Y SOBRE CUALQUIER TEORÍA DE RESPONSABILIDAD, YA SEA POR CONTRATO, RESPONSABILIDAD ESTRICTA,
+O AGRAVIO (INCLUYENDO NEGLIGENCIA O CUALQUIER OTRO MOTIVO) QUE SURJA DE CUALQUIER MANERA DEL USO
+DE ESTE SOFTWARE, INCLUSO SI SE ADVIERTE DE LA POSIBILIDAD DE TALES DAÑOS.
+
+[mozilla]: https://www.mozilla.org/en-US/about/
+[redhat]: https://www.redhat.com/
+[heroku]: https://www.heroku.com/
+[eventbrite]: https://www.eventbrite.co.uk/about/
+[pyyaml]: https://pypi.org/project/PyYAML/
+[uriteemplate]: https://pypi.org/project/uritemplate/
+[markdown]: https://pypi.org/project/Markdown/
+[pygments]: https://pypi.org/project/Pygments/
+[django-filter]: https://pypi.org/project/django-filter/
+[django-guardian]: https://github.com/django-guardian/django-guardian
+[index]: /
+[oauth1-section]: /api-guide/authentication/#django-rest-framework-oauth
+[oauth2-section]: /api-guide/authentication/#django-oauth-toolkit
+[serializer-section]: /api-guide/serializers#serializers
+[modelserializer-section]: /api-guide/serializers#modelserializer
+[functionview-section]: /api-guide/views#function-based-views
+[sponsors]: https://fund.django-rest-framework.org/topics/funding/#our-sponsors
+[quickstart]: /tutorial/quickstart
+[generic-views]: /api-guide/generic-views
+[viewsets]: /api-guide/viewsets
+[routers]: /api-guide/routers
+[serializers]: /api-guide/serializers
+[authentication]: /api-guide/authentication
+[contributing]: /community/contributing
+[funding]: /community/funding
+[group]: https://groups.google.com/forum/?fromgroups#!forum/django-rest-framework
+[stack-overflow]: https://stackoverflow.com/
+[django-rest-framework-tag]: https://stackoverflow.com/questions/tagged/django-rest-framework
+[security-mail]: mailto:rest-framework-security@googlegroups.com
+[twitter]: https://twitter.com/_tomchristie

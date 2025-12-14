@@ -2,10 +2,12 @@
 
 import { HeroUIProvider } from "@heroui/react";
 
-type Props = {
+type ProvidersProps = {
   children: React.ReactNode;
 };
 
-export default function Providers({ children }: Props) {
+function Providers({ children }: ProvidersProps) {
   return <HeroUIProvider>{children}</HeroUIProvider>;
 }
+
+export { Providers };

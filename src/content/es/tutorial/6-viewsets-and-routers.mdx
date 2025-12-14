@@ -1,0 +1,151 @@
+---
+title: "T6: ViewSets y Routers"
+keywords: ["django", "rest", "framework", "api", "viewsets", "routers"]
+order: 7
+---
+
+# Tutorial 6: ViewSets y Routers
+
+El framework REST incluye una abstracción para trabajar con `ViewSets`, que permite a los desarrolladores concentrarse en modelar el estado y las interacciones de la API, dejando que la construcción de las URLs se maneje automáticamente, basándose en convenciones comunes.
+
+Las clases `ViewSet` son muy similares a las clases `View`, con la diferencia de que proporcionan operaciones como `retrieve` o `update`, en lugar de manejadores de métodos como `get` o `put`.
+
+Una clase `ViewSet` solo se vincula a un conjunto de manejadores de métodos en el último momento, cuando se instancia en un conjunto de vistas, típicamente mediante una clase `Router` que maneja la complejidad de definir la configuración de URLs por ti.
+
+## Refactorización para usar ViewSets
+
+Tomemos nuestro conjunto actual de vistas y refactoricémoslas para usar conjuntos de vistas (ViewSets).
+
+Primero, refactoricemos nuestras clases `UserList` y `UserDetail` en una única clase `UserViewSet`. En el archivo `snippets/views.py`, podemos eliminar las dos clases de vista y reemplazarlas con una sola clase ViewSet:
+
+```python
+from rest_framework import viewsets
+
+
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Este ViewSet proporciona automáticamente las acciones `list` y `retrieve`.
+    """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+```
+
+Aquí hemos utilizado la clase `ReadOnlyModelViewSet` para proporcionar automáticamente las operaciones de 'solo lectura' predeterminadas. Seguimos configurando los atributos `queryset` y `serializer_class` exactamente como lo hacíamos cuando usábamos vistas regulares, pero ya no necesitamos proporcionar la misma información en dos clases separadas.
+
+A continuación, reemplazaremos las clases de vista `SnippetList`, `SnippetDetail` y `SnippetHighlight`. Podemos eliminar las tres vistas y reemplazarlas nuevamente con una sola clase.
+
+```python
+from rest_framework import permissions
+from rest_framework import renderers
+from rest_framework.decorators import action
+from rest_framework.response import Response
+
+
+class SnippetViewSet(viewsets.ModelViewSet):
+    """
+    Este ViewSet proporciona automáticamente las acciones `list`, `create`,
+    `retrieve`, `update` y `destroy`.
+
+    Adicionalmente, también proporcionamos una acción extra `highlight`.
+    """
+    queryset = Snippet.objects.all()
+    serializer_class = SnippetSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly,
+                            IsOwnerOrReadOnly]
+
+    @action(detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
+    def highlight(self, request, *args, **kwargs):
+        snippet = self.get_object()
+        return Response(snippet.highlighted)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+```
+
+Esta vez hemos utilizado la clase `ModelViewSet` para obtener el conjunto completo de operaciones de lectura y escritura predeterminadas.
+
+Observa que también hemos utilizado el decorador `@action` para crear una acción personalizada llamada `highlight`. Este decorador se puede usar para agregar cualquier punto final personalizado que no se ajuste al estilo estándar de `create`/`update`/`delete`.
+
+Las acciones personalizadas que utilizan el decorador `@action` responderán a solicitudes `GET` de forma predeterminada. Podemos usar el argumento `methods` si queremos que una acción responda a solicitudes `POST`.
+
+Las URLs para acciones personalizadas dependen por defecto del nombre del método. Si deseas cambiar la forma en que se debe construir la URL, puedes incluir `url_path` como un argumento de palabra clave del decorador.
+
+## Vinculando ViewSets a URLs explícitamente
+
+Los métodos manejadores solo se vinculan a las acciones cuando definimos la URLConf. Para entender lo que sucede internamente, primero creemos explícitamente un conjunto de vistas a partir de nuestros ViewSets.
+
+En el archivo `snippets/urls.py` vinculamos nuestras clases `ViewSet` a un conjunto de vistas concretas.
+
+```python
+from rest_framework import renderers
+
+from snippets.views import api_root, SnippetViewSet, UserViewSet
+
+snippet_list = SnippetViewSet.as_view({
+    'get': 'list',
+    'post': 'create'
+})
+snippet_detail = SnippetViewSet.as_view({
+    'get': 'retrieve',
+    'put': 'update',
+    'patch': 'partial_update',
+    'delete': 'destroy'
+})
+snippet_highlight = SnippetViewSet.as_view({
+    'get': 'highlight'
+}, renderer_classes=[renderers.StaticHTMLRenderer])
+user_list = UserViewSet.as_view({
+    'get': 'list'
+})
+user_detail = UserViewSet.as_view({
+    'get': 'retrieve'
+})
+```
+
+Observa cómo estamos creando múltiples vistas a partir de cada clase `ViewSet`, vinculando los métodos HTTP a la acción requerida para cada vista.
+
+Ahora que hemos vinculado nuestros recursos a vistas concretas, podemos registrar las vistas en la configuración de URL como de costumbre.
+
+```python
+urlpatterns = format_suffix_patterns([
+    path('', api_root),
+    path('snippets/', snippet_list, name='snippet-list'),
+    path('snippets/<int:pk>/', snippet_detail, name='snippet-detail'),
+    path('snippets/<int:pk>/highlight/', snippet_highlight, name='snippet-highlight'),
+    path('users/', user_list, name='user-list'),
+    path('users/<int:pk>/', user_detail, name='user-detail')
+])
+```
+
+## Usando Routers
+
+Dado que estamos utilizando clases `ViewSet` en lugar de clases `View`, en realidad no necesitamos diseñar la configuración de URL nosotros mismos. Las convenciones para conectar recursos con vistas y URLs se pueden manejar automáticamente utilizando una clase `Router`. Todo lo que necesitamos hacer es registrar los conjuntos de vistas apropiados con un enrutador y dejar que haga el resto.
+
+Aquí está nuestro archivo `snippets/urls.py` reescrito:
+
+```python
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+
+from snippets import views
+
+# Creamos un enrutador y registramos nuestros ViewSets con él.
+router = DefaultRouter()
+router.register(r'snippets', views.SnippetViewSet, basename='snippet')
+router.register(r'users', views.UserViewSet, basename='user')
+
+# Las URLs de la API ahora son determinadas automáticamente por el enrutador.
+urlpatterns = [
+    path('', include(router.urls)),
+]
+```
+
+Registrar los ViewSets con el enrutador es similar a proporcionar un patrón de URL. Incluimos dos argumentos: el prefijo de URL para las vistas y el conjunto de vistas en sí.
+
+La clase `DefaultRouter` que estamos utilizando también crea automáticamente la vista raíz de la API para nosotros, por lo que ahora podemos eliminar la función `api_root` de nuestro módulo `views`.
+
+## Ventajas y desventajas: Vistas vs ViewSets
+
+El uso de ViewSets puede ser una abstracción realmente útil. Ayuda a garantizar que las convenciones de URL sean consistentes en toda la API, minimiza la cantidad de código que necesitas escribir y te permite concentrarte en las interacciones y representaciones que proporciona tu API en lugar de en los detalles específicos de la configuración de URL.
+
+Sin embargo, esto no significa que siempre sea el enfoque correcto. Hay un conjunto similar de ventajas y desventajas a considerar, como cuando se utilizan vistas basadas en clases en lugar de vistas basadas en funciones. El uso de ViewSets es menos explícito que construir las vistas de tu API individualmente.

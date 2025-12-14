@@ -1,0 +1,445 @@
+---
+title: "T1: Serialización"
+keywords: ["django", "rest", "framework", "api", "solicitudes", "respuestas"]
+order: 2
+---
+
+# Tutorial 1: Serialización
+
+## Introducción
+
+Este tutorial cubrirá la creación de una API web simple para resaltado de código estilo pastebin. En el camino, presentará los diversos componentes que conforman el framework REST y le dará una comprensión integral de cómo todo encaja entre sí.
+
+El tutorial es bastante detallado, por lo que probablemente deberías prepararte una galleta y una taza de tu bebida favorita antes de comenzar. Si solo quieres una visión general, puedes dirigirte a la documentación de [inicio rápido][quickstart] en su lugar.
+
+---
+
+**Nota**: El código de este tutorial está disponible en el repositorio [encode/rest-framework-tutorial][repo] en GitHub. Siéntete libre de clonar el repositorio y ver el código en acción.
+
+---
+
+## Configurando un nuevo entorno
+
+Antes de hacer cualquier otra cosa, crearemos un nuevo entorno virtual usando [venv]. Esto asegurará que nuestra configuración de paquetes se mantenga aislada de cualquier otro proyecto en el que estemos trabajando.
+
+```bash
+python3 -m venv env
+source env/bin/activate
+```
+
+Ahora que estamos dentro de un entorno virtual, podemos instalar los paquetes necesarios.
+
+```bash filename="next.config.js"
+pip install django
+pip install djangorestframework
+pip install pygments  # Lo usaremos para el resaltado de código
+```
+
+**Nota:** Para salir del entorno virtual en cualquier momento, simplemente escribe `deactivate`. Para más información, consulta la [documentación de venv][venv].
+
+## Empezando
+
+Bien, estamos listos para comenzar a programar.
+Para empezar, creemos un nuevo proyecto con el que trabajar.
+
+```bash
+cd ~
+django-admin startproject tutorial
+cd tutorial
+```
+
+Una vez hecho esto, podemos crear una aplicación que usaremos para crear una API web simple.
+
+```bash
+python manage.py startapp snippets
+```
+
+Necesitaremos agregar nuestra nueva aplicación `snippets` y la aplicación `rest_framework` a `INSTALLED_APPS`. Editemos el archivo `tutorial/settings.py`:
+
+```python
+INSTALLED_APPS = [
+    ...
+    'rest_framework',
+    'snippets',
+]
+```
+
+Bien, estamos listos para comenzar.
+
+## Creando un modelo con el que trabajar
+
+Para los propósitos de este tutorial, comenzaremos creando un modelo `Snippet` simple que se utilizará para almacenar fragmentos de código. Ve al archivo `snippets/models.py` y edítalo. Nota: Las buenas prácticas de programación incluyen comentarios. Aunque los encontrarás en la versión del repositorio de este código tutorial, los hemos omitido aquí para centrarnos en el código en sí.
+
+```python
+from django.db import models
+from pygments.lexers import get_all_lexers
+from pygments.styles import get_all_styles
+
+LEXERS = [item for item in get_all_lexers() if item[1]]
+LANGUAGE_CHOICES = sorted([(item[1][0], item[0]) for item in LEXERS])
+STYLE_CHOICES = sorted([(item, item) for item in get_all_styles()])
+
+
+class Snippet(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    title = models.CharField(max_length=100, blank=True, default='')
+    code = models.TextField()
+    linenos = models.BooleanField(default=False)
+    language = models.CharField(choices=LANGUAGE_CHOICES, default='python', max_length=100)
+    style = models.CharField(choices=STYLE_CHOICES, default='friendly', max_length=100)
+
+    class Meta:
+        ordering = ['created']
+```
+
+También necesitaremos crear una migración inicial para nuestro modelo de fragmento y sincronizar la base de datos por primera vez.
+
+```bash
+python manage.py makemigrations snippets
+python manage.py migrate snippets
+```
+
+## Creando una clase Serializer
+
+Lo primero que necesitamos para comenzar con nuestra API web es proporcionar una forma de serializar y deserializar las instancias de fragmentos en representaciones como `json`. Podemos hacer esto declarando serializadores que funcionan de manera muy similar a los formularios de Django. Crea un archivo en el directorio `snippets` llamado `serializers.py` y agrega lo siguiente.
+
+```python
+from rest_framework import serializers
+from snippets.models import Snippet, LANGUAGE_CHOICES, STYLE_CHOICES
+
+
+class SnippetSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    title = serializers.CharField(required=False, allow_blank=True, max_length=100)
+    code = serializers.CharField(style={'base_template': 'textarea.html'})
+    linenos = serializers.BooleanField(required=False)
+    language = serializers.ChoiceField(choices=LANGUAGE_CHOICES, default='python')
+    style = serializers.ChoiceField(choices=STYLE_CHOICES, default='friendly')
+
+    def create(self, validated_data):
+        """
+        Crea y devuelve una nueva instancia de `Snippet` con los datos validados.
+        """
+        return Snippet.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        """
+        Actualiza y devuelve una instancia existente de `Snippet` con los datos validados.
+        """
+        instance.title = validated_data.get('title', instance.title)
+        instance.code = validated_data.get('code', instance.code)
+        instance.linenos = validated_data.get('linenos', instance.linenos)
+        instance.language = validated_data.get('language', instance.language)
+        instance.style = validated_data.get('style', instance.style)
+        instance.save()
+        return instance
+```
+
+La primera parte de la clase serializadora define los campos que se serializan/deserializan. Los métodos `create()` y `update()` definen cómo se crean o modifican las instancias completas cuando se llama a `serializer.save()`.
+
+Una clase de serializador es muy similar a una clase `Form` de Django e incluye banderas de validación similares en los distintos campos, como `required`, `max_length` y `default`.
+
+Las banderas de campo también pueden controlar cómo debe mostrarse el serializador en ciertas circunstancias, como al renderizar a HTML. La bandera `{'base_template': 'textarea.html'}` es equivalente a usar `widget=widgets.Textarea` en una clase `Form` de Django. Esto es particularmente útil para controlar cómo debe mostrarse la API navegable, como veremos más adelante en el tutorial.
+
+En realidad, también podríamos ahorrarnos algo de tiempo usando la clase `ModelSerializer`, como veremos más adelante, pero por ahora mantendremos nuestra definición de serializador explícita.
+
+## Trabajando con Serializadores
+
+Antes de continuar, familiaricémonos con el uso de nuestra nueva clase Serializer. Ingresemos al shell de Django.
+
+```bash
+python manage.py shell
+```
+
+Bien, una vez que hayamos importado lo necesario, creemos un par de fragmentos de código con los que trabajar.
+
+```python
+from snippets.models import Snippet
+from snippets.serializers import SnippetSerializer
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
+
+snippet = Snippet(code='foo = "bar"\n')
+snippet.save()
+
+snippet = Snippet(code='print("hello, world")\n')
+snippet.save()
+```
+
+Ahora tenemos algunas instancias de fragmentos con las que trabajar. Echemos un vistazo a la serialización de una de esas instancias.
+
+```python
+serializer = SnippetSerializer(snippet)
+serializer.data
+# {'id': 2, 'title': '', 'code': 'print("hello, world")\n', 'linenos': False, 'language': 'python', 'style': 'friendly'}
+```
+
+En este punto, hemos traducido la instancia del modelo a tipos de datos nativos de Python. Para finalizar el proceso de serialización, renderizamos los datos a `json`.
+
+```python
+content = JSONRenderer().render(serializer.data)
+content
+# b'{"id":2,"title":"","code":"print(\\\"hello, world\\\")\\n","linenos":false,"language":"python","style":"friendly"}'
+```
+
+La deserialización es similar. Primero analizamos un flujo en tipos de datos nativos de Python...
+
+```python
+import io
+
+stream = io.BytesIO(content)
+data = JSONParser().parse(stream)
+```
+
+...luego restauramos esos tipos de datos nativos en una instancia de objeto completamente poblada.
+
+```python
+serializer = SnippetSerializer(data=data)
+serializer.is_valid()
+# True
+serializer.validated_data
+# {'title': '', 'code': 'print("hello, world")', 'linenos': False, 'language': 'python', 'style': 'friendly'}
+serializer.save()
+# <Snippet: Snippet object>
+```
+
+Observa cuán similar es la API a trabajar con formularios. La similitud debería volverse aún más evidente cuando comencemos a escribir vistas que usen nuestro serializador.
+
+También podemos serializar conjuntos de consultas en lugar de instancias de modelo. Para hacerlo, simplemente agregamos una bandera `many=True` a los argumentos del serializador.
+
+```python
+serializer = SnippetSerializer(Snippet.objects.all(), many=True)
+serializer.data
+# [{'id': 1, 'title': '', 'code': 'foo = "bar"\n', 'linenos': False, 'language': 'python', 'style': 'friendly'}, {'id': 2, 'title': '', 'code': 'print("hello, world")\n', 'linenos': False, 'language': 'python', 'style': 'friendly'}, {'id': 3, 'title': '', 'code': 'print("hello, world")', 'linenos': False, 'language': 'python', 'style': 'friendly'}]
+```
+
+## Usando ModelSerializers
+
+Nuestra clase `SnippetSerializer` está replicando mucha información que también está contenida en el modelo `Snippet`. Sería bueno si pudiéramos mantener nuestro código un poco más conciso.
+
+De la misma manera que Django proporciona tanto clases `Form` como `ModelForm`, el framework REST incluye tanto clases `Serializer` como `ModelSerializer`.
+
+Veamos cómo refactorizar nuestro serializador usando la clase `ModelSerializer`.
+Abre el archivo `snippets/serializers.py` nuevamente y reemplaza la clase `SnippetSerializer` con lo siguiente:
+
+```python
+class SnippetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Snippet
+        fields = ['id', 'title', 'code', 'linenos', 'language', 'style']
+```
+
+Una propiedad interesante de los serializadores es que puedes inspeccionar todos los campos en una instancia de serializador imprimiendo su representación. Abre el shell de Django con `python manage.py shell`, luego prueba lo siguiente:
+
+```python
+from snippets.serializers import SnippetSerializer
+serializer = SnippetSerializer()
+print(repr(serializer))
+# SnippetSerializer():
+#    id = IntegerField(label='ID', read_only=True)
+#    title = CharField(allow_blank=True, max_length=100, required=False)
+#    code = CharField(style={'base_template': 'textarea.html'})
+#    linenos = BooleanField(required=False)
+#    language = ChoiceField(choices=[('Clipper', 'FoxPro'), ('Cucumber', 'Gherkin'), ('RobotFramework', 'RobotFramework'), ('abap', 'ABAP'), ('ada', 'Ada')...
+#    style = ChoiceField(choices=[('autumn', 'autumn'), ('borland', 'borland'), ('bw', 'bw'), ('colorful', 'colorful')...
+```
+
+Es importante recordar que las clases `ModelSerializer` no hacen nada particularmente mágico, simplemente son un atajo para crear clases de serializador que incluyen:
+
+- Un conjunto de campos determinado automáticamente.
+- Implementaciones predeterminadas simples para los métodos `create()` y `update()`.
+
+## Escribiendo vistas regulares de Django usando nuestro Serializador
+
+Veamos cómo podemos escribir algunas vistas de API usando nuestra nueva clase Serializer.
+Por el momento no usaremos ninguna de las otras características del framework REST, solo escribiremos las vistas como vistas regulares de Django.
+
+Edita el archivo `snippets/views.py` y agrega lo siguiente.
+
+```python
+from django.http import HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.parsers import JSONParser
+from snippets.models import Snippet
+from snippets.serializers import SnippetSerializer
+```
+
+La raíz de nuestra API será una vista que admita listar todos los fragmentos existentes o crear uno nuevo.
+
+```python
+@csrf_exempt
+def snippet_list(request):
+    """
+    Lista todos los fragmentos de código o crea uno nuevo.
+    """
+    if request.method == 'GET':
+        snippets = Snippet.objects.all()
+        serializer = SnippetSerializer(snippets, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = SnippetSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+```
+
+Ten en cuenta que debido a que queremos poder hacer POST a esta vista desde clientes que no tendrán un token CSRF, necesitamos marcar la vista como `csrf_exempt`. Esto no es algo que normalmente querrías hacer, y las vistas del framework REST tienen un comportamiento más sensato, pero funcionará para nuestros propósitos por ahora.
+
+También necesitaremos una vista que corresponda a un fragmento individual y que pueda usarse para recuperar, actualizar o eliminar el fragmento.
+
+```python
+@csrf_exempt
+def snippet_detail(request, pk):
+    """
+    Recupera, actualiza o elimina un fragmento de código.
+    """
+    try:
+        snippet = Snippet.objects.get(pk=pk)
+    except Snippet.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if request.method == 'GET':
+        serializer = SnippetSerializer(snippet)
+        return JsonResponse(serializer.data)
+
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        serializer = SnippetSerializer(snippet, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data)
+        return JsonResponse(serializer.errors, status=400)
+
+    elif request.method == 'DELETE':
+        snippet.delete()
+        return HttpResponse(status=204)
+```
+
+Finalmente, necesitamos conectar estas vistas. Crea el archivo `snippets/urls.py`:
+
+```python
+from django.urls import path
+from snippets import views
+
+urlpatterns = [
+    path('snippets/', views.snippet_list),
+    path('snippets/<int:pk>/', views.snippet_detail),
+]
+```
+
+También necesitamos conectar la configuración raíz de URLs, en el archivo `tutorial/urls.py`, para incluir las URLs de nuestra aplicación de fragmentos.
+
+```python
+from django.urls import path, include
+
+urlpatterns = [
+    path('', include('snippets.urls')),
+]
+```
+
+Vale la pena señalar que hay un par de casos extremos que no estamos manejando correctamente en este momento. Si enviamos un `json` mal formado, o si se realiza una solicitud con un método que la vista no maneja, terminaremos con una respuesta de error 500 "error del servidor". Aun así, esto funcionará por ahora.
+
+## Probando nuestro primer intento de API web
+
+Ahora podemos iniciar un servidor de muestra que sirva nuestros fragmentos.
+
+Sal del shell...
+
+```bash
+quit()
+```
+
+e inicia el servidor de desarrollo de Django.
+
+```bash
+python manage.py runserver
+
+Validating models...
+
+0 errors found
+Django version 5.0, using settings 'tutorial.settings'
+Starting Development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+```
+
+En otra ventana de terminal, podemos probar el servidor.
+
+Podemos probar nuestra API usando [curl][curl] o [httpie][httpie]. Httpie es un cliente http fácil de usar escrito en Python. Vamos a instalarlo.
+
+Puedes instalar httpie usando pip:
+
+```bash
+pip install httpie
+```
+
+Finalmente, podemos obtener una lista de todos los fragmentos:
+
+```bash
+http GET http://127.0.0.1:8000/snippets/ --unsorted
+
+HTTP/1.1 200 OK
+...
+[
+    {
+        "id": 1,
+        "title": "",
+        "code": "foo = \"bar\"\n",
+        "linenos": false,
+        "language": "python",
+        "style": "friendly"
+    },
+    {
+        "id": 2,
+        "title": "",
+        "code": "print(\"hello, world\")\n",
+        "linenos": false,
+        "language": "python",
+        "style": "friendly"
+    },
+    {
+        "id": 3,
+        "title": "",
+        "code": "print(\"hello, world\")",
+        "linenos": false,
+        "language": "python",
+        "style": "friendly"
+    }
+]
+```
+
+O podemos obtener un fragmento específico haciendo referencia a su ID:
+
+```bash
+http GET http://127.0.0.1:8000/snippets/2/ --unsorted
+
+HTTP/1.1 200 OK
+...
+{
+    "id": 2,
+    "title": "",
+    "code": "print(\"hello, world\")\n",
+    "linenos": false,
+    "language": "python",
+    "style": "friendly"
+}
+```
+
+De manera similar, puedes ver el mismo JSON visitando estas URLs en un navegador web.
+
+## ¿En qué punto nos encontramos?
+
+Hasta ahora vamos bien, tenemos una API de serialización que se siente bastante similar a la API de Formularios de Django, junto con algunas vistas regulares de Django.
+
+Nuestras vistas de API no hacen nada particularmente especial en este momento, más allá de servir respuestas `json`, y hay algunos casos extremos de manejo de errores que aún nos gustaría limpiar, pero es una API web funcional.
+
+Veremos cómo podemos comenzar a mejorar las cosas en la [parte 2 del tutorial][tut-2].
+
+[quickstart]: quickstart.md
+[repo]: https://github.com/encode/rest-framework-tutorial
+[venv]: https://docs.python.org/3/library/venv.html
+[tut-2]: 2-requests-and-responses.md
+[httpie]: https://github.com/httpie/httpie#installation
+[curl]: https://curl.haxx.se/

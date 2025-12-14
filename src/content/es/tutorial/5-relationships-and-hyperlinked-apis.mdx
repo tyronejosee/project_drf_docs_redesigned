@@ -1,0 +1,173 @@
+---
+title: "T5: Relaciones y APIs con Hipervínculos"
+keywords: ["django", "rest", "framework", "api", "relaciones", "hipervínculos"]
+order: 6
+---
+
+# Tutorial 5: Relaciones y APIs con Hipervínculos
+
+Actualmente, las relaciones dentro de nuestra API se representan mediante claves primarias. En esta parte del tutorial, mejoraremos la cohesión y descubribilidad de nuestra API utilizando hipervínculos para las relaciones.
+
+## Creando un punto de entrada para nuestra API
+
+Actualmente tenemos puntos finales para 'snippets' y 'users', pero no tenemos un único punto de entrada a nuestra API. Para crear uno, usaremos una vista basada en funciones regular y el decorador `@api_view` que presentamos anteriormente. En tu archivo `snippets/views.py` agrega:
+
+```python
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
+
+
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response({
+        'users': reverse('user-list', request=request, format=format),
+        'snippets': reverse('snippet-list', request=request, format=format)
+    })
+```
+
+Dos cosas deben notarse aquí. Primero, estamos utilizando la función `reverse` del framework REST para devolver URLs completas; segundo, los patrones de URL se identifican mediante nombres de conveniencia que declararemos más adelante en nuestro `snippets/urls.py`.
+
+## Creando un punto final para los fragmentos resaltados
+
+Otra cosa obvia que aún falta en nuestra API de pastebin son los puntos finales para el resaltado de código.
+
+A diferencia de todos nuestros otros puntos finales de API, no queremos usar JSON, sino solo presentar una representación HTML. Hay dos estilos de renderizadores HTML proporcionados por el framework REST: uno para manejar HTML renderizado usando plantillas y otro para manejar HTML pre-renderizado. El segundo renderizador es el que nos gustaría usar para este punto final.
+
+Otra cosa que debemos considerar al crear la vista de resaltado de código es que no existe una vista genérica concreta que podamos usar. No estamos devolviendo una instancia de objeto, sino una propiedad de una instancia de objeto.
+
+En lugar de usar una vista genérica concreta, usaremos la clase base para representar instancias y crearemos nuestro propio método `.get()`. En tu archivo `snippets/views.py` agrega:
+
+```python
+from rest_framework import renderers
+
+class SnippetHighlight(generics.GenericAPIView):
+    queryset = Snippet.objects.all()
+    renderer_classes = [renderers.StaticHTMLRenderer]
+
+    def get(self, request, *args, **kwargs):
+        snippet = self.get_object()
+        return Response(snippet.highlighted)
+```
+
+Como es habitual, necesitamos agregar las nuevas vistas que hemos creado a nuestra URLconf. Agregaremos un patrón de URL para nuestra nueva raíz de API en `snippets/urls.py`:
+
+```python
+path('', views.api_root),
+```
+
+Y luego agregamos un patrón de URL para los resaltados de fragmentos:
+
+```python
+path('snippets/<int:pk>/highlight/', views.SnippetHighlight.as_view()),
+```
+
+## Hipervinculando nuestra API
+
+Manejar las relaciones entre entidades es uno de los aspectos más desafiantes del diseño de APIs web. Hay varias formas diferentes en que podríamos elegir representar una relación:
+
+- Usando claves primarias.
+- Usando hipervínculos entre entidades.
+- Usando un campo slug de identificación único en la entidad relacionada.
+- Usando la representación de cadena predeterminada de la entidad relacionada.
+- Anidando la entidad relacionada dentro de la representación principal.
+- Alguna otra representación personalizada.
+
+El framework REST admite todos estos estilos y puede aplicarlos a través de relaciones directas o inversas, o aplicarlos a través de administradores personalizados como claves foráneas genéricas.
+
+En este caso, nos gustaría usar un estilo de hipervínculo entre entidades. Para hacerlo, modificaremos nuestros serializadores para que extiendan `HyperlinkedModelSerializer` en lugar del `ModelSerializer` existente.
+
+El `HyperlinkedModelSerializer` tiene las siguientes diferencias con respecto a `ModelSerializer`:
+
+- No incluye el campo `id` por defecto.
+- Incluye un campo `url`, usando `HyperlinkedIdentityField`.
+- Las relaciones usan `HyperlinkedRelatedField` en lugar de `PrimaryKeyRelatedField`.
+
+Podemos reescribir fácilmente nuestros serializadores existentes para usar hipervínculos. En tu archivo `snippets/serializers.py` agrega:
+
+```python
+class SnippetSerializer(serializers.HyperlinkedModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+    highlight = serializers.HyperlinkedIdentityField(view_name='snippet-highlight', format='html')
+
+    class Meta:
+        model = Snippet
+        fields = ['url', 'id', 'highlight', 'owner',
+                    'title', 'code', 'linenos', 'language', 'style']
+
+
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    snippets = serializers.HyperlinkedRelatedField(many=True, view_name='snippet-detail', read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['url', 'id', 'username', 'snippets']
+```
+
+Observa que también hemos añadido un nuevo campo `'highlight'`. Este campo es del mismo tipo que el campo `url`, excepto que apunta al patrón de URL `'snippet-highlight'` en lugar del patrón `'snippet-detail'`.
+
+Dado que hemos incluido URLs con sufijos de formato como `'.json'`, también necesitamos indicar en el campo `highlight` que cualquier hipervínculo que devuelva con sufijos de formato debe usar el sufijo `'.html'`.
+
+## Asegurando que nuestros patrones de URL estén nombrados
+
+Si vamos a tener una API con hipervínculos, necesitamos asegurarnos de nombrar nuestros patrones de URL. Echemos un vistazo a qué patrones de URL necesitamos nombrar.
+
+- La raíz de nuestra API hace referencia a `'user-list'` y `'snippet-list'`.
+- Nuestro serializador de snippets incluye un campo que hace referencia a `'snippet-highlight'`.
+- Nuestro serializador de usuarios incluye un campo que hace referencia a `'snippet-detail'`.
+- Nuestros serializadores de snippets y usuarios incluyen campos `'url'` que por defecto harán referencia a `'{model_name}-detail'`, que en este caso serán `'snippet-detail'` y `'user-detail'`.
+
+Después de agregar todos estos nombres a nuestra URLconf, nuestro archivo final `snippets/urls.py` debería verse así:
+
+```python
+from django.urls import path
+from rest_framework.urlpatterns import format_suffix_patterns
+from snippets import views
+
+# API endpoints
+urlpatterns = format_suffix_patterns([
+    path('', views.api_root),
+    path('snippets/',
+        views.SnippetList.as_view(),
+        name='snippet-list'),
+    path('snippets/<int:pk>/',
+        views.SnippetDetail.as_view(),
+        name='snippet-detail'),
+    path('snippets/<int:pk>/highlight/',
+        views.SnippetHighlight.as_view(),
+        name='snippet-highlight'),
+    path('users/',
+        views.UserList.as_view(),
+        name='user-list'),
+    path('users/<int:pk>/',
+        views.UserDetail.as_view(),
+        name='user-detail')
+])
+```
+
+## Añadiendo paginación
+
+Las vistas de lista para usuarios y fragmentos de código podrían terminar devolviendo muchas instancias, por lo que realmente nos gustaría asegurarnos de paginar los resultados y permitir que el cliente de la API navegue por cada una de las páginas individuales.
+
+Podemos cambiar el estilo de lista predeterminado para usar paginación modificando ligeramente nuestro archivo `tutorial/settings.py`. Agrega la siguiente configuración:
+
+```python
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
+```
+
+Ten en cuenta que las configuraciones en el framework REST están todas en un solo diccionario llamado `REST_FRAMEWORK`, lo que ayuda a mantenerlas bien separadas de las demás configuraciones de tu proyecto.
+
+También podríamos personalizar el estilo de paginación si lo necesitáramos, pero en este caso nos quedaremos con el valor predeterminado.
+
+## Navegando por la API
+
+Si abrimos un navegador y navegamos a la API navegable, encontrarás que ahora puedes moverte por la API simplemente siguiendo los enlaces.
+
+También podrás ver los enlaces 'highlight' en las instancias de fragmentos, que te llevarán a las representaciones HTML del código resaltado.
+
+En la [parte 6][tut-6] del tutorial veremos cómo podemos usar ViewSets y Routers para reducir la cantidad de código que necesitamos para construir nuestra API.
+
+[tut-6]: 6-viewsets-and-routers.md

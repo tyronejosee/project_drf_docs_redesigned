@@ -11,13 +11,12 @@ type ReactNodeWithProps = {
   };
 };
 
-export default function CodeBlock({
-  children,
-  language,
-}: {
+type CodeBlockProps = {
   children: React.ReactNode;
   language?: string;
-}) {
+};
+
+function CodeBlock({ children, language }: CodeBlockProps) {
   const [copied, setCopied] = useState<boolean>(false);
 
   const extractText = (node: React.ReactNode): string => {
@@ -58,3 +57,5 @@ export default function CodeBlock({
     </div>
   );
 }
+
+export { CodeBlock };

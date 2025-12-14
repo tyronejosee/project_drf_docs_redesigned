@@ -16,3 +16,8 @@ export type Heading = {
   text: string;
   depth: number;
 };
+
+export type MDXLink = {
+  title: string;
+  path: string;
+};

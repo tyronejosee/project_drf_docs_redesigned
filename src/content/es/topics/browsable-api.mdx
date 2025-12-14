@@ -1,0 +1,243 @@
+---
+title: "La API Navegable"
+keywords: ["django", "rest", "framework", "api", "browsable"]
+order: 6
+---
+
+# La API Navegable
+
+> Es un tópico profundamente erróneo... que debamos cultivar el hábito de pensar en lo que estamos haciendo. Lo cierto es exactamente lo contrario. La civilización avanza ampliando el número de operaciones importantes que podemos realizar sin pensar en ellas.
+>
+> &mdash; [Alfred North Whitehead][cite], Introducción a las Matemáticas (1911)
+
+Aunque API signifique Interfaz de _Programación_ de Aplicaciones, los humanos también deben poder leer las APIs; después de todo, alguien tiene que hacer la programación. Django REST Framework admite la generación de salida HTML fácil de leer para cada recurso cuando se solicita el formato `HTML`. Estas páginas permiten navegar fácilmente por los recursos, así como enviar datos a los mismos mediante formularios que utilizan `POST`, `PUT` y `DELETE`.
+
+## URLs
+
+Si incluyes URLs completas en la salida de tu recurso, se convertirán en enlaces clicables para facilitar la navegación a los usuarios. El paquete `rest_framework` incluye un ayudante [`reverse`][drfreverse] para este propósito.
+
+## Formatos
+
+Por defecto, la API devolverá el formato especificado por las cabeceras, que en el caso del navegador es HTML. El formato se puede especificar usando `?format=` en la solicitud, por lo que puedes ver la respuesta JSON sin procesar en un navegador añadiendo `?format=json` a la URL. Hay extensiones útiles para ver JSON en [Firefox][ffjsonview] y [Chrome][chromejsonview].
+
+## Autenticación
+
+Para añadir rápidamente autenticación a la API navegable, añade rutas llamadas `"login"` y `"logout"` bajo el espacio de nombres `"rest_framework"`. DRF proporciona rutas predeterminadas para esto que puedes añadir a tu configuración de URLs:
+
+```python
+from django.urls import include, path
+
+urlpatterns = [
+    # ...
+    path("api-auth/", include("rest_framework.urls", namespace="rest_framework"))
+]
+```
+
+## Personalización
+
+La API navegable está construida con [Twitter's Bootstrap][bootstrap] (v3.4.1), lo que facilita personalizar su apariencia.
+
+Para personalizar el estilo predeterminado, crea una plantilla llamada `rest_framework/api.html` que herede de `rest_framework/base.html`. Por ejemplo:
+
+**templates/rest_framework/api.html**
+
+```html
+{% extends "rest_framework/base.html" %} ... # Sobrescribe los bloques con las
+personalizaciones necesarias
+```
+
+### Sobrescribiendo el tema predeterminado
+
+Para reemplazar el tema predeterminado, añade un bloque `bootstrap_theme` a tu `api.html` e inserta un `link` al archivo CSS del tema de Bootstrap que desees. Esto reemplazará completamente el tema incluido.
+
+```html
+{% block bootstrap_theme %}
+<link rel="stylesheet" href="/ruta/a/mi/bootstrap.css" type="text/css" />
+{% endblock %}
+```
+
+Puedes encontrar temas de reemplazo prediseñados adecuados en [Bootswatch][bswatch]. Para usar cualquiera de los temas de Bootswatch, simplemente descarga el archivo `bootstrap.min.css` del tema, añádelo a tu proyecto y reemplaza el predeterminado como se describió anteriormente. Asegúrate de que la versión de Bootstrap del nuevo tema coincida con la del tema predeterminado.
+
+También puedes cambiar la variante de la barra de navegación, que por defecto es `navbar-inverse`, usando el bloque `bootstrap_navbar_variant`. El bloque vacío `{% block bootstrap_navbar_variant %}{% endblock %}` usará el estilo de barra de navegación original de Bootstrap.
+
+Ejemplo completo:
+
+```html
+{% extends "rest_framework/base.html" %} {% block bootstrap_theme %}
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootswatch@3.4.1/flatly/bootstrap.min.css"
+  type="text/css"
+/>
+{% endblock %} {% block bootstrap_navbar_variant %}{% endblock %}
+```
+
+Para ajustes de CSS más específicos que simplemente sobrescribir el tema de Bootstrap predeterminado, puedes sobrescribir el bloque `style`.
+
+---
+
+![Tema Cerulean][cerulean]
+
+_Captura de pantalla del tema 'Cerulean' de Bootswatch_
+
+---
+
+![Tema Slate][slate]
+
+_Captura de pantalla del tema 'Slate' de Bootswatch_
+
+---
+
+### Paquetes de terceros para personalización
+
+Puedes utilizar un paquete de terceros para la personalización, en lugar de hacerlo tú mismo. Aquí tienes tres paquetes para personalizar la API:
+
+- [drf-restwind][drf-restwind] - Una reinterpretación moderna de Django REST Framework que utiliza TailwindCSS y DaisyUI para proporcionar soluciones de interfaz de usuario flexibles y personalizables con un esfuerzo mínimo de codificación.
+- [drf-redesign][drf-redesign] - Un paquete para personalizar la API usando Bootstrap 5. Diseño moderno y elegante, viene con soporte para modo oscuro.
+- [drf-material][drf-material] - Diseño Material para Django REST Framework.
+
+---
+
+![Vista de API][drf-rw-api-root]
+
+![Vista de lista][drf-rw-list-view]
+
+![Vista detallada][drf-rw-detail-view]
+
+_Capturas de pantalla de drf-restwind_
+
+---
+
+---
+
+![Vista de API][drf-r-api-root]
+
+![Vista de lista][drf-r-list-view]
+
+![Vista detallada][drf-r-detail-view]
+
+_Capturas de pantalla de drf-redesign_
+
+---
+
+![Vista de API][drf-m-api-root]
+
+![Vista de lista][drf-m-api-root]
+
+![Vista detallada][drf-m-api-root]
+
+_Capturas de pantalla de drf-material_
+
+---
+
+### Bloques
+
+Todos los bloques disponibles en la plantilla base de la API navegable que se pueden usar en tu `api.html`:
+
+- `body` - Todo el `<body>` HTML.
+- `bodyclass` - Atributo de clase para la etiqueta `<body>`, vacío por defecto.
+- `bootstrap_theme` - CSS para el tema de Bootstrap.
+- `bootstrap_navbar_variant` - Clase CSS para la barra de navegación.
+- `branding` - Sección de marca de la barra de navegación, ver [componentes de Bootstrap][bcomponentsnav].
+- `breadcrumbs` - Enlaces que muestran el anidamiento de recursos, permitiendo al usuario volver a los recursos superiores. Se recomienda conservarlos, pero se pueden sobrescribir usando el bloque breadcrumbs.
+- `script` - Archivos JavaScript para la página.
+- `style` - Hojas de estilo CSS para la página.
+- `title` - Título de la página.
+- `userlinks` - Lista de enlaces a la derecha del encabezado, que por defecto contiene enlaces de inicio/cierre de sesión. Para añadir enlaces en lugar de reemplazarlos, usa `{{ block.super }}` para conservar los enlaces de autenticación.
+
+#### Componentes
+
+Todos los [componentes estándar de Bootstrap][bcomponents] están disponibles.
+
+#### Información sobre herramientas
+
+La API navegable utiliza el componente de información sobre herramientas de Bootstrap. Cualquier elemento con la clase `js-tooltip` y un atributo `title` mostrará ese contenido como información sobre herramientas al pasar el cursor.
+
+### Plantilla de inicio de sesión
+
+Para añadir marca personalizada y personalizar la apariencia de la plantilla de inicio de sesión, crea una plantilla llamada `login.html` y añádela a tu proyecto, por ejemplo: `templates/rest_framework/login.html`. La plantilla debe heredar de `rest_framework/login_base.html`.
+
+Puedes añadir el nombre de tu sitio o marca incluyendo el bloque branding:
+
+```django
+{% extends "rest_framework/login_base.html" %}
+
+{% block branding %}
+    <h3 style="margin: 0 0 20px;">Nombre de mi sitio</h3>
+{% endblock %}
+```
+
+También puedes personalizar el estilo añadiendo el bloque `bootstrap_theme` o `style` de manera similar a `api.html`.
+
+### Personalización avanzada
+
+#### Contexto
+
+El contexto disponible para la plantilla:
+
+- `allowed_methods` : Lista de métodos permitidos por el recurso
+- `api_settings` : Configuración de la API
+- `available_formats` : Lista de formatos permitidos por el recurso
+- `breadcrumblist` : Lista de enlaces que siguen la cadena de recursos anidados
+- `content` : Contenido de la respuesta de la API
+- `description` : Descripción del recurso, generada a partir de su docstring
+- `name` : Nombre del recurso
+- `post_form` : Instancia de formulario para el formulario POST (si está permitido)
+- `put_form` : Instancia de formulario para el formulario PUT (si está permitido)
+- `display_edit_forms` : Booleano que indica si se mostrarán los formularios POST, PUT y PATCH
+- `request` : Objeto de solicitud
+- `response` : Objeto de respuesta
+- `version` : Versión de Django REST Framework
+- `view` : Vista que maneja la solicitud
+- `FORMAT_PARAM` : La vista puede aceptar una anulación de formato
+- `METHOD_PARAM` : La vista puede aceptar una anulación de método
+
+Puedes sobrescribir el método `BrowsableAPIRenderer.get_context()` para personalizar el contexto que se pasa a la plantilla.
+
+#### No usar base.html
+
+Para personalizaciones más avanzadas, como no tener una base de Bootstrap o una integración más estrecha con el resto de tu sitio, puedes simplemente hacer que `api.html` no herede de `base.html`. Entonces el contenido y capacidades de la página dependen completamente de ti.
+
+#### Manejo de `ChoiceField` con un gran número de elementos
+
+Cuando una relación o `ChoiceField` tiene demasiados elementos, la representación del widget que contiene all the options can become very slow, and cause the browsable API rendering to perform poorly.
+
+La opción más simple en este caso es reemplazar el campo de entrada con un campo de entrada estándar. Por ejemplo:
+
+```python
+author = serializers.HyperlinkedRelatedField(
+    queryset=User.objects.all(),
+    style={'base_template': 'input.html'}
+)
+```
+
+#### Autocompletado
+
+Una alternativa, aunque más compleja, sería reemplazar el campo de entrada con un widget de autocompletado que solo cargue y muestre un subconjunto de las opciones disponibles según sea necesario. Si necesitas hacer esto, tendrás que trabajar en crear una plantilla HTML personalizada de autocompletado tú mismo.
+
+Existen [varios paquetes para widgets de autocompletado][autocomplete-packages], como [django-autocomplete-light][django-autocomplete-light], que podrías considerar. Ten en cuenta que no podrás simplemente incluir estos componentes como widgets estándar, sino que deberás escribir la plantilla HTML explícitamente. Esto se debe a que REST framework 3.0 ya no admite el argumento `widget` ya que ahora utiliza generación de HTML con plantillas.
+
+[cite]: https://en.wikiquote.org/wiki/Alfred_North_Whitehead
+[drfreverse]: ../api-guide/reverse.md
+[ffjsonview]: https://addons.mozilla.org/en-US/firefox/addon/jsonview/
+[chromejsonview]: https://chrome.google.com/webstore/detail/chklaanhfefbnpoihckbnefhakgolnmc
+[bootstrap]: https://getbootstrap.com/
+[cerulean]: ../img/cerulean.png
+[slate]: ../img/slate.png
+[bswatch]: https://bootswatch.com/
+[bcomponents]: https://getbootstrap.com/2.3.2/components.html
+[bcomponentsnav]: https://getbootstrap.com/2.3.2/components.html#navbar
+[autocomplete-packages]: https://www.djangopackages.com/grids/g/auto-complete/
+[django-autocomplete-light]: https://github.com/yourlabs/django-autocomplete-light
+[drf-restwind]: https://github.com/youzarsiph/drf-restwind
+[drf-rw-api-root]: ../img/drf-rw-api-root.png
+[drf-rw-list-view]: ../img/drf-rw-list-view.png
+[drf-rw-detail-view]: ../img/drf-rw-detail-view.png
+[drf-redesign]: https://github.com/youzarsiph/drf-redesign
+[drf-r-api-root]: ../img/drf-r-api-root.png
+[drf-r-list-view]: ../img/drf-r-list-view.png
+[drf-r-detail-view]: ../img/drf-r-detail-view.png
+[drf-material]: https://github.com/youzarsiph/drf-material
+[drf-m-api-root]: ../img/drf-m-api-root.png
+[drf-m-list-view]: ../img/drf-m-list-view.png
+[drf-m-detail-view]: ../img/drf-m-detail-view.png

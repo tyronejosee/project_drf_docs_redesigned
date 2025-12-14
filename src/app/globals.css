@@ -8,9 +8,13 @@
     scroll-behavior: smooth;
   }
 
-  h1[id],
-  h2[id] {
-    @apply scroll-mt-16;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply scroll-mt-24;
   }
 
   .prose h1 {
