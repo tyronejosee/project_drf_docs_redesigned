@@ -30,27 +30,28 @@ async function getMdxBySlug(
   const { code, frontmatter } = await bundleMDX({
     source: content,
     mdxOptions(options) {
+      options.rehypePlugins = [
+        ...(options.rehypePlugins ?? []),
+        rehypeSlug,
+      ];
+
       if (prism) {
-        options.rehypePlugins = [
-          ...(options.rehypePlugins ?? []),
-          rehypeSlug,
-          [
-            rehypePrism,
-            {
-              showLineNumbers: true,
-              defaultLanguage: "python",
-              languageAliases: {
-                python: "python",
-                js: "javascript",
-                bash: "bash",
-                text: "text",
-                html: "html",
-                http: "http",
-                json: "json",
-              },
+        options.rehypePlugins.push([
+          rehypePrism,
+          {
+            showLineNumbers: true,
+            defaultLanguage: "python",
+            languageAliases: {
+              python: "python",
+              js: "javascript",
+              bash: "bash",
+              text: "text",
+              html: "html",
+              http: "http",
+              json: "json",
             },
-          ],
-        ];
+          },
+        ]);
       }
       return options;
     },

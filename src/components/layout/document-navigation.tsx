@@ -8,6 +8,7 @@ import { useMemo } from "react";
 import { useTranslations } from "@/hooks/use-translations";
 import type {
   ApiGuide,
+  CategoryList,
   CategoryType,
   Community,
   DocumentType,
@@ -20,6 +21,7 @@ type DocumentNavigationProps = {
   apiGuides: ApiGuide[];
   topics: Topic[];
   communities: Community[];
+  locale: string;
 };
 
 function DocumentNavigation({
@@ -27,42 +29,37 @@ function DocumentNavigation({
   apiGuides,
   topics,
   communities,
+  locale,
 }: DocumentNavigationProps) {
   // Hooks
   const { t } = useTranslations();
   const pathname = usePathname();
 
   const { prevLink, nextLink } = useMemo(() => {
-    const categories: {
-      type: CategoryType;
-      pathPrefix: string;
-      items: DocumentType[];
-      next?: CategoryType;
-      prev?: CategoryType;
-    }[] = [
+    const categories: CategoryList[] = [
       {
         type: "tutorial",
-        pathPrefix: "/tutorial",
+        pathPrefix: `/${locale}/tutorial`,
         items: tutorials,
         next: "api-guide",
       },
       {
         type: "api-guide",
-        pathPrefix: "/api-guide",
+        pathPrefix: `/${locale}/api-guide`,
         items: apiGuides,
         prev: "tutorial",
         next: "topics",
       },
       {
         type: "topics",
-        pathPrefix: "/topics",
+        pathPrefix: `/${locale}/topics`,
         items: topics,
         prev: "api-guide",
         next: "community",
       },
       {
         type: "community",
-        pathPrefix: "/community",
+        pathPrefix: `/${locale}/community`,
         items: communities,
         prev: "topics",
       },
@@ -110,7 +107,7 @@ function DocumentNavigation({
     }
 
     return { prevLink, nextLink };
-  }, [tutorials, apiGuides, topics, communities, pathname]);
+  }, [tutorials, apiGuides, topics, communities, pathname, locale]);
 
   if (pathname === "/") return null;
 

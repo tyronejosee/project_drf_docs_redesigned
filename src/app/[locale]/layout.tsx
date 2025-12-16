@@ -57,6 +57,7 @@ export default async function LocaleLayout({
             apiGuides={apiGuides}
             topics={topics}
             communities={communities}
+            locale={locale}
           />
           <ScrollProgress />
           <BackToTop />

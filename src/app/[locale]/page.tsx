@@ -28,7 +28,7 @@ export async function generateMetadata({
   }
 
   try {
-    const { frontmatter } = await getMdxBySlug(locale, "index");
+    const { frontmatter } = await getMdxBySlug(locale, "index", undefined, true);
     return {
       title: `${frontmatter.title || "Homepage"} - ${PROJECT_NAME}`,
     };
@@ -48,7 +48,7 @@ export default async function LocaleHomePage({ params }: LocaleHomePageProps) {
     redirect(`/${defaultLocale}/`);
   }
 
-  const { code, headings } = await getMdxBySlug(locale, "index");
+  const { code, headings } = await getMdxBySlug(locale, "index", undefined, true);
 
   return (
     <main className="prose dark:prose-invert break-words mx-auto sm:pb-56">

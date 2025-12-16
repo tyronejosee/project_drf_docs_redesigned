@@ -32,7 +32,8 @@ export async function generateMetadata({
     const { frontmatter } = await getMdxBySlug(
       locale,
       pageSlug,
-      type as CategoryType
+      type as CategoryType,
+      true
     );
 
     return {
@@ -66,7 +67,8 @@ export default async function ContentPage({ params }: ContentPageProps) {
     const { code, headings } = await getMdxBySlug(
       locale,
       pageSlug,
-      contentType
+      contentType,
+      true
     );
     return (
       <main className="prose dark:prose-invert break-words scroll-mt-60 mx-auto sm:pb-56">
