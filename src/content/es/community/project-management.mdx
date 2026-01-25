@@ -1,109 +1,109 @@
 ---
-title: "Project management"
-keywords: ["django", "rest", "framework", "api", "project", "management"]
+title: "Gestión del proyecto"
+keywords: ["django", "rest", "framework", "api", "proyecto", "gestión"]
 order: 4
 ---
 
-# Project management
+# Gestión del proyecto
 
-> "No one can whistle a symphony; it takes a whole orchestra to play it"
+> "Nadie puede silbar una sinfonía; se necesita una orquesta completa para tocarla"
 >
 > &mdash; Halford E. Luccock
 
-This document outlines our project management processes for REST framework.
+Este documento describe nuestros procesos de gestión de proyectos para REST framework.
 
-The aim is to ensure that the project has a high
-["bus factor"][bus-factor], and can continue to remain well supported for the foreseeable future. Suggestions for improvements to our process are welcome.
-
----
-
-## Maintenance team
-
-[Participating actively in the REST framework project](contributing.md) **does not require being part of the maintenance team**. Almost every important part of issue triage and project improvement can be actively worked on regardless of your collaborator status on the repository.
-
-#### Composition
-
-The composition of the maintenance team is handled by [@tomchristie](https://github.com/encode/). Team members will be added as collaborators to the repository.
-
-#### Responsibilities
-
-Team members have the following responsibilities.
-
-- Close invalid or resolved tickets.
-- Add triage labels and milestones to tickets.
-- Merge finalized pull requests.
-- Build and deploy the documentation, using `mkdocs gh-deploy`.
-- Build and update the included translation packs.
-
-Further notes for maintainers:
-
-- Code changes should come in the form of a pull request - do not push directly to master.
-- Maintainers should typically not merge their own pull requests.
-- Each issue/pull request should have exactly one label once triaged.
+El objetivo es asegurar que el proyecto tenga un alto
+["factor bus"][bus-factor], y pueda continuar siendo bien soportado en el futuro previsible. Las sugerencias de mejora para nuestro proceso son bienvenidas.
 
 ---
 
-## Release process
+## Equipo de mantenimiento
 
-- The release manager is selected by `@tomchristie`.
-- The release manager will then have the maintainer role added to PyPI package.
-- The previous manager will then have the maintainer role removed from the PyPI package.
+[Participar activamente en el proyecto REST framework](contributing.md) **no requiere ser parte del equipo de mantenimiento**. Casi todas las partes importantes de la triaje de problemas y mejora del proyecto pueden ser trabajadas activamente independientemente de tu estado de colaborador en el repositorio.
 
-Our PyPI releases will be handled by either the current release manager, or by `@tomchristie`. Every release should have an open issue tagged with the `Release` label and marked against the appropriate milestone.
+#### Composición
 
-The following template should be used for the description of the issue, and serves as a release checklist.
+La composición del equipo de mantenimiento es manejada por [@tomchristie](https://github.com/encode/). Los miembros del equipo serán agregados como colaboradores al repositorio.
+
+#### Responsabilidades
+
+Los miembros del equipo tienen las siguientes responsabilidades.
+
+- Cerrar tickets inválidos o resueltos.
+- Agregar etiquetas de triaje y hitos a los tickets.
+- Fusionar pull requests finalizados.
+- Construir y desplegar la documentación, usando `mkdocs gh-deploy`.
+- Construir y actualizar los paquetes de traducción incluidos.
+
+Notas adicionales para mantenedores:
+
+- Los cambios de código deben venir en forma de pull request - no hacer push directamente a master.
+- Los mantenedores generalmente no deben fusionar sus propios pull requests.
+- Cada issue/pull request debe tener exactamente una etiqueta una vez triajado.
+
+---
+
+## Proceso de lanzamiento
+
+- El gestor de lanzamientos es seleccionado por `@tomchristie`.
+- El gestor de lanzamientos luego tendrá el rol de mantenedor agregado al paquete PyPI.
+- El gestor anterior luego tendrá el rol de mantenedor eliminado del paquete PyPI.
+
+Nuestros lanzamientos en PyPI serán manejados por el gestor de lanzamiento actual, o por `@tomchristie`. Cada lanzamiento debe tener un issue abierto etiquetado con la etiqueta `Release` y marcado contra el hito apropiado.
+
+La siguiente plantilla debe ser usada para la descripción del issue, y sirve como una lista de verificación de lanzamiento.
 
 ```markdown
-Release manager is @**_.
-Pull request is #_**.
+El gestor de lanzamiento es @**_.
+El pull request es #_**.
 
-During development cycle:
+Durante el ciclo de desarrollo:
 
-- [ ] Upload the new content to be translated to [transifex](https://www.django-rest-framework.org/topics/project-management/#translations).
+- [ ] Subir el nuevo contenido para ser traducido a [transifex](https://www.django-rest-framework.org/topics/project-management/#translations).
 
-Checklist:
+Lista de verificación:
 
-- [ ] Create pull request for [release notes](https://github.com/encode/django-rest-framework/blob/master/docs/topics/release-notes.md) based on the [_._.\* milestone](https://github.com/encode/django-rest-framework/milestones/***).
-- [ ] Update supported versions:
-  - [ ] `setup.py` `python_requires` list
-  - [ ] `setup.py` Python & Django version trove classifiers
-  - [ ] `README` Python & Django versions
-  - [ ] `docs` Python & Django versions
-- [ ] Update the translations from [transifex](https://www.django-rest-framework.org/topics/project-management/#translations).
-- [ ] Ensure the pull request increments the version to `*.*.*` in [`restframework/__init__.py`](https://github.com/encode/django-rest-framework/blob/master/rest_framework/__init__.py).
-- [ ] Ensure documentation validates
-  - Build and serve docs `mkdocs serve`
-  - Validate links `pylinkvalidate.py -P http://127.0.0.1:8000`
-- [ ] Confirm with @tomchristie that release is finalized and ready to go.
-- [ ] Ensure that release date is included in pull request.
-- [ ] Merge the release pull request.
-- [ ] Push the package to PyPI with `./setup.py publish`.
-- [ ] Tag the release, with `git tag -a *.*.* -m 'version *.*.*'; git push --tags`.
-- [ ] Deploy the documentation with `mkdocs gh-deploy`.
-- [ ] Make a release announcement on the [discussion group](https://groups.google.com/forum/?fromgroups#!forum/django-rest-framework).
-- [ ] Make a release announcement on twitter.
-- [ ] Close the milestone on GitHub.
+- [ ] Crear pull request para [notas de lanzamiento](https://github.com/encode/django-rest-framework/blob/master/docs/topics/release-notes.md) basadas en el [hito _._.\*](https://github.com/encode/django-rest-framework/milestones/***).
+- [ ] Actualizar versiones soportadas:
+  - [ ] lista `setup.py` `python_requires`
+  - [ ] clasificadores de versión Python & Django en `setup.py`
+  - [ ] versiones Python & Django en `README`
+  - [ ] versiones Python & Django en `docs`
+- [ ] Actualizar las traducciones desde [transifex](https://www.django-rest-framework.org/topics/project-management/#translations).
+- [ ] Asegurar que el pull request incremente la versión a `*.*.*` en [`restframework/__init__.py`](https://github.com/encode/django-rest-framework/blob/master/rest_framework/__init__.py).
+- [ ] Asegurar que la documentación sea válida
+  - Construir y servir docs `mkdocs serve`
+  - Validar enlaces `pylinkvalidate.py -P http://127.0.0.1:8000`
+- [ ] Confirmar con @tomchristie que el lanzamiento está finalizado y listo para salir.
+- [ ] Asegurar que la fecha de lanzamiento esté incluida en el pull request.
+- [ ] Fusionar el pull request de lanzamiento.
+- [ ] Subir el paquete a PyPI con `./setup.py publish`.
+- [ ] Etiquetar el lanzamiento, con `git tag -a *.*.* -m 'versión *.*.*'; git push --tags`.
+- [ ] Desplegar la documentación con `mkdocs gh-deploy`.
+- [ ] Hacer un anuncio de lanzamiento en el [grupo de discusión](https://groups.google.com/forum/?fromgroups#!forum/django-rest-framework).
+- [ ] Hacer un anuncio de lanzamiento en twitter.
+- [ ] Cerrar el hito en GitHub.
 
-To modify this process for future releases make a pull request to the [project management](https://www.django-rest-framework.org/topics/project-management/) documentation.
+Para modificar este proceso para lanzamientos futuros, haz un pull request a la documentación de [gestión del proyecto](https://www.django-rest-framework.org/topics/project-management/).
 ```
 
-When pushing the release to PyPI ensure that your environment has been installed from our development `requirement.txt`, so that documentation and PyPI installs are consistently being built against a pinned set of packages.
+Al subir el lanzamiento a PyPI, asegúrate de que tu entorno ha sido instalado desde nuestro `requirement.txt` de desarrollo, para que la documentación y las instalaciones de PyPI se construyan consistentemente contra un conjunto anclado de paquetes.
 
 ---
 
-## Translations
+## Traducciones
 
-The maintenance team are responsible for managing the translation packs include in REST framework. Translating the source strings into multiple languages is managed through the [transifex service][transifex-project].
+El equipo de mantenimiento es responsable de gestionar los paquetes de traducción incluidos en REST framework. La traducción de las cadenas fuente a múltiples idiomas se gestiona a través del [servicio transifex][transifex-project].
 
-### Managing Transifex
+### Gestionando Transifex
 
-The [official Transifex client][transifex-client] is used to upload and download translations to Transifex. The client is installed using pip:
+El [cliente oficial de Transifex][transifex-client] se usa para subir y descargar traducciones a Transifex. El cliente se instala usando pip:
 
 ```bash
 pip install transifex-client
 ```
 
-To use it you'll need a login to Transifex which has a password, and you'll need to have administrative access to the Transifex project. You'll need to create a `~/.transifexrc` file which contains your credentials.
+Para usarlo necesitarás un login en Transifex que tenga una contraseña, y necesitarás tener acceso administrativo al proyecto Transifex. Necesitarás crear un archivo `~/.transifexrc` que contenga tus credenciales.
 
 ```bash
 [https://www.transifex.com]
@@ -113,62 +113,62 @@ password = ***
 hostname = https://www.transifex.com
 ```
 
-### Upload new source files
+### Subir nuevos archivos fuente
 
-When any user visible strings are changed, they should be uploaded to Transifex so that the translators can start to translate them. To do this, just run:
+Cuando cualquier cadena visible por el usuario es cambiada, debe ser subida a Transifex para que los traductores puedan empezar a traducirlas. Para hacer esto, simplemente ejecuta:
 
 ```bash
-# 1. Update the source django.po file, which is the US English version.
+# 1. Actualizar el archivo django.po fuente, que es la versión en inglés estadounidense.
 cd rest_framework
 django-admin makemessages -l en_US
-# 2. Push the source django.po file to Transifex.
+# 2. Subir el archivo django.po fuente a Transifex.
 cd ..
 tx push -s
 ```
 
-When pushing source files, Transifex will update the source strings of a resource to match those from the new source file.
+Al subir archivos fuente, Transifex actualizará las cadenas fuente de un recurso para que coincidan con las del nuevo archivo fuente.
 
-Here's how differences between the old and new source files will be handled:
+Así es como se manejarán las diferencias entre los archivos fuente viejos y nuevos:
 
-- New strings will be added.
-- Modified strings will be added as well.
-- Strings which do not exist in the new source file will be removed from the database, along with their translations. If that source strings gets re-added later then [Transifex Translation Memory][translation-memory] will automatically include the translation string.
+- Las nuevas cadenas serán agregadas.
+- Las cadenas modificadas también serán agregadas.
+- Las cadenas que no existen en el nuevo archivo fuente serán eliminadas de la base de datos, junto con sus traducciones. Si esas cadenas fuente se vuelven a agregar más tarde, la [Memoria de Traducción de Transifex][translation-memory] incluirá automáticamente la cadena de traducción.
 
-### Download translations
+### Descargar traducciones
 
-When a translator has finished translating their work needs to be downloaded from Transifex into the REST framework repository. To do this, run:
+Cuando un traductor ha terminado de traducir, su trabajo necesita ser descargado de Transifex al repositorio REST framework. Para hacer esto, ejecuta:
 
 ```bash
-# 3. Pull the translated django.po files from Transifex.
+# 3. Descargar los archivos django.po traducidos de Transifex.
 tx pull -a --minimum-perc 10
 cd rest_framework
-# 4. Compile the binary .mo files for all supported languages.
+# 4. Compilar los archivos binarios .mo para todos los idiomas soportados.
 django-admin compilemessages
 ```
 
 ---
 
-## Project requirements
+## Requisitos del proyecto
 
-All our test requirements are pinned to exact versions, in order to ensure that our test runs are reproducible. We maintain the requirements in the `requirements` directory. The requirements files are referenced from the `tox.ini` configuration file, ensuring we have a single source of truth for package versions used in testing.
+Todos nuestros requisitos de prueba están anclados a versiones exactas, para asegurar que nuestras ejecuciones de prueba sean reproducibles. Mantenemos los requisitos en el directorio `requirements`. Los archivos de requisitos son referenciados desde el archivo de configuración `tox.ini`, asegurando que tengamos una única fuente de verdad para las versiones de paquetes usadas en las pruebas.
 
-Package upgrades should generally be treated as isolated pull requests. You can check if there are any packages available at a newer version, by using the `pip list --outdated`.
+Las actualizaciones de paquetes generalmente deben ser tratadas como pull requests aislados. Puedes verificar si hay paquetes disponibles en una versión más nueva, usando `pip list --outdated`.
 
 ---
 
-## Project ownership
+## Propiedad del proyecto
 
-The PyPI package is owned by `@tomchristie`. As a backup `@j4mie` also has ownership of the package.
+El paquete PyPI es propiedad de `@tomchristie`. Como respaldo, `@j4mie` también tiene propiedad del paquete.
 
-If `@tomchristie` ceases to participate in the project then `@j4mie` has responsibility for handing over ownership duties.
+Si `@tomchristie` deja de participar en el proyecto, entonces `@j4mie` tiene la responsabilidad de transferir los deberes de propiedad.
 
-#### Outstanding management & ownership issues
+#### Problemas pendientes de gestión y propiedad
 
-The following issues still need to be addressed:
+Los siguientes problemas aún necesitan ser abordados:
 
-- Ensure `@j4mie` has back-up access to the `django-rest-framework.org` domain setup and admin.
-- Document ownership of the [mailing list][mailing-list] and IRC channel.
-- Document ownership and management of the security mailing list.
+- Asegurar que `@j4mie` tenga acceso de respaldo a la configuración y administración del dominio `django-rest-framework.org`.
+- Documentar la propiedad de la [lista de correo][mailing-list] y el canal IRC.
+- Documentar la propiedad y gestión de la lista de correo de seguridad.
 
 [bus-factor]: https://en.wikipedia.org/wiki/Bus_factor
 [transifex-project]: https://www.transifex.com/projects/p/django-rest-framework/

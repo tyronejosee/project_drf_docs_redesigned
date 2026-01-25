@@ -1,138 +1,138 @@
 ---
-title: "Requests"
-keywords: ["django", "rest", "framework", "api", "requests"]
+title: "Solicitudes"
+keywords: ["django", "rest", "framework", "api", "solicitudes"]
 order: 1
 ---
 
-# Requests
+# Solicitudes
 
-> If you're doing REST-based web service stuff ... you should ignore request.POST.
+> Si estás haciendo cosas de servicio web basado en REST ... deberías ignorar request.POST.
 >
 > &mdash; Malcom Tredinnick, [Django developers group][cite]
 
-REST framework's `Request` class extends the standard `HttpRequest`, adding support for REST framework's flexible request parsing and request authentication.
+La clase `Request` de REST framework extiende el `HttpRequest` estándar, añadiendo soporte para el análisis flexible de solicitudes y autenticación de solicitudes de REST framework.
 
 ---
 
-# Request parsing
+# Análisis de solicitudes
 
-REST framework's Request objects provide flexible request parsing that allows you to treat requests with JSON data or other media types in the same way that you would normally deal with form data.
+Los objetos Request de REST framework proporcionan análisis flexible de solicitudes que te permite tratar solicitudes con datos JSON u otros tipos de medios de la misma manera que normalmente tratarías datos de formulario.
 
 ## .data
 
-`request.data` returns the parsed content of the request body. This is similar to the standard `request.POST` and `request.FILES` attributes except that:
+`request.data` devuelve el contenido analizado del cuerpo de la solicitud. Esto es similar a los atributos estándar `request.POST` y `request.FILES` excepto que:
 
-- It includes all parsed content, including _file and non-file_ inputs.
-- It supports parsing the content of HTTP methods other than `POST`, meaning that you can access the content of `PUT` and `PATCH` requests.
-- It supports REST framework's flexible request parsing, rather than just supporting form data. For example you can handle incoming [JSON data] similarly to how you handle incoming [form data].
+- Incluye todo el contenido analizado, incluyendo entradas de _archivo y no archivo_.
+- Soporta el análisis del contenido de métodos HTTP distintos de `POST`, lo que significa que puedes acceder al contenido de solicitudes `PUT` y `PATCH`.
+- Soporta el análisis flexible de solicitudes de REST framework, en lugar de solo soportar datos de formulario. Por ejemplo, puedes manejar [datos JSON] entrantes de manera similar a como manejas [datos de formulario] entrantes.
 
-For more details see the [parsers documentation].
+Para más detalles consulta la [documentación de analizadores].
 
 ## .query_params
 
-`request.query_params` is a more correctly named synonym for `request.GET`.
+`request.query_params` es un sinónimo con un nombre más correcto para `request.GET`.
 
-For clarity inside your code, we recommend using `request.query_params` instead of the Django's standard `request.GET`. Doing so will help keep your codebase more correct and obvious - any HTTP method type may include query parameters, not just `GET` requests.
+Para mayor claridad en tu código, recomendamos usar `request.query_params` en lugar del `request.GET` estándar de Django. Hacerlo ayudará a mantener tu base de código más correcta y obvia - cualquier tipo de método HTTP puede incluir parámetros de consulta, no solo solicitudes `GET`.
 
 ## .parsers
 
-The `APIView` class or `@api_view` decorator will ensure that this property is automatically set to a list of `Parser` instances, based on the `parser_classes` set on the view or based on the `DEFAULT_PARSER_CLASSES` setting.
+La clase `APIView` o el decorador `@api_view` asegurarán que esta propiedad se establezca automáticamente en una lista de instancias de `Parser`, basándose en las `parser_classes` establecidas en la vista o en la configuración `DEFAULT_PARSER_CLASSES`.
 
-You won't typically need to access this property.
-
----
-
-**Note:** If a client sends malformed content, then accessing `request.data` may raise a `ParseError`. By default REST framework's `APIView` class or `@api_view` decorator will catch the error and return a `400 Bad Request` response.
-
-If a client sends a request with a content-type that cannot be parsed then a `UnsupportedMediaType` exception will be raised, which by default will be caught and return a `415 Unsupported Media Type` response.
+Normalmente no necesitarás acceder a esta propiedad.
 
 ---
 
-# Content negotiation
+**Nota:** Si un cliente envía contenido malformado, al acceder a `request.data` puede lanzarse una `ParseError`. Por defecto, la clase `APIView` o el decorador `@api_view` de REST framework capturarán el error y devolverán una respuesta `400 Bad Request`.
 
-The request exposes some properties that allow you to determine the result of the content negotiation stage. This allows you to implement behavior such as selecting a different serialization schemes for different media types.
+Si un cliente envía una solicitud con un tipo de contenido que no puede ser analizado, se lanzará una excepción `UnsupportedMediaType`, que por defecto será capturada y devolverá una respuesta `415 Unsupported Media Type`.
+
+---
+
+# Negociación de contenido
+
+La solicitud expone algunas propiedades que te permiten determinar el resultado de la etapa de negociación de contenido. Esto te permite implementar comportamientos como seleccionar diferentes esquemas de serialización para diferentes tipos de medios.
 
 ## .accepted_renderer
 
-The renderer instance that was selected by the content negotiation stage.
+La instancia del renderizador que fue seleccionada por la etapa de negociación de contenido.
 
 ## .accepted_media_type
 
-A string representing the media type that was accepted by the content negotiation stage.
+Una cadena que representa el tipo de medio que fue aceptado por la etapa de negociación de contenido.
 
 ---
 
-# Authentication
+# Autenticación
 
-REST framework provides flexible, per-request authentication, that gives you the ability to:
+REST framework proporciona autenticación flexible por solicitud, que te da la capacidad de:
 
-- Use different authentication policies for different parts of your API.
-- Support the use of multiple authentication policies.
-- Provide both user and token information associated with the incoming request.
+- Usar diferentes políticas de autenticación para diferentes partes de tu API.
+- Soportar el uso de múltiples políticas de autenticación.
+- Proporcionar tanto información de usuario como de token asociada con la solicitud entrante.
 
 ## .user
 
-`request.user` typically returns an instance of `django.contrib.auth.models.User`, although the behavior depends on the authentication policy being used.
+`request.user` típicamente devuelve una instancia de `django.contrib.auth.models.User`, aunque el comportamiento depende de la política de autenticación being utilizada.
 
-If the request is unauthenticated the default value of `request.user` is an instance of `django.contrib.auth.models.AnonymousUser`.
+Si la solicitud no está autenticada, el valor predeterminado de `request.user` es una instancia de `django.contrib.auth.models.AnonymousUser`.
 
-For more details see the [authentication documentation].
+Para más detalles consulta la [documentación de autenticación].
 
 ## .auth
 
-`request.auth` returns any additional authentication context. The exact behavior of `request.auth` depends on the authentication policy being used, but it may typically be an instance of the token that the request was authenticated against.
+`request.auth` devuelve cualquier contexto de autenticación adicional. El comportamiento exacto de `request.auth` depende de la política de autenticación being utilizada, pero típicamente puede ser una instancia del token contra el cual fue autenticada la solicitud.
 
-If the request is unauthenticated, or if no additional context is present, the default value of `request.auth` is `None`.
+Si la solicitud no está autenticada, o si no hay contexto adicional presente, el valor predeterminado de `request.auth` es `None`.
 
-For more details see the [authentication documentation].
+Para más detalles consulta la [documentación de autenticación].
 
 ## .authenticators
 
-The `APIView` class or `@api_view` decorator will ensure that this property is automatically set to a list of `Authentication` instances, based on the `authentication_classes` set on the view or based on the `DEFAULT_AUTHENTICATORS` setting.
+La clase `APIView` o el decorador `@api_view` asegurarán que esta propiedad se establezca automáticamente en una lista de instancias de `Authentication`, basándose en las `authentication_classes` establecidas en la vista o en la configuración `DEFAULT_AUTHENTICATORS`.
 
-You won't typically need to access this property.
-
----
-
-**Note:** You may see a `WrappedAttributeError` raised when calling the `.user` or `.auth` properties. These errors originate from an authenticator as a standard `AttributeError`, however it's necessary that they be re-raised as a different exception type in order to prevent them from being suppressed by the outer property access. Python will not recognize that the `AttributeError` originates from the authenticator and will instead assume that the request object does not have a `.user` or `.auth` property. The authenticator will need to be fixed.
+Normalmente no necesitarás acceder a esta propiedad.
 
 ---
 
-# Browser enhancements
+**Nota:** Puedes ver un `WrappedAttributeError` lanzado al llamar a las propiedades `.user` o `.auth`. Estos errores se originan en un autenticador como un `AttributeError` estándar, sin embargo, es necesario que se relancen como un tipo de excepción diferente para evitar que sean suprimidos por el acceso a la propiedad externa. Python no reconocerá que el `AttributeError` se origina en el autenticador y en su lugar asumirá que el objeto de solicitud no tiene una propiedad `.user` o `.auth`. El autenticador necesitará ser corregido.
 
-REST framework supports a few browser enhancements such as browser-based `PUT`, `PATCH` and `DELETE` forms.
+---
+
+# Mejoras del navegador
+
+REST framework soporta algunas mejoras del navegador como formularios `PUT`, `PATCH` y `DELETE` basados en navegador.
 
 ## .method
 
-`request.method` returns the **uppercased** string representation of the request's HTTP method.
+`request.method` devuelve la representación en cadena **en mayúsculas** del método HTTP de la solicitud.
 
-Browser-based `PUT`, `PATCH` and `DELETE` forms are transparently supported.
+Los formularios `PUT`, `PATCH` y `DELETE` basados en navegador son soportados de forma transparente.
 
-For more information see the [browser enhancements documentation].
+Para más información consulta la [documentación de mejoras del navegador].
 
 ## .content_type
 
-`request.content_type`, returns a string object representing the media type of the HTTP request's body, or an empty string if no media type was provided.
+`request.content_type` devuelve un objeto de cadena que representa el tipo de medio del cuerpo de la solicitud HTTP, o una cadena vacía si no se proporcionó ningún tipo de medio.
 
-You won't typically need to directly access the request's content type, as you'll normally rely on REST framework's default request parsing behavior.
+Normalmente no necesitarás acceder directamente al tipo de contenido de la solicitud, ya que normalmente dependerás del comportamiento de análisis de solicitudes predeterminado de REST framework.
 
-If you do need to access the content type of the request you should use the `.content_type` property in preference to using `request.META.get('HTTP_CONTENT_TYPE')`, as it provides transparent support for browser-based non-form content.
+Si necesitas acceder al tipo de contenido de la solicitud, deberías usar la propiedad `.content_type` en lugar de usar `request.META.get('HTTP_CONTENT_TYPE')`, ya que proporciona soporte transparente para contenido no basado en formularios del navegador.
 
-For more information see the [browser enhancements documentation].
+Para más información consulta la [documentación de mejoras del navegador].
 
 ## .stream
 
-`request.stream` returns a stream representing the content of the request body.
+`request.stream` devuelve un flujo que representa el contenido del cuerpo de la solicitud.
 
-You won't typically need to directly access the request's content, as you'll normally rely on REST framework's default request parsing behavior.
+Normalmente no necesitarás acceder directamente al contenido de la solicitud, ya que normalmente dependerás del comportamiento de análisis de solicitudes predeterminado de REST framework.
 
 ---
 
-# Standard HttpRequest attributes
+# Atributos estándar de HttpRequest
 
-As REST framework's `Request` extends Django's `HttpRequest`, all the other standard attributes and methods are also available. For example the `request.META` and `request.session` dictionaries are available as normal.
+Como el `Request` de REST framework extiende el `HttpRequest` de Django, todos los otros atributos y métodos estándar también están disponibles. Por ejemplo, los diccionarios `request.META` y `request.session` están disponibles de forma normal.
 
-Note that due to implementation reasons the `Request` class does not inherit from `HttpRequest` class, but instead extends the class using composition.
+Ten en cuenta que por razones de implementación la clase `Request` no hereda de la clase `HttpRequest`, sino que extiende la clase usando composición.
 
 [cite]: https://groups.google.com/d/topic/django-developers/dxI4qVzrBY4/discussion
 [parsers documentation]: parsers.md

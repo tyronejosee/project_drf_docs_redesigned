@@ -1,37 +1,37 @@
 ---
-title: "Exceptions"
-keywords: ["django", "rest", "framework", "api", "exceptions"]
+title: "Excepciones"
+keywords: ["django", "rest", "framework", "api", "excepciones"]
 order: 24
 ---
 
-# Exceptions
+# Excepciones
 
-> Exceptions… allow error handling to be organized cleanly in a central or high-level place within the program structure.
+> Las excepciones... permiten organizar el manejo de errores de forma clara en un punto central o de alto nivel dentro de la estructura del programa.
 >
 > &mdash; Doug Hellmann, [Python Exception Handling Techniques][cite]
 
-## Exception handling in REST framework views
+## Manejo de excepciones en vistas de REST framework
 
-REST framework's views handle various exceptions, and deal with returning appropriate error responses.
+Las vistas de REST framework gestionan diversas excepciones y devuelven respuestas de error apropiadas.
 
-The handled exceptions are:
+Las excepciones manejadas son:
 
-- Subclasses of `APIException` raised inside REST framework.
-- Django's `Http404` exception.
-- Django's `PermissionDenied` exception.
+- Subclases de `APIException` lanzadas dentro de REST framework.
+- La excepción `Http404` de Django.
+- La excepción `PermissionDenied` de Django.
 
-In each case, REST framework will return a response with an appropriate status code and content-type. The body of the response will include any additional details regarding the nature of the error.
+En cada caso, REST framework devolverá una respuesta con un código de estado y un tipo de contenido apropiados. El cuerpo de la respuesta incluirá cualquier detalle adicional sobre la naturaleza del error.
 
-Most error responses will include a key `detail` in the body of the response.
+La mayoría de las respuestas de error incluirán una clave `detail` en el cuerpo de la respuesta.
 
-For example, the following request:
+Por ejemplo, la siguiente solicitud:
 
 ```http
 DELETE http://api.example.com/foo/bar HTTP/1.1
 Accept: application/json
 ```
 
-Might receive an error response indicating that the `DELETE` method is not allowed on that resource:
+Podría recibir una respuesta de error indicando que el método `DELETE` no está permitido en ese recurso:
 
 ```http
 HTTP/1.1 405 Method Not Allowed
@@ -43,9 +43,9 @@ Content-Length: 42
 { "detail": "Method 'DELETE' not allowed." }
 ```
 
-Validation errors are handled slightly differently, and will include the field names as the keys in the response. If the validation error was not specific to a particular field then it will use the "non_field_errors" key, or whatever string value has been set for the `NON_FIELD_ERRORS_KEY` setting.
+Los errores de validación se manejan de forma ligeramente distinta e incluirán los nombres de los campos como claves en la respuesta. Si el error de validación no es específico de un campo en particular, usará la clave "non_field_errors" o el valor de cadena configurado en la opción `NON_FIELD_ERRORS_KEY`.
 
-An example validation error might look like this:
+Un ejemplo de error de validación podría verse así:
 
 ```http
 HTTP/1.1 400 Bad Request
@@ -60,13 +60,13 @@ Content-Length: 94
 }
 ```
 
-## Custom exception handling
+## Manejo de excepciones personalizado
 
-You can implement custom exception handling by creating a handler function that converts exceptions raised in your API views into response objects. This allows you to control the style of error responses used by your API.
+Puede implementar un manejo de excepciones personalizado creando una función handler que convierta las excepciones lanzadas en sus vistas de API en objetos `Response`. Esto le permite controlar el estilo de las respuestas de error usadas por su API.
 
-The function must take a pair of arguments, the first is the exception to be handled, and the second is a dictionary containing any extra context such as the view currently being handled. The exception handler function should either return a `Response` object, or return `None` if the exception cannot be handled. If the handler returns `None` then the exception will be re-raised and Django will return a standard HTTP 500 'server error' response.
+La función debe aceptar un par de argumentos: el primero es la excepción a manejar y el segundo es un diccionario que contiene contexto adicional, como la vista que se está procesando. La función handler debe devolver un objeto `Response`, o `None` si la excepción no puede ser manejada. Si el handler devuelve `None`, la excepción volverá a lanzarse y Django devolverá una respuesta HTTP 500 estándar ('server error').
 
-For example, you might want to ensure that all error responses include the HTTP status code in the body of the response, like so:
+Por ejemplo, puede que quiera asegurarse de que todas las respuestas de error incluyan el código de estado HTTP en el cuerpo de la respuesta, de la siguiente manera:
 
 ```http
 HTTP/1.1 405 Method Not Allowed
@@ -81,26 +81,26 @@ Content-Length: 62
 }
 ```
 
-In order to alter the style of the response, you could write the following custom exception handler:
+Para alterar el estilo de la respuesta, podría escribir el siguiente handler de excepción personalizado:
 
 ```python
 from rest_framework.views import exception_handler
 
 def custom_exception_handler(exc, context):
-    # Call REST framework's default exception handler first,
-    # to get the standard error response.
+    # Llama primero al handler de excepciones por defecto de REST framework
+    # para obtener la respuesta de error estándar.
     response = exception_handler(exc, context)
 
-    # Now add the HTTP status code to the response.
+    # Ahora añade el código de estado HTTP a la respuesta.
     if response is not None:
         response.data['status_code'] = response.status_code
 
     return response
 ```
 
-The context argument is not used by the default handler, but can be useful if the exception handler needs further information such as the view currently being handled, which can be accessed as `context['view']`.
+El argumento `context` no es utilizado por el handler por defecto, pero puede ser útil si el handler personalizado necesita información adicional, como la vista en proceso, que puede obtenerse como `context['view']`.
 
-The exception handler must also be configured in your settings, using the `EXCEPTION_HANDLER` setting key. For example:
+El handler de excepciones también debe configurarse en sus settings, usando la clave `EXCEPTION_HANDLER`. Por ejemplo:
 
 ```python
 REST_FRAMEWORK = {
@@ -108,7 +108,7 @@ REST_FRAMEWORK = {
 }
 ```
 
-If not specified, the `'EXCEPTION_HANDLER'` setting defaults to the standard exception handler provided by REST framework:
+Si no se especifica, la opción `'EXCEPTION_HANDLER'` por defecto es el handler estándar proporcionado por REST framework:
 
 ```python
 REST_FRAMEWORK = {
@@ -116,21 +116,21 @@ REST_FRAMEWORK = {
 }
 ```
 
-Note that the exception handler will only be called for responses generated by raised exceptions. It will not be used for any responses returned directly by the view, such as the `HTTP_400_BAD_REQUEST` responses that are returned by the generic views when serializer validation fails.
+Tenga en cuenta que el handler de excepciones solo se llamará para respuestas generadas por excepciones lanzadas. No se usará para respuestas que la vista devuelva directamente, como las respuestas `HTTP_400_BAD_REQUEST` que devuelven las vistas genéricas cuando la validación del serializer falla.
 
 ---
 
-# API Reference
+# Referencia de la API
 
 ## APIException
 
-**Signature:** `APIException()`
+**Firma:** `APIException()`
 
-The **base class** for all exceptions raised inside an `APIView` class or `@api_view`.
+La **clase base** para todas las excepciones lanzadas dentro de una clase `APIView` o `@api_view`.
 
-To provide a custom exception, subclass `APIException` and set the `.status_code`, `.default_detail`, and `.default_code` attributes on the class.
+Para proporcionar una excepción personalizada, herede de `APIException` y establezca los atributos `.status_code`, `.default_detail` y `.default_code` en la clase.
 
-For example, if your API relies on a third party service that may sometimes be unreachable, you might want to implement an exception for the "503 Service Unavailable" HTTP response code. You could do this like so:
+Por ejemplo, si su API depende de un servicio externo que a veces puede no estar disponible, podría implementar una excepción para la respuesta HTTP "503 Service Unavailable" así:
 
 ```python
 from rest_framework.exceptions import APIException
@@ -141,19 +141,17 @@ class ServiceUnavailable(APIException):
     default_code = 'service_unavailable'
 ```
 
-#### Inspecting API exceptions
+#### Inspección de excepciones de API
 
-There are a number of different properties available for inspecting the status
-of an API exception. You can use these to build custom exception handling
-for your project.
+Hay varias propiedades disponibles para inspeccionar el estado de una excepción de API. Puede usarlas para crear manejo de excepciones personalizado en su proyecto.
 
-The available attributes and methods are:
+Los atributos y métodos disponibles son:
 
-- `.detail` - Return the textual description of the error.
-- `.get_codes()` - Return the code identifier of the error.
-- `.get_full_details()` - Return both the textual description and the code identifier.
+- `.detail` - Devuelve la descripción textual del error.
+- `.get_codes()` - Devuelve el identificador de código del error.
+- `.get_full_details()` - Devuelve tanto la descripción textual como el identificador de código.
 
-In most cases the error detail will be a simple item:
+En la mayoría de los casos el detalle del error será un elemento simple:
 
 ```bash
 >>> print(exc.detail)
@@ -164,8 +162,7 @@ permission_denied
 {'message':'You do not have permission to perform this action.','code':'permission_denied'}
 ```
 
-In the case of validation errors the error detail will be either a list or
-dictionary of items:
+En el caso de errores de validación, el detalle del error será una lista o un diccionario de elementos:
 
 ```bash
 >>> print(exc.detail)
@@ -178,110 +175,108 @@ dictionary of items:
 
 ## ParseError
 
-**Signature:** `ParseError(detail=None, code=None)`
+**Firma:** `ParseError(detail=None, code=None)`
 
-Raised if the request contains malformed data when accessing `request.data`.
+Se lanza si la solicitud contiene datos malformados al acceder a `request.data`.
 
-By default this exception results in a response with the HTTP status code "400 Bad Request".
+Por defecto, esta excepción produce una respuesta con el código de estado HTTP "400 Bad Request".
 
 ## AuthenticationFailed
 
-**Signature:** `AuthenticationFailed(detail=None, code=None)`
+**Firma:** `AuthenticationFailed(detail=None, code=None)`
 
-Raised when an incoming request includes incorrect authentication.
+Se lanza cuando una solicitud entrante incluye credenciales de autenticación incorrectas.
 
-By default this exception results in a response with the HTTP status code "401 Unauthenticated", but it may also result in a "403 Forbidden" response, depending on the authentication scheme in use. See the [authentication documentation][authentication] for more details.
+Por defecto, esta excepción produce una respuesta con el código de estado HTTP "401 Unauthenticated", pero también puede resultar en una respuesta "403 Forbidden", dependiendo del esquema de autenticación en uso. Consulte la [documentación de autenticación][authentication] para más detalles.
 
 ## NotAuthenticated
 
-**Signature:** `NotAuthenticated(detail=None, code=None)`
+**Firma:** `NotAuthenticated(detail=None, code=None)`
 
-Raised when an unauthenticated request fails the permission checks.
+Se lanza cuando una solicitud no autenticada no supera las comprobaciones de permisos.
 
-By default this exception results in a response with the HTTP status code "401 Unauthenticated", but it may also result in a "403 Forbidden" response, depending on the authentication scheme in use. See the [authentication documentation][authentication] for more details.
+Por defecto, esta excepción produce una respuesta con el código de estado HTTP "401 Unauthenticated", pero también puede resultar en una respuesta "403 Forbidden", dependiendo del esquema de autenticación en uso. Consulte la [documentación de autenticación][authentication] para más detalles.
 
 ## PermissionDenied
 
-**Signature:** `PermissionDenied(detail=None, code=None)`
+**Firma:** `PermissionDenied(detail=None, code=None)`
 
-Raised when an authenticated request fails the permission checks.
+Se lanza cuando una solicitud autenticada no supera las comprobaciones de permisos.
 
-By default this exception results in a response with the HTTP status code "403 Forbidden".
+Por defecto, esta excepción produce una respuesta con el código de estado HTTP "403 Forbidden".
 
 ## NotFound
 
-**Signature:** `NotFound(detail=None, code=None)`
+**Firma:** `NotFound(detail=None, code=None)`
 
-Raised when a resource does not exist at the given URL. This exception is equivalent to the standard `Http404` Django exception.
+Se lanza cuando un recurso no existe en la URL dada. Esta excepción es equivalente a la excepción estándar `Http404` de Django.
 
-By default this exception results in a response with the HTTP status code "404 Not Found".
+Por defecto, esta excepción produce una respuesta con el código de estado HTTP "404 Not Found".
 
 ## MethodNotAllowed
 
-**Signature:** `MethodNotAllowed(method, detail=None, code=None)`
+**Firma:** `MethodNotAllowed(method, detail=None, code=None)`
 
-Raised when an incoming request occurs that does not map to a handler method on the view.
+Se lanza cuando una solicitud entrante no tiene un método manejador en la vista.
 
-By default this exception results in a response with the HTTP status code "405 Method Not Allowed".
+Por defecto, esta excepción produce una respuesta con el código de estado HTTP "405 Method Not Allowed".
 
 ## NotAcceptable
 
-**Signature:** `NotAcceptable(detail=None, code=None)`
+**Firma:** `NotAcceptable(detail=None, code=None)`
 
-Raised when an incoming request occurs with an `Accept` header that cannot be satisfied by any of the available renderers.
+Se lanza cuando una solicitud entrante incluye una cabecera `Accept` que no puede ser satisfecha por ninguno de los renderizadores disponibles.
 
-By default this exception results in a response with the HTTP status code "406 Not Acceptable".
+Por defecto, esta excepción produce una respuesta con el código de estado HTTP "406 Not Acceptable".
 
 ## UnsupportedMediaType
 
-**Signature:** `UnsupportedMediaType(media_type, detail=None, code=None)`
+**Firma:** `UnsupportedMediaType(media_type, detail=None, code=None)`
 
-Raised if there are no parsers that can handle the content type of the request data when accessing `request.data`.
+Se lanza si no hay parsers que puedan manejar el tipo de contenido de los datos de la solicitud al acceder a `request.data`.
 
-By default this exception results in a response with the HTTP status code "415 Unsupported Media Type".
+Por defecto, esta excepción produce una respuesta con el código de estado HTTP "415 Unsupported Media Type".
 
 ## Throttled
 
-**Signature:** `Throttled(wait=None, detail=None, code=None)`
+**Firma:** `Throttled(wait=None, detail=None, code=None)`
 
-Raised when an incoming request fails the throttling checks.
+Se lanza cuando una solicitud entrante no supera las comprobaciones de limitación (throttling).
 
-By default this exception results in a response with the HTTP status code "429 Too Many Requests".
+Por defecto, esta excepción produce una respuesta con el código de estado HTTP "429 Too Many Requests".
 
 ## ValidationError
 
-**Signature:** `ValidationError(detail=None, code=None)`
+**Firma:** `ValidationError(detail=None, code=None)`
 
-The `ValidationError` exception is slightly different from the other `APIException` classes:
+La excepción `ValidationError` es ligeramente distinta de las demás clases `APIException`:
 
-- The `detail` argument may be a list or dictionary of error details, and may also be a nested data structure. By using a dictionary, you can specify field-level errors while performing object-level validation in the `validate()` method of a serializer. For example. `raise serializers.ValidationError({'name': 'Please enter a valid name.'})`
-- By convention you should import the serializers module and use a fully qualified `ValidationError` style, in order to differentiate it from Django's built-in validation error. For example. `raise serializers.ValidationError('This field must be an integer value.')`
+- El argumento `detail` puede ser una lista o un diccionario de detalles del error, y también puede ser una estructura de datos anidada. Al usar un diccionario, puede especificar errores a nivel de campo durante la validación a nivel de objeto en el método `validate()` de un serializer. Por ejemplo: `raise serializers.ValidationError({'name': 'Please enter a valid name.'})`
+- Por convención debe importar el módulo `serializers` y usar la forma totalmente cualificada `ValidationError` para diferenciarla de la excepción de validación incorporada de Django. Por ejemplo: `raise serializers.ValidationError('This field must be an integer value.')`
 
-The `ValidationError` class should be used for serializer and field validation, and by validator classes. It is also raised when calling `serializer.is_valid` with the `raise_exception` keyword argument:
+La clase `ValidationError` debe usarse para la validación de serializers y campos, y por las clases validadoras. También se lanza cuando se llama a `serializer.is_valid` con el argumento `raise_exception`:
 
 ```python
 serializer.is_valid(raise_exception=True)
 ```
 
-The generic views use the `raise_exception=True` flag, which means that you can override the style of validation error responses globally in your API. To do so, use a custom exception handler, as described above.
+Las vistas genéricas usan el flag `raise_exception=True`, lo que significa que puede anular el estilo de las respuestas de error de validación globalmente en su API. Para ello, use un handler de excepciones personalizado, como se describió arriba.
 
-By default this exception results in a response with the HTTP status code "400 Bad Request".
+Por defecto, esta excepción produce una respuesta con el código de estado HTTP "400 Bad Request".
 
 ---
 
-# Generic Error Views
+# Vistas de error genéricas
 
-Django REST Framework provides two error views suitable for providing generic JSON `500` Server Error and
-`400` Bad Request responses. (Django's default error views provide HTML responses, which may not be appropriate for an
-API-only application.)
+Django REST Framework proporciona dos vistas de error adecuadas para ofrecer respuestas JSON genéricas para `500` Server Error y `400` Bad Request. (Las vistas de error por defecto de Django ofrecen respuestas HTML, que pueden no ser apropiadas para una aplicación solo API.)
 
-Use these as per [Django's Customizing error views documentation][django-custom-error-views].
+Úselas según la [documentación de Django sobre personalización de vistas de error][django-custom-error-views].
 
 ## `rest_framework.exceptions.server_error`
 
-Returns a response with status code `500` and `application/json` content type.
+Devuelve una respuesta con código de estado `500` y tipo de contenido `application/json`.
 
-Set as `handler500`:
+Configúrelo como `handler500`:
 
 ```python
 handler500 = 'rest_framework.exceptions.server_error'
@@ -289,21 +284,21 @@ handler500 = 'rest_framework.exceptions.server_error'
 
 ## `rest_framework.exceptions.bad_request`
 
-Returns a response with status code `400` and `application/json` content type.
+Devuelve una respuesta con código de estado `400` y tipo de contenido `application/json`.
 
-Set as `handler400`:
+Configúrelo como `handler400`:
 
 ```python
 handler400 = 'rest_framework.exceptions.bad_request'
 ```
 
-## Third party packages
+## Paquetes de terceros
 
-The following third-party packages are also available.
+Los siguientes paquetes de terceros también están disponibles.
 
 ### DRF Standardized Errors
 
-The [drf-standardized-errors][drf-standardized-errors] package provides an exception handler that generates the same format for all 4xx and 5xx responses. It is a drop-in replacement for the default exception handler and allows customizing the error response format without rewriting the whole exception handler. The standardized error response format is easier to document and easier to handle by API consumers.
+El paquete [drf-standardized-errors][drf-standardized-errors] proporciona un handler de excepciones que genera el mismo formato para todas las respuestas 4xx y 5xx. Es un reemplazo plug-and-play del handler por defecto y permite personalizar el formato de la respuesta de error sin reescribir todo el handler. El formato estandarizado de respuesta de error es más fácil de documentar y de manejar para los consumidores de la API.
 
 [cite]: https://doughellmann.com/blog/2009/06/19/python-exception-handling-techniques/
 [authentication]: authentication.md

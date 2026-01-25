@@ -1,39 +1,39 @@
 ---
-title: "Throttling"
-keywords: ["django", "rest", "framework", "api", "throttling"]
+title: "Estrangulación"
+keywords: ["django", "rest", "framework", "api", "estrangulación"]
 order: 15
 ---
 
-# Throttling
+# Estrangulación
 
 > HTTP/1.1 420 Enhance Your Calm
 >
-> [Twitter API rate limiting response][cite]
+> [Respuesta de limitación de tasa de la API de Twitter][cite]
 
-Throttling is similar to [permissions], in that it determines if a request should be authorized. Throttles indicate a temporary state, and are used to control the rate of requests that clients can make to an API.
+La estrangulación es similar a los [permisos], en que determina si una solicitud debería ser autorizada. Las estrangulaciones indican un estado temporal, y se usan para controlar la tasa de solicitudes que los clientes pueden hacer a una API.
 
-As with permissions, multiple throttles may be used. Your API might have a restrictive throttle for unauthenticated requests, and a less restrictive throttle for authenticated requests.
+Al igual que con los permisos, pueden usarse múltiples estrangulaciones. Tu API podría tener una estrangulación restrictiva para solicitudes no autenticadas, y una estrangulación menos restrictiva para solicitudes autenticadas.
 
-Another scenario where you might want to use multiple throttles would be if you need to impose different constraints on different parts of the API, due to some services being particularly resource-intensive.
+Otro escenario donde podrías querer usar múltiples estrangulaciones sería si necesitas imponer diferentes restricciones en diferentes partes de la API, debido a que algunos servicios son particularmente intensivos en recursos.
 
-Multiple throttles can also be used if you want to impose both burst throttling rates, and sustained throttling rates. For example, you might want to limit a user to a maximum of 60 requests per minute, and 1000 requests per day.
+También pueden usarse múltiples estrangulaciones si quieres imponer tanto tasas de estrangulación de ráfaga, como tasas de estrangulación sostenidas. Por ejemplo, podrías querer limitar un usuario a un máximo de 60 solicitudes por minuto, y 1000 solicitudes por día.
 
-Throttles do not necessarily only refer to rate-limiting requests. For example a storage service might also need to throttle against bandwidth, and a paid data service might want to throttle against a certain number of a records being accessed.
+Las estrangulaciones no necesariamente se refieren solo a la limitación de tasa de solicitudes. Por ejemplo, un servicio de almacenamiento también podría necesitar estrangular contra el ancho de banda, y un servicio de datos pagado podría querer estrangular contra un cierto número de registros siendo accedidos.
 
-\*\*The application-level throttling that REST framework provides should not be considered a security measure or protection against brute forcing or denial-of-service attacks. Deliberately malicious actors will always be able to spoof IP origins. In addition to this, the built-in throttling implementations are implemented using Django's cache framework, and use non-atomic operations to determine the request rate, which may sometimes result in some fuzziness.
+**La estrangulación a nivel de aplicación que proporciona REST framework no debería considerarse una medida de seguridad o protección contra ataques de fuerza bruta o de denegación de servicio. Los actores maliciosos deliberados siempre podrán falsificar orígenes IP. Además de esto, las implementaciones de estrangulación incorporadas se implementan usando el framework de caché de Django, y usan operaciones no atómicas para determinar la tasa de solicitudes, lo que a veces puede resultar en alguna imprecisión.
 
-The application-level throttling provided by REST framework is intended for implementing policies such as different business tiers and basic protections against service over-use.\*\*
+La estrangulación a nivel de aplicación proporcionada por REST framework está destinada a implementar políticas como diferentes niveles de negocio y protecciones básicas contra el uso excesivo del servicio.**
 
-## How throttling is determined
+## Cómo se determina la estrangulación
 
-As with permissions and authentication, throttling in REST framework is always defined as a list of classes.
+Al igual que con los permisos y la autenticación, la estrangulación en REST framework siempre se define como una lista de clases.
 
-Before running the main body of the view each throttle in the list is checked.
-If any throttle check fails an `exceptions.Throttled` exception will be raised, and the main body of the view will not run.
+Antes de ejecutar el cuerpo principal de la vista, cada estrangulación en la lista es verificada.
+Si alguna verificación de estrangulación falla, se lanzará una excepción `exceptions.Throttled`, y el cuerpo principal de la vista no se ejecutará.
 
-## Setting the throttling policy
+## Configurando la política de estrangulación
 
-The default throttling policy may be set globally, using the `DEFAULT_THROTTLE_CLASSES` and `DEFAULT_THROTTLE_RATES` settings. For example.
+La política de estrangulación predeterminada puede establecerse globalmente, usando las configuraciones `DEFAULT_THROTTLE_CLASSES` y `DEFAULT_THROTTLE_RATES`. Por ejemplo:
 
 ```python
 REST_FRAMEWORK = {
@@ -48,10 +48,10 @@ REST_FRAMEWORK = {
 }
 ```
 
-The rates used in `DEFAULT_THROTTLE_RATES` can be specified over a period of second, minute, hour or day. The period must be specified after the `/` separator using `s`, `m`, `h` or `d`, respectively. For increased clarity, extended units such as `second`, `minute`, `hour`, `day` or even abbreviations like `sec`, `min`, `hr` are allowed, as only the first character is relevant to identify the rate.
+Las tasas usadas en `DEFAULT_THROTTLE_RATES` pueden especificarse sobre un período de segundo, minuto, hora o día. El período debe especificarse después del separador `/` usando `s`, `m`, `h` o `d`, respectivamente. Para mayor claridad, se permiten unidades extendidas como `second`, `minute`, `hour`, `day` o incluso abreviaturas como `sec`, `min`, `hr`, ya que solo el primer carácter es relevante para identificar la tasa.
 
-You can also set the throttling policy on a per-view or per-viewset basis,
-using the `APIView` class-based views.
+También puedes establecer la política de estrangulación en una base por vista o por viewset,
+usando las vistas basadas en clases `APIView`.
 
 ```python
 from rest_framework.response import Response
@@ -63,50 +63,50 @@ class ExampleView(APIView):
 
     def get(self, request, format=None):
         content = {
-            'status': 'request was permitted'
+            'status': 'la solicitud fue permitida'
         }
         return Response(content)
 ```
 
-If you're using the `@api_view` decorator with function based views you can use the following decorator.
+Si estás usando el decorador `@api_view` con vistas basadas en funciones, puedes usar el siguiente decorador.
 
 ```python
 @api_view(['GET'])
 @throttle_classes([UserRateThrottle])
 def example_view(request, format=None):
     content = {
-        'status': 'request was permitted'
+        'status': 'la solicitud fue permitida'
     }
     return Response(content)
 ```
 
-It's also possible to set throttle classes for routes that are created using the `@action` decorator.
-Throttle classes set in this way will override any viewset level class settings.
+También es posible establecer clases de estrangulación para rutas que se crean usando el decorador `@action`.
+Las clases de estrangulación establecidas de esta manera anularán cualquier configuración de clase a nivel de viewset.
 
 ```python
 @action(detail=True, methods=["post"], throttle_classes=[UserRateThrottle])
 def example_adhoc_method(request, pk=None):
     content = {
-        'status': 'request was permitted'
+        'status': 'la solicitud fue permitida'
     }
     return Response(content)
 ```
 
-## How clients are identified
+## Cómo se identifican los clientes
 
-The `X-Forwarded-For` HTTP header and `REMOTE_ADDR` WSGI variable are used to uniquely identify client IP addresses for throttling. If the `X-Forwarded-For` header is present then it will be used, otherwise the value of the `REMOTE_ADDR` variable from the WSGI environment will be used.
+El encabezado HTTP `X-Forwarded-For` y la variable WSGI `REMOTE_ADDR` se usan para identificar únicamente las direcciones IP de los clientes para la estrangulación. Si el encabezado `X-Forwarded-For` está presente, entonces se usará, de lo contrario se usará el valor de la variable `REMOTE_ADDR` del entorno WSGI.
 
-If you need to strictly identify unique client IP addresses, you'll need to first configure the number of application proxies that the API runs behind by setting the `NUM_PROXIES` setting. This setting should be an integer of zero or more. If set to non-zero then the client IP will be identified as being the last IP address in the `X-Forwarded-For` header, once any application proxy IP addresses have first been excluded. If set to zero, then the `REMOTE_ADDR` value will always be used as the identifying IP address.
+Si necesitas identificar estrictamente direcciones IP de cliente únicas, primero necesitarás configurar el número de proxies de aplicación detrás de los cuales se ejecuta la API estableciendo la configuración `NUM_PROXIES`. Esta configuración debería ser un entero de cero o más. Si se establece en no cero, entonces la IP del cliente se identificará como la última dirección IP en el encabezado `X-Forwarded-For`, una vez que primero se hayan excluido las direcciones IP de los proxies de aplicación. Si se establece en cero, entonces el valor `REMOTE_ADDR` siempre se usará como la dirección IP identificadora.
 
-It is important to understand that if you configure the `NUM_PROXIES` setting, then all clients behind a unique [NAT'd](https://en.wikipedia.org/wiki/Network_address_translation) gateway will be treated as a single client.
+Es importante entender que si configuras la configuración `NUM_PROXIES`, entonces todos los clientes detrás de una puerta de enlace [NAT](https://es.wikipedia.org/wiki/Traducci%C3%B3n_de_direcciones_de_red) única serán tratados como un solo cliente.
 
-Further context on how the `X-Forwarded-For` header works, and identifying a remote client IP can be [found here][identifying-clients].
+Más contexto sobre cómo funciona el encabezado `X-Forwarded-For`, e identificar una IP de cliente remota puede ser [encontrado aquí][identifying-clients].
 
-## Setting up the cache
+## Configurando la caché
 
-The throttle classes provided by REST framework use Django's cache backend. You should make sure that you've set appropriate [cache settings][cache-setting]. The default value of `LocMemCache` backend should be okay for simple setups. See Django's [cache documentation][cache-docs] for more details.
+Las clases de estrangulación proporcionadas por REST framework usan el backend de caché de Django. Deberías asegurarte de haber establecido [configuraciones de caché][cache-setting] apropiadas. El valor predeterminado del backend `LocMemCache` debería estar bien para configuraciones simples. Ver la [documentación de caché de Django][cache-docs] para más detalles.
 
-If you need to use a cache other than `'default'`, you can do so by creating a custom throttle class and setting the `cache` attribute. For example:
+Si necesitas usar una caché diferente a `'default'`, puedes hacerlo creando una clase de estrangulación personalizada y estableciendo el atributo `cache`. Por ejemplo:
 
 ```python
 from django.core.cache import caches
@@ -115,41 +115,41 @@ class CustomAnonRateThrottle(AnonRateThrottle):
     cache = caches['alternate']
 ```
 
-You'll need to remember to also set your custom throttle class in the `'DEFAULT_THROTTLE_CLASSES'` settings key, or using the `throttle_classes` view attribute.
+Necesitarás recordar también establecer tu clase de estrangulación personalizada en la clave de configuración `'DEFAULT_THROTTLE_CLASSES'`, o usando el atributo de vista `throttle_classes`.
 
-## A note on concurrency
+## Una nota sobre concurrencia
 
-The built-in throttle implementations are open to [race conditions][race], so under high concurrency they may allow a few extra requests through.
+Las implementaciones de estrangulación incorporadas están abiertas a [condiciones de carrera][race], así que bajo alta concurrencia podrían permitir pasar algunas solicitudes adicionales.
 
-If your project relies on guaranteeing the number of requests during concurrent requests, you will need to implement your own throttle class.
+Si tu proyecto depende de garantizar el número de solicitudes durante solicitudes concurrentes, necesitarás implementar tu propia clase de estrangulación.
 
 ---
 
-# API Reference
+# Referencia de la API
 
 ## AnonRateThrottle
 
-The `AnonRateThrottle` will only ever throttle unauthenticated users. The IP address of the incoming request is used to generate a unique key to throttle against.
+`AnonRateThrottle` solo estrangulará a usuarios no autenticados. La dirección IP de la solicitud entrante se usa para generar una clave única contra la cual estrangular.
 
-The allowed request rate is determined from one of the following (in order of preference).
+La tasa de solicitud permitida se determina de una de las siguientes (en orden de preferencia).
 
-- The `rate` property on the class, which may be provided by overriding `AnonRateThrottle` and setting the property.
-- The `DEFAULT_THROTTLE_RATES['anon']` setting.
+- La propiedad `rate` en la clase, que puede ser proporcionada sobrescribiendo `AnonRateThrottle` y estableciendo la propiedad.
+- La configuración `DEFAULT_THROTTLE_RATES['anon']`.
 
-`AnonRateThrottle` is suitable if you want to restrict the rate of requests from unknown sources.
+`AnonRateThrottle` es adecuado si quieres restringir la tasa de solicitudes de fuentes desconocidas.
 
 ## UserRateThrottle
 
-The `UserRateThrottle` will throttle users to a given rate of requests across the API. The user id is used to generate a unique key to throttle against. Unauthenticated requests will fall back to using the IP address of the incoming request to generate a unique key to throttle against.
+`UserRateThrottle` estrangulará a los usuarios a una tasa dada de solicitudes a través de la API. El id de usuario se usa para generar una clave única contra la cual estrangular. Las solicitudes no autenticadas recurrirán a usar la dirección IP de la solicitud entrante para generar una clave única contra la cual estrangular.
 
-The allowed request rate is determined from one of the following (in order of preference).
+La tasa de solicitud permitida se determina de una de las siguientes (en orden de preferencia).
 
-- The `rate` property on the class, which may be provided by overriding `UserRateThrottle` and setting the property.
-- The `DEFAULT_THROTTLE_RATES['user']` setting.
+- La propiedad `rate` en la clase, que puede ser proporcionada sobrescribiendo `UserRateThrottle` y estableciendo la propiedad.
+- La configuración `DEFAULT_THROTTLE_RATES['user']`.
 
-An API may have multiple `UserRateThrottles` in place at the same time. To do so, override `UserRateThrottle` and set a unique "scope" for each class.
+Una API puede tener múltiples `UserRateThrottles` en su lugar al mismo tiempo. Para hacerlo, sobrescribe `UserRateThrottle` y establece un "scope" único para cada clase.
 
-For example, multiple user throttle rates could be implemented by using the following classes...
+Por ejemplo, múltiples tasas de estrangulación de usuario podrían implementarse usando las siguientes clases...
 
 ```python
 class BurstRateThrottle(UserRateThrottle):
@@ -159,7 +159,7 @@ class SustainedRateThrottle(UserRateThrottle):
     scope = 'sustained'
 ```
 
-...and the following settings.
+...y las siguientes configuraciones.
 
 ```python
 REST_FRAMEWORK = {
@@ -174,15 +174,15 @@ REST_FRAMEWORK = {
 }
 ```
 
-`UserRateThrottle` is suitable if you want simple global rate restrictions per-user.
+`UserRateThrottle` es adecuado si quieres restricciones de tasa global simples por usuario.
 
 ## ScopedRateThrottle
 
-The `ScopedRateThrottle` class can be used to restrict access to specific parts of the API. This throttle will only be applied if the view that is being accessed includes a `.throttle_scope` property. The unique throttle key will then be formed by concatenating the "scope" of the request with the unique user id or IP address.
+La clase `ScopedRateThrottle` puede usarse para restringir el acceso a partes específicas de la API. Esta estrangulación solo se aplicará si la vista que está siendo accedida incluye una propiedad `.throttle_scope`. La clave de estrangulación única se formará entonces concatenando el "scope" de la solicitud con el id de usuario único o dirección IP.
 
-The allowed request rate is determined by the `DEFAULT_THROTTLE_RATES` setting using a key from the request "scope".
+La tasa de solicitud permitida se determina por la configuración `DEFAULT_THROTTLE_RATES` usando una clave del "scope" de la solicitud.
 
-For example, given the following views...
+Por ejemplo, dadas las siguientes vistas...
 
 ```python
 class ContactListView(APIView):
@@ -198,7 +198,7 @@ class UploadView(APIView):
     ...
 ```
 
-...and the following settings.
+...y las siguientes configuraciones.
 
 ```python
 REST_FRAMEWORK = {
@@ -212,21 +212,21 @@ REST_FRAMEWORK = {
 }
 ```
 
-User requests to either `ContactListView` or `ContactDetailView` would be restricted to a total of 1000 requests per-day. User requests to `UploadView` would be restricted to 20 requests per day.
+Las solicitudes de usuario a `ContactListView` o `ContactDetailView` serían restringidas a un total de 1000 solicitudes por día. Las solicitudes de usuario a `UploadView` serían restringidas a 20 solicitudes por día.
 
 ---
 
-# Custom throttles
+# Estrangulaciones personalizadas
 
-To create a custom throttle, override `BaseThrottle` and implement `.allow_request(self, request, view)`. The method should return `True` if the request should be allowed, and `False` otherwise.
+Para crear una estrangulación personalizada, hereda de `BaseThrottle` e implementa `.allow_request(self, request, view)`. El método debería devolver `True` si la solicitud debería ser permitida, y `False` en caso contrario.
 
-Optionally you may also override the `.wait()` method. If implemented, `.wait()` should return a recommended number of seconds to wait before attempting the next request, or `None`. The `.wait()` method will only be called if `.allow_request()` has previously returned `False`.
+Opcionalmente también puedes sobrescribir el método `.wait()`. Si se implementa, `.wait()` debería devolver un número recomendado de segundos a esperar antes de intentar la siguiente solicitud, o `None`. El método `.wait()` solo será llamado si `.allow_request()` previamente ha devuelto `False`.
 
-If the `.wait()` method is implemented and the request is throttled, then a `Retry-After` header will be included in the response.
+Si el método `.wait()` se implementa y la solicitud es estrangulada, entonces se incluirá un encabezado `Retry-After` en la respuesta.
 
-## Example
+## Ejemplo
 
-The following is an example of a rate throttle, that will randomly throttle 1 in every 10 requests.
+Lo siguiente es un ejemplo de una estrangulación de tasa, que aleatoriamente estrangulará 1 de cada 10 solicitudes.
 
 ```python
 import random

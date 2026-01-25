@@ -1,27 +1,27 @@
 ---
-title: "Pagination"
-keywords: ["django", "rest", "framework", "api", "pagination"]
+title: "Paginación"
+keywords: ["django", "rest", "framework", "api", "paginación"]
 order: 17
 ---
 
-# Pagination
+# Paginación
 
-> Django provides a few classes that help you manage paginated data – that is, data that’s split across several pages, with “Previous/Next” links.
+> Django proporciona algunas clases que te ayudan a gestionar datos paginados - es decir, datos que se dividen en varias páginas, con enlaces "Anterior/Siguiente".
 >
 > &mdash; [Django documentation][cite]
 
-REST framework includes support for customizable pagination styles. This allows you to modify how large result sets are split into individual pages of data.
+REST framework incluye soporte para estilos de paginación personalizables. Esto te permite modificar cómo los conjuntos de resultados grandes se dividen en páginas individuales de datos.
 
-The pagination API can support either:
+La API de paginación puede soportar:
 
-- Pagination links that are provided as part of the content of the response.
-- Pagination links that are included in response headers, such as `Content-Range` or `Link`.
+- Enlaces de paginación que se proporcionan como parte del contenido de la respuesta.
+- Enlaces de paginación que se incluyen en los encabezados de respuesta, como `Content-Range` o `Link`.
 
-The built-in styles currently all use links included as part of the content of the response. This style is more accessible when using the browsable API.
+Los estilos incorporados actualmente usan enlaces incluidos como parte del contenido de la respuesta. Este estilo es más accesible cuando se usa la API navegable.
 
-Pagination is only performed automatically if you're using the generic views or viewsets. If you're using a regular `APIView`, you'll need to call into the pagination API yourself to ensure you return a paginated response. See the source code for the `mixins.ListModelMixin` and `generics.GenericAPIView` classes for an example.
+La paginación solo se realiza automáticamente si estás usando las vistas genéricas o viewsets. Si estás usando un `APIView` regular, necesitarás llamar a la API de paginación tú mismo para asegurar que devuelves una respuesta paginada. Consulta el código fuente para las clases `mixins.ListModelMixin` y `generics.GenericAPIView` para un ejemplo.
 
-Pagination can be turned off by setting the pagination class to `None`.
+La paginación puede desactivarse estableciendo la clase de paginación en `None`.
 
 ## Setting the pagination style
 

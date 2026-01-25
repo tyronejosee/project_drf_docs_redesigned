@@ -1,26 +1,26 @@
 ---
-title: "Serializer relations"
+title: "Relaciones de serializador"
 keywords: ["django", "rest", "framework", "api", "serializer", "relations"]
 order: 10
 ---
 
-# Serializer relations
+# Relaciones de serializador
 
-> Data structures, not algorithms, are central to programming.
+> Las estructuras de datos, no los algoritmos, son centrales en la programación.
 >
 > &mdash; [Rob Pike][cite]
 
-Relational fields are used to represent model relationships. They can be applied to `ForeignKey`, `ManyToManyField` and `OneToOneField` relationships, as well as to reverse relationships, and custom relationships such as `GenericForeignKey`.
+Los campos relacionales se usan para representar relaciones de modelo. Se pueden aplicar a relaciones `ForeignKey`, `ManyToManyField` y `OneToOneField`, así como a relaciones inversas, y relaciones personalizadas como `GenericForeignKey`.
 
 ---
 
-**Note:** The relational fields are declared in `relations.py`, but by convention you should import them from the `serializers` module, using `from rest_framework import serializers` and refer to fields as `serializers.<FieldName>`.
+**Nota:** Los campos relacionales se declaran en `relations.py`, pero por convención debe importarlos desde el módulo `serializers`, usando `from rest_framework import serializers` y referirse a los campos como `serializers.<FieldName>`.
 
 ---
 
-**Note:** REST Framework does not attempt to automatically optimize querysets passed to serializers in terms of `select_related` and `prefetch_related` since it would be too much magic. A serializer with a field spanning an orm relation through its source attribute could require an additional database hit to fetch related objects from the database. It is the programmer's responsibility to optimize queries to avoid additional database hits which could occur while using such a serializer.
+**Nota:** REST Framework no intenta optimizar automáticamente los querysets pasados a los serializadores en términos de `select_related` y `prefetch_related` ya que sería demasiada magia. Un serializador con un campo que abarca una relación orm a través de su atributo source podría requerir un hit adicional a la base de datos para obtener objetos relacionados de la base de datos. Es responsabilidad del programador optimizar las consultas para evitar hits adicionales a la base de datos que podrían ocurrir al usar dicho serializador.
 
-For example, the following serializer would lead to a database hit each time evaluating the tracks field if it is not prefetched:
+Por ejemplo, el siguiente serializador llevaría a un hit a la base de datos cada vez que se evalúe el campo tracks si no está prefetcheado:
 
 ```python
 class AlbumSerializer(serializers.ModelSerializer):
@@ -34,28 +34,28 @@ class AlbumSerializer(serializers.ModelSerializer):
         model = Album
         fields = ['album_name', 'artist', 'tracks']
 
-# For each album object, tracks should be fetched from database
+# Para cada objeto album, tracks debería ser obtenido de la base de datos
 qs = Album.objects.all()
 print(AlbumSerializer(qs, many=True).data)
 ```
 
-If `AlbumSerializer` is used to serialize a fairly large queryset with `many=True` then it could be a serious performance problem. Optimizing the queryset passed to `AlbumSerializer` with:
+Si `AlbumSerializer` se usa para serializar un queryset bastante grande con `many=True` entonces podría ser un problema de rendimiento serio. Optimizar el queryset pasado a `AlbumSerializer` con:
 
 ```python
 qs = Album.objects.prefetch_related('tracks')
-# No additional database hits required
+# No se requieren hits adicionales a la base de datos
 print(AlbumSerializer(qs, many=True).data)
 ```
 
-would solve the issue.
+resolverría el problema.
 
 ---
 
-#### Inspecting relationships.
+#### Inspeccionando relaciones.
 
-When using the `ModelSerializer` class, serializer fields and relationships will be automatically generated for you. Inspecting these automatically generated fields can be a useful tool for determining how to customize the relationship style.
+Al usar la clase `ModelSerializer`, los campos y relaciones del serializador se generarán automáticamente para usted. Inspeccionar estos campos generados automáticamente puede ser una herramienta útil para determinar cómo personalizar el estilo de relación.
 
-To do so, open the Django shell, using `python manage.py shell`, then import the serializer class, instantiate it, and print the object representation…
+Para hacerlo, abra la shell de Django, usando `python manage.py shell`, luego importe la clase de serializador, instancíela, e imprima la representación del objeto…
 
 ```bash
 >>> from myapp.serializers import AccountSerializer
@@ -67,9 +67,9 @@ AccountSerializer():
     owner = PrimaryKeyRelatedField(queryset=User.objects.all())
 ```
 
-# API Reference
+# Referencia de la API
 
-In order to explain the various types of relational fields, we'll use a couple of simple models for our examples. Our models will be for music albums, and the tracks listed on each album.
+Para explicar los varios tipos de campos relacionales, usaremos un par de modelos simples para nuestros ejemplos. Nuestros modelos serán para álbumes de música, y las pistas listadas en cada álbum.
 
 ```python
 class Album(models.Model):
@@ -92,9 +92,9 @@ class Track(models.Model):
 
 ## StringRelatedField
 
-`StringRelatedField` may be used to represent the target of the relationship using its `__str__` method.
+`StringRelatedField` puede ser usado para representar el objetivo de la relación usando su método `__str__`.
 
-For example, the following serializer:
+Por ejemplo, el siguiente serializador:
 
 ```python
 class AlbumSerializer(serializers.ModelSerializer):
@@ -105,7 +105,7 @@ class AlbumSerializer(serializers.ModelSerializer):
         fields = ['album_name', 'artist', 'tracks']
 ```
 
-Would serialize to the following representation:
+Se serializaría a la siguiente representación:
 
 ```json
 {
@@ -120,17 +120,17 @@ Would serialize to the following representation:
 }
 ```
 
-This field is read only.
+Este campo es de solo lectura.
 
-**Arguments**:
+**Argumentos**:
 
-- `many` - If applied to a to-many relationship, you should set this argument to `True`.
+- `many` - Si se aplica a una relación a-muchos, debería establecer este argumento en `True`.
 
 ## PrimaryKeyRelatedField
 
-`PrimaryKeyRelatedField` may be used to represent the target of the relationship using its primary key.
+`PrimaryKeyRelatedField` puede ser usado para representar el objetivo de la relación usando su clave primaria.
 
-For example, the following serializer:
+Por ejemplo, el siguiente serializador:
 
 ```python
 class AlbumSerializer(serializers.ModelSerializer):
@@ -141,7 +141,7 @@ class AlbumSerializer(serializers.ModelSerializer):
         fields = ['album_name', 'artist', 'tracks']
 ```
 
-Would serialize to a representation like this:
+Se serializaría a una representación como esta:
 
 ```json
 {
@@ -156,20 +156,20 @@ Would serialize to a representation like this:
 }
 ```
 
-By default this field is read-write, although you can change this behavior using the `read_only` flag.
+Por defecto este campo es de lectura-escritura, aunque puede cambiar este comportamiento usando la bandera `read_only`.
 
-**Arguments**:
+**Argumentos**:
 
-- `queryset` - The queryset used for model instance lookups when validating the field input. Relationships must either set a queryset explicitly, or set `read_only=True`.
-- `many` - If applied to a to-many relationship, you should set this argument to `True`.
-- `allow_null` - If set to `True`, the field will accept values of `None` or the empty string for nullable relationships. Defaults to `False`.
-- `pk_field` - Set to a field to control serialization/deserialization of the primary key's value. For example, `pk_field=UUIDField(format='hex')` would serialize a UUID primary key into its compact hex representation.
+- `queryset` - El queryset usado para búsquedas de instancias de modelo al validar la entrada del campo. Las relaciones deben establecer un queryset explícitamente, o establecer `read_only=True`.
+- `many` - Si se aplica a una relación a-muchos, debería establecer este argumento en `True`.
+- `allow_null` - Si se establece en `True`, el campo aceptará valores de `None` o la cadena vacía para relaciones anulables. Por defecto es `False`.
+- `pk_field` - Establecer a un campo para controlar la serialización/deserialización del valor de la clave primaria. Por ejemplo, `pk_field=UUIDField(format='hex')` serializaría una clave primaria UUID a su representación hex compacta.
 
 ## HyperlinkedRelatedField
 
-`HyperlinkedRelatedField` may be used to represent the target of the relationship using a hyperlink.
+`HyperlinkedRelatedField` puede ser usado para representar el objetivo de la relación usando un hipervínculo.
 
-For example, the following serializer:
+Por ejemplo, el siguiente serializador:
 
 ```python
 class AlbumSerializer(serializers.ModelSerializer):
@@ -199,33 +199,33 @@ Would serialize to a representation like this:
 }
 ```
 
-By default this field is read-write, although you can change this behavior using the `read_only` flag.
+Por defecto este campo es de lectura-escritura, aunque puede cambiar este comportamiento usando la bandera `read_only`.
 
 ---
 
-**Note**: This field is designed for objects that map to a URL that accepts a single URL keyword argument, as set using the `lookup_field` and `lookup_url_kwarg` arguments.
+**Nota**: Este campo está diseñado para objetos que mapean a una URL que acepta un solo argumento de palabra clave URL, como se establece usando los argumentos `lookup_field` y `lookup_url_kwarg`.
 
-This is suitable for URLs that contain a single primary key or slug argument as part of the URL.
+Esto es adecuado para URLs que contienen un solo argumento de clave primaria o slug como parte de la URL.
 
-If you require more complex hyperlinked representation you'll need to customize the field, as described in the [custom hyperlinked fields](#custom-hyperlinked-fields) section, below.
+Si requiere una representación hiperenlazada más compleja necesitará personalizar el campo, como se describe en la sección [campos hiperenlazados personalizados](#custom-hyperlinked-fields) abajo.
 
 ---
 
-**Arguments**:
+**Argumentos**:
 
-- `view_name` - The view name that should be used as the target of the relationship. If you're using [the standard router classes][routers] this will be a string with the format `<modelname>-detail`. **required**.
-- `queryset` - The queryset used for model instance lookups when validating the field input. Relationships must either set a queryset explicitly, or set `read_only=True`.
-- `many` - If applied to a to-many relationship, you should set this argument to `True`.
-- `allow_null` - If set to `True`, the field will accept values of `None` or the empty string for nullable relationships. Defaults to `False`.
-- `lookup_field` - The field on the target that should be used for the lookup. Should correspond to a URL keyword argument on the referenced view. Default is `'pk'`.
-- `lookup_url_kwarg` - The name of the keyword argument defined in the URL conf that corresponds to the lookup field. Defaults to using the same value as `lookup_field`.
-- `format` - If using format suffixes, hyperlinked fields will use the same format suffix for the target unless overridden by using the `format` argument.
+- `view_name` - El nombre de la vista que debería usarse como el objetivo de la relación. Si está usando [las clases de enrutador estándar][routers] esto será una cadena con el formato `<modelname>-detail`. **requerido**.
+- `queryset` - El queryset usado para búsquedas de instancias de modelo al validar la entrada del campo. Las relaciones deben establecer un queryset explícitamente, o establecer `read_only=True`.
+- `many` - Si se aplica a una relación a-muchos, debería establecer este argumento en `True`.
+- `allow_null` - Si se establece en `True`, el campo aceptará valores de `None` o la cadena vacía para relaciones anulables. Por defecto es `False`.
+- `lookup_field` - El campo en el objetivo que debería usarse para la búsqueda. Debería corresponder a un argumento de palabra clave URL en la vista referenciada. Por defecto es `'pk'`.
+- `lookup_url_kwarg` - El nombre del argumento de palabra clave definido en la configuración URL que corresponde al campo de búsqueda. Por defecto usa el mismo valor que `lookup_field`.
+- `format` - Si se usan sufijos de formato, los campos hiperenlazados usarán el mismo sufijo de formato para el objetivo a menos que se anule usando el argumento `format`.
 
 ## SlugRelatedField
 
-`SlugRelatedField` may be used to represent the target of the relationship using a field on the target.
+`SlugRelatedField` puede ser usado para representar el objetivo de la relación usando un campo en el objetivo.
 
-For example, the following serializer:
+Por ejemplo, el siguiente serializador:
 
 ```python
 class AlbumSerializer(serializers.ModelSerializer):

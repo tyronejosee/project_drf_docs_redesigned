@@ -1,35 +1,35 @@
 ---
-title: "Returning URLs"
+title: "Retornando URLs"
 keywords: ["django", "rest", "framework", "api", "reverse"]
 order: 23
 ---
 
-# Returning URLs
+# Retornando URLs
 
-> The central feature that distinguishes the REST architectural style from other network-based styles is its emphasis on a uniform interface between components.
+> La característica central que distingue el estilo arquitectónico REST de otros estilos basados en red es su énfasis en una interfaz uniforme entre componentes.
 >
 > &mdash; Roy Fielding, [Architectural Styles and the Design of Network-based Software Architectures][cite]
 
-As a rule, it's probably better practice to return absolute URIs from your Web APIs, such as `http://example.com/foobar`, rather than returning relative URIs, such as `/foobar`.
+Como regla, probablemente es una mejor práctica devolver URIs absolutas desde tus APIs Web, como `http://example.com/foobar`, en lugar de devolver URIs relativas, como `/foobar`.
 
-The advantages of doing so are:
+Las ventajas de hacer esto son:
 
-- It's more explicit.
-- It leaves less work for your API clients.
-- There's no ambiguity about the meaning of the string when it's found in representations such as JSON that do not have a native URI type.
-- It makes it easy to do things like markup HTML representations with hyperlinks.
+- Es más explícito.
+- Deja menos trabajo para tus clientes de API.
+- No hay ambigüedad sobre el significado de la cadena cuando se encuentra en representaciones como JSON que no tienen un tipo URI nativo.
+- Facilita hacer cosas como marcar representaciones HTML con hipervínculos.
 
-REST framework provides two utility functions to make it more simple to return absolute URIs from your Web API.
+REST framework proporciona dos funciones de utilidad para hacer más simple retornar URIs absolutas desde tu API Web.
 
-There's no requirement for you to use them, but if you do then the self-describing API will be able to automatically hyperlink its output for you, which makes browsing the API much easier.
+No hay ningún requisito para que las uses, pero si lo haces, la API auto-descriptiva podrá generar hipervínculos automáticamente en su salida, lo que hace que navegar por la API sea mucho más fácil.
 
 ## reverse
 
-**Signature:** `reverse(viewname, *args, **kwargs)`
+**Firma:** `reverse(viewname, *args, **kwargs)`
 
-Has the same behavior as [`django.urls.reverse`][reverse], except that it returns a fully qualified URL, using the request to determine the host and port.
+Tiene el mismo comportamiento que [`django.urls.reverse`][reverse], excepto que retorna una URL completamente calificada, usando la solicitud para determinar el host y el puerto.
 
-You should **include the request as a keyword argument** to the function, for example:
+Debes **incluir la solicitud como argumento de palabra clave** a la función, por ejemplo:
 
 ```python
 from rest_framework.reverse import reverse
@@ -48,11 +48,11 @@ class APIRootView(APIView):
 
 ## reverse_lazy
 
-**Signature:** `reverse_lazy(viewname, *args, **kwargs)`
+**Firma:** `reverse_lazy(viewname, *args, **kwargs)`
 
-Has the same behavior as [`django.urls.reverse_lazy`][reverse-lazy], except that it returns a fully qualified URL, using the request to determine the host and port.
+Tiene el mismo comportamiento que [`django.urls.reverse_lazy`][reverse-lazy], excepto que retorna una URL completamente calificada, usando la solicitud para determinar el host y el puerto.
 
-As with the `reverse` function, you should **include the request as a keyword argument** to the function, for example:
+Al igual que con la función `reverse`, debes **incluir la solicitud como argumento de palabra clave** a la función, por ejemplo:
 
 ```python
 api_root = reverse_lazy('api-root', request=request)

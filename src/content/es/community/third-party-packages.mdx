@@ -1,99 +1,99 @@
 ---
-title: "Third Party Packages"
-keywords: ["django", "rest", "framework", "api", "third", "party", "packages"]
+title: "Paquetes de Terceros"
+keywords: ["django", "rest", "framework", "api", "terceros", "paquetes"]
 order: 2
 ---
 
-# Third Party Packages
+# Paquetes de Terceros
 
-> Software ecosystems […] establish a community that further accelerates the sharing of knowledge, content, issues, expertise and skills.
+> Los ecosistemas de software [...] establecen una comunidad que acelera aún más el intercambio de conocimiento, contenido, problemas, experiencia y habilidades.
 >
 > &mdash; [Jan Bosch][cite].
 
-## About Third Party Packages
+## Acerca de los Paquetes de Terceros
 
-Third Party Packages allow developers to share code that extends the functionality of Django REST framework, in order to support additional use-cases.
+Los Paquetes de Terceros permiten a los desarrolladores compartir código que extiende la funcionalidad de Django REST framework, para soportar casos de uso adicionales.
 
-We **support**, **encourage** and **strongly favor** the creation of Third Party Packages to encapsulate new behavior rather than adding additional functionality directly to Django REST Framework.
+**Apoyamos**, **fomentamos** y **favorecemos fuertemente** la creación de Paquetes de Terceros para encapsular nuevo comportamiento en lugar de agregar funcionalidad adicional directamente a Django REST Framework.
 
-We aim to make creating third party packages as easy as possible, whilst keeping a **simple** and **well maintained** core API. By promoting third party packages we ensure that the responsibility for a package remains with its author. If a package proves suitably popular it can always be considered for inclusion into the core REST framework.
+Nuestro objetivo es facilitar la creación de paquetes de terceros tanto como sea posible, manteniendo una API central **simple** y **bien mantenida**. Al promover paquetes de terceros, aseguramos que la responsabilidad de un paquete permanezca con su autor. Si un paquete demuestra ser suficientemente popular, siempre puede ser considerado para su inclusión en el framework REST central.
 
-If you have an idea for a new feature please consider how it may be packaged as a Third Party Package. We're always happy to discuss ideas on the [Mailing List][discussion-group].
+Si tienes una idea para una nueva característica, por favor considera cómo puede ser empaquetada como un Paquete de Terceros. Siempre estamos felices de discutir ideas en la [Lista de Correo][discussion-group].
 
-## Creating a Third Party Package
+## Creando un Paquete de Terceros
 
-### Version compatibility
+### Compatibilidad de versiones
 
-Sometimes, in order to ensure your code works on various different versions of Django, Python or third party libraries, you'll need to run slightly different code depending on the environment. Any code that branches in this way should be isolated into a `compat.py` module, and should provide a single common interface that the rest of the codebase can use.
+A veces, para asegurar que tu código funcione en varias versiones diferentes de Django, Python o bibliotecas de terceros, necesitarás ejecutar código ligeramente diferente dependiendo del entorno. Cualquier código que se bifurque de esta manera debe ser aislado en un módulo `compat.py`, y debe proporcionar una única interfaz común que el resto del código base pueda usar.
 
-Check out Django REST framework's [compat.py][drf-compat] for an example.
+Consulta el [compat.py][drf-compat] de Django REST framework como ejemplo.
 
-### Once your package is available
+### Una vez que tu paquete esté disponible
 
-Once your package is decently documented and available on PyPI, you might want share it with others that might find it useful.
+Una vez que tu paquete esté decentemente documentado y disponible en PyPI, podrías querer compartirlo con otros que puedan encontrarlo útil.
 
-#### Adding to the Django REST framework grid
+#### Agregar a la cuadrícula de Django REST framework
 
-We suggest adding your package to the [REST Framework][rest-framework-grid] grid on Django Packages.
+Sugerimos agregar tu paquete a la cuadrícula [REST Framework][rest-framework-grid] en Django Packages.
 
-#### Adding to the Django REST framework docs
+#### Agregar a la documentación de Django REST framework
 
-Create a [Pull Request][drf-create-pr] on GitHub, and we'll add a link to it from the main REST framework documentation. You can add your package under **Third party packages** of the API Guide section that best applies, like [Authentication][authentication] or [Permissions][permissions]. You can also link your package under the [Third Party Packages][third-party-packages] section.
+Crea un [Pull Request][drf-create-pr] en GitHub, y agregaremos un enlace a él desde la documentación principal de REST framework. Puedes agregar tu paquete bajo **Paquetes de terceros** de la sección de Guía de API que mejor se aplique, como [Autenticación][authentication] o [Permisos][permissions]. También puedes enlazar tu paquete bajo la sección [Paquetes de Terceros][third-party-packages].
 
-#### Announce on the discussion group.
+#### Anunciar en el grupo de discusión.
 
-You can also let others know about your package through the [discussion group][discussion-group].
+También puedes informar a otros sobre tu paquete a través del [grupo de discusión][discussion-group].
 
-## Existing Third Party Packages
+## Paquetes de Terceros Existentes
 
-Django REST Framework has a growing community of developers, packages, and resources.
+Django REST Framework tiene una comunidad en crecimiento de desarrolladores, paquetes y recursos.
 
-Check out a grid detailing all the packages and ecosystem around Django REST Framework at [Django Packages][rest-framework-grid].
+Consulta una cuadrícula que detalla todos los paquetes y ecosistema alrededor de Django REST Framework en [Django Packages][rest-framework-grid].
 
-To submit new content, [create a pull request][drf-create-pr].
+Para enviar nuevo contenido, [crea un pull request][drf-create-pr].
 
-## Async Support
+## Soporte Async
 
-*  [adrf](https://github.com/em1208/adrf) - Async support, provides async Views, ViewSets, and Serializers.
+*  [adrf](https://github.com/em1208/adrf) - Soporte async, proporciona Vistas, ViewSets y Serializadores asíncronos.
 
-### Authentication
+### Autenticación
 
-* [djangorestframework-digestauth][djangorestframework-digestauth] - Provides Digest Access Authentication support.
-* [django-oauth-toolkit][django-oauth-toolkit] - Provides OAuth 2.0 support.
-* [djangorestframework-simplejwt][djangorestframework-simplejwt] - Provides JSON Web Token Authentication support.
-* [hawkrest][hawkrest] - Provides Hawk HTTP Authorization.
-* [djangorestframework-httpsignature][djangorestframework-httpsignature] - Provides an easy to use HTTP Signature Authentication mechanism.
-* [djoser][djoser] - Provides a set of views to handle basic actions such as registration, login, logout, password reset and account activation.
-* [dj-rest-auth][dj-rest-auth] - Provides a set of REST API endpoints for registration, authentication (including social media authentication), password reset, retrieve and update user details, etc.
-* [drf-oidc-auth][drf-oidc-auth] - Implements OpenID Connect token authentication for DRF.
-* [drfpasswordless][drfpasswordless] - Adds (Medium, Square Cash inspired) passwordless logins and signups via email and mobile numbers.
-* [django-rest-authemail][django-rest-authemail] - Provides a RESTful API for user signup and authentication using email addresses.
-* [dango-pyoidc][django-pyoidc] adds support for OpenID Connect (OIDC) authentication.
+* [djangorestframework-digestauth][djangorestframework-digestauth] - Proporciona soporte de Autenticación de Acceso Digest.
+* [django-oauth-toolkit][django-oauth-toolkit] - Proporciona soporte OAuth 2.0.
+* [djangorestframework-simplejwt][djangorestframework-simplejwt] - Proporciona soporte de Autenticación JSON Web Token.
+* [hawkrest][hawkrest] - Proporciona Autorización HTTP Hawk.
+* [djangorestframework-httpsignature][djangorestframework-httpsignature] - Proporciona un mecanismo de Autenticación de Firma HTTP fácil de usar.
+* [djoser][djoser] - Proporciona un conjunto de vistas para manejar acciones básicas como registro, inicio de sesión, cierre de sesión, restablecimiento de contraseña y activación de cuenta.
+* [dj-rest-auth][dj-rest-auth] - Proporciona un conjunto de endpoints de API REST para registro, autenticación (incluyendo autenticación de redes sociales), restablecimiento de contraseña, recuperar y actualizar detalles de usuario, etc.
+* [drf-oidc-auth][drf-oidc-auth] - Implementa autenticación de token OpenID Connect para DRF.
+* [drfpasswordless][drfpasswordless] - Agrega inicios de sesión y registros sin contraseña (inspirados en Medium, Square Cash) vía correo electrónico y números móviles.
+* [django-rest-authemail][django-rest-authemail] - Proporciona una API RESTful para registro y autenticación de usuarios usando direcciones de correo electrónico.
+* [dango-pyoidc][django-pyoidc] agrega soporte para autenticación OpenID Connect (OIDC).
 
-### Permissions
+### Permisos
 
-* [drf-any-permissions][drf-any-permissions] - Provides alternative permission handling.
-* [djangorestframework-composed-permissions][djangorestframework-composed-permissions] - Provides a simple way to define complex permissions.
-* [rest_condition][rest-condition] - Another extension for building complex permissions in a simple and convenient way.
-* [dry-rest-permissions][dry-rest-permissions] - Provides a simple way to define permissions for individual api actions.
-* [drf-access-policy][drf-access-policy] - Declarative and flexible permissions inspired by AWS' IAM policies.
-* [drf-psq][drf-psq] - An extension that gives support for having action-based **permission_classes**, **serializer_class**, and **queryset** dependent on permission-based rules.
+* [drf-any-permissions][drf-any-permissions] - Proporciona manejo de permisos alternativo.
+* [djangorestframework-composed-permissions][djangorestframework-composed-permissions] - Proporciona una manera simple de definir permisos complejos.
+* [rest_condition][rest-condition] - Otra extensión para construir permisos complejos de una manera simple y conveniente.
+* [dry-rest-permissions][dry-rest-permissions] - Proporciona una manera simple de definir permisos para acciones de API individuales.
+* [drf-access-policy][drf-access-policy] - Permisos declarativos y flexibles inspirados en las políticas IAM de AWS.
+* [drf-psq][drf-psq] - Una extensión que da soporte para tener **permission_classes**, **serializer_class**, y **queryset** basados en acción y dependientes de reglas basadas en permisos.
 
-### Serializers
+### Serializadores
 
-* [django-rest-framework-mongoengine][django-rest-framework-mongoengine] - Serializer class that supports using MongoDB as the storage layer for Django REST framework.
-* [djangorestframework-gis][djangorestframework-gis] - Geographic add-ons
-* [djangorestframework-hstore][djangorestframework-hstore] - Serializer class to support django-hstore DictionaryField model field and its schema-mode feature.
-* [djangorestframework-jsonapi][djangorestframework-jsonapi] - Provides a parser, renderer, serializers, and other tools to help build an API that is compliant with the jsonapi.org spec.
-* [html-json-forms][html-json-forms] - Provides an algorithm and serializer to process HTML JSON Form submissions per the (inactive) spec.
+* [django-rest-framework-mongoengine][django-rest-framework-mongoengine] - Clase Serializer que soporta usar MongoDB como capa de almacenamiento para Django REST framework.
+* [djangorestframework-gis][djangorestframework-gis] - Complementos geográficos
+* [djangorestframework-hstore][djangorestframework-hstore] - Clase Serializer para soportar el campo de modelo DictionaryField de django-hstore y su característica de modo esquema.
+* [djangorestframework-jsonapi][djangorestframework-jsonapi] - Proporciona un analizador, renderizador, serializadores y otras herramientas para ayudar a construir una API que cumpla con la especificación jsonapi.org.
+* [html-json-forms][html-json-forms] - Proporciona un algoritmo y serializador para procesar envíos de HTML JSON Form según la especificación (inactiva).
 * [django-rest-framework-serializer-extensions][drf-serializer-extensions] -
-  Enables black/whitelisting fields, and conditionally expanding child serializers on a per-view/request basis.
-* [djangorestframework-queryfields][djangorestframework-queryfields] - Serializer mixin allowing clients to control which fields will be sent in the API response.
-* [drf-flex-fields][drf-flex-fields] - Serializer providing dynamic field expansion and sparse field sets via URL parameters.
-* [drf-action-serializer][drf-action-serializer] - Serializer providing per-action fields config for use with ViewSets to prevent having to write multiple serializers.
-* [djangorestframework-dataclasses][djangorestframework-dataclasses] - Serializer providing automatic field generation for Python dataclasses, like the built-in ModelSerializer does for models.
-* [django-restql][django-restql] - Turn your REST API into a GraphQL like API(It allows clients to control which fields will be sent in a response, uses GraphQL like syntax, supports read and write on both flat and nested fields).
-* [graphwrap][graphwrap] - Transform your REST API into a fully compliant GraphQL API with just two lines of code. Leverages [Graphene-Django](https://docs.graphene-python.org/projects/django/en/latest/) to dynamically build, at runtime, a GraphQL ObjectType for each view in your API.
+  Habilita listas negra/blanca de campos, y expansión condicional de serializadores hijos por vista/solicitud.
+* [djangorestframework-queryfields][djangorestframework-queryfields] - Mixin de serializador que permite a los clientes controlar qué campos se enviarán en la respuesta de la API.
+* [drf-flex-fields][drf-flex-fields] - Serializador que proporciona expansión de campos dinámica y conjuntos de campos dispersos vía parámetros URL.
+* [drf-action-serializer][drf-action-serializer] - Serializador que proporciona configuración de campos por acción para usar con ViewSets para evitar tener que escribir múltiples serializadores.
+* [djangorestframework-dataclasses][djangorestframework-dataclasses] - Serializador que proporciona generación automática de campos para dataclasses de Python, como lo hace el ModelSerializer incorporado para los modelos.
+* [django-restql][django-restql] - Convierte tu API REST en una API tipo GraphQL (permite a los clientes controlar qué campos se enviarán en una respuesta, usa sintaxis tipo GraphQL, soporta lectura y escritura en campos planos y anidados).
+* [graphwrap][graphwrap] - Transforma tu API REST en una API GraphQL completamente compatible con solo dos líneas de código. Utiliza [Graphene-Django](https://docs.graphene-python.org/projects/django/en/latest/) para construir dinámicamente, en tiempo de ejecución, un ObjectType GraphQL para cada vista en tu API.
 
 ### Serializer fields
 

@@ -1,65 +1,65 @@
 ---
-title: "Serializer fields"
-keywords: ["django", "rest", "framework", "api", "serializer", "fields"]
+title: "Campos del serializer"
+keywords: ["django", "rest", "framework", "api", "serializer", "campos"]
 order: 9
 ---
 
-# Serializer fields
+# Campos del serializer
 
-> Each field in a Form class is responsible not only for validating data, but also for "cleaning" it &mdash; normalizing it to a consistent format.
+> Cada campo en una clase Form es responsable no solo de validar datos, sino también de "limpiarlos" &mdash; normalizarlos a un formato consistente.
 >
-> &mdash; [Django documentation][cite]
+> &mdash; [Documentación de Django][cite]
 
-Serializer fields handle converting between primitive values and internal datatypes. They also deal with validating input values, as well as retrieving and setting the values from their parent objects.
-
----
-
-**Note:** The serializer fields are declared in `fields.py`, but by convention you should import them using `from rest_framework import serializers` and refer to fields as `serializers.<FieldName>`.
+Los campos del serializer manejan la conversión entre valores primitivos y tipos de datos internos. También se encargan de validar los valores de entrada, así como de recuperar y establecer los valores de sus objetos principales.
 
 ---
 
-## Core arguments
+**Nota:** Los campos del serializer se declaran en `fields.py`, pero por convención debes importarlos usando `from rest_framework import serializers` y referirte a los campos como `serializers.<NombreCampo>`.
 
-Each serializer field class constructor takes at least these arguments. Some Field classes take additional, field-specific arguments, but the following should always be accepted:
+---
+
+## Argumentos principales
+
+Cada constructor de clase de campo del serializer toma al menos estos argumentos. Algunas clases Field toman argumentos adicionales específicos del campo, pero los siguientes siempre deben ser aceptados:
 
 ### `read_only`
 
-Read-only fields are included in the API output, but should not be included in the input during create or update operations. Any 'read_only' fields that are incorrectly included in the serializer input will be ignored.
+Los campos de solo lectura se incluyen en la salida de la API, pero no deben incluirse en la entrada durante las operaciones de creación o actualización. Cualquier campo 'read_only' que se incluya incorrectamente en la entrada del serializer será ignorado.
 
-Set this to `True` to ensure that the field is used when serializing a representation, but is not used when creating or updating an instance during deserialization.
+Establece esto en `True` para asegurar que el campo se use al serializar una representación, pero no se use al crear o actualizar una instancia durante la deserialización.
 
-Defaults to `False`
+Por defecto es `False`
 
 ### `write_only`
 
-Set this to `True` to ensure that the field may be used when updating or creating an instance, but is not included when serializing the representation.
+Establece esto en `True` para asegurar que el campo puede usarse al actualizar o crear una instancia, pero no se incluye al serializar la representación.
 
-Defaults to `False`
+Por defecto es `False`
 
 ### `required`
 
-Normally an error will be raised if a field is not supplied during deserialization.
-Set to false if this field is not required to be present during deserialization.
+Normalmente se lanzará un error si un campo no se proporciona durante la deserialización.
+Establece en `false` si este campo no necesita estar presente durante la deserialización.
 
-Setting this to `False` also allows the object attribute or dictionary key to be omitted from output when serializing the instance. If the key is not present it will simply not be included in the output representation.
+Establecer esto en `False` también permite que el atributo del objeto o la clave del diccionario se omita de la salida al serializar la instancia. Si la clave no está presente, simplemente no se incluirá en la representación de salida.
 
-Defaults to `True`. If you're using [Model Serializer](https://www.django-rest-framework.org/api-guide/serializers/#modelserializer) default value will be `False` if you have specified `blank=True` or `default` or `null=True` at your field in your `Model`.
+Por defecto es `True`. Si estás usando [Model Serializer](https://www.django-rest-framework.org/api-guide/serializers/#modelserializer) el valor por defecto será `False` si has especificado `blank=True` o `default` o `null=True` en tu campo en tu `Model`.
 
 ### `default`
 
-If set, this gives the default value that will be used for the field if no input value is supplied. If not set the default behavior is to not populate the attribute at all.
+Si se establece, esto da el valor predeterminado que se usará para el campo si no se proporciona ningún valor de entrada. Si no se establece, el comportamiento predeterminado es no poblar el atributo en absoluto.
 
-The `default` is not applied during partial update operations. In the partial update case only fields that are provided in the incoming data will have a validated value returned.
+El `default` no se aplica durante las operaciones de actualización parcial. En el caso de actualización parcial, solo los campos que se proporcionan en los datos entrantes tendrán un valor validado devuelto.
 
-May be set to a function or other callable, in which case the value will be evaluated each time it is used. When called, it will receive no arguments. If the callable has a `requires_context = True` attribute, then the serializer field will be passed as an argument.
+Puede establecerse en una función u otro callable, en cuyo caso el valor se evaluará cada vez que se use. Cuando se llame, no recibirá argumentos. Si el callable tiene un atributo `requires_context = True`, entonces el campo del serializer se pasará como argumento.
 
-For example:
+Por ejemplo:
 
 ```python
 class CurrentUserDefault:
     """
-    May be applied as a `default=...` value on a serializer field.
-    Returns the current user.
+    Puede aplicarse como un valor `default=...` en un campo del serializer.
+    Devuelve el usuario actual.
     """
     requires_context = True
 
@@ -67,55 +67,55 @@ class CurrentUserDefault:
         return serializer_field.context['request'].user
 ```
 
-When serializing the instance, default will be used if the object attribute or dictionary key is not present in the instance.
+Al serializar la instancia, se usará el valor predeterminado si el atributo del objeto o la clave del diccionario no está presente en la instancia.
 
-Note that setting a `default` value implies that the field is not required. Including both the `default` and `required` keyword arguments is invalid and will raise an error.
+Ten en cuenta que establecer un valor `default` implica que el campo no es requerido. Incluir tanto el argumento `default` como el argumento `required` es inválido y lanzará un error.
 
 ### `allow_null`
 
-Normally an error will be raised if `None` is passed to a serializer field. Set this keyword argument to `True` if `None` should be considered a valid value.
+Normalmente se lanzará un error si `None` se pasa a un campo del serializer. Establece este argumento de palabra clave en `True` si `None` debe considerarse un valor válido.
 
-Note that, without an explicit `default`, setting this argument to `True` will imply a `default` value of `null` for serialization output, but does not imply a default for input deserialization.
+Ten en cuenta que, sin un `default` explícito, establecer este argumento en `True` implicará un valor `default` de `null` para la salida de serialización, pero no implica un valor predeterminado para la deserialización de entrada.
 
-Defaults to `False`
+Por defecto es `False`
 
 ### `source`
 
-The name of the attribute that will be used to populate the field. May be a method that only takes a `self` argument, such as `URLField(source='get_absolute_url')`, or may use dotted notation to traverse attributes, such as `EmailField(source='user.email')`.
+El nombre del atributo que se usará para poblar el campo. Puede ser un método que solo toma un argumento `self`, como `URLField(source='get_absolute_url')`, o puede usar notación de puntos para recorrer atributos, como `EmailField(source='user.email')`.
 
-When serializing fields with dotted notation, it may be necessary to provide a `default` value if any object is not present or is empty during attribute traversal. Beware of possible n+1 problems when using source attribute if you are accessing a relational orm model. For example:
+Al serializar campos con notación de puntos, puede ser necesario proporcionar un valor `default` si algún objeto no está presente o está vacío durante el recorrido de atributos. Ten cuidado con posibles problemas n+1 al usar el atributo source si estás accediendo a un modelo orm relacional. Por ejemplo:
 
 ```python
 class CommentSerializer(serializers.Serializer):
     email = serializers.EmailField(source="user.email")
 ```
 
-This case would require user object to be fetched from database when it is not prefetched. If that is not wanted, be sure to be using `prefetch_related` and `select_related` methods appropriately. For more information about the methods refer to [django documentation][django-docs-select-related].
+Este caso requeriría que el objeto de usuario se obtenga de la base de datos cuando no está precargado. Si no se desea eso, asegúrate de usar los métodos `prefetch_related` y `select_related` apropiadamente. Para más información sobre los métodos consulta la [documentación de django][django-docs-select-related].
 
-The value `source='*'` has a special meaning, and is used to indicate that the entire object should be passed through to the field. This can be useful for creating nested representations, or for fields which require access to the complete object in order to determine the output representation.
+El valor `source='*'` tiene un significado especial, y se usa para indicar que el objeto completo debe pasarse al campo. Esto puede ser útil para crear representaciones anidadas, o para campos que requieren acceso al objeto completo para determinar la representación de salida.
 
-Defaults to the name of the field.
+Por defecto es el nombre del campo.
 
 ### `validators`
 
-A list of validator functions which should be applied to the incoming field input, and which either raise a validation error or simply return. Validator functions should typically raise `serializers.ValidationError`, but Django's built-in `ValidationError` is also supported for compatibility with validators defined in the Django codebase or third party Django packages.
+Una lista de funciones validadoras que deben aplicarse a la entrada del campo entrante, y que lanzan un error de validación o simplemente devuelven un valor. Las funciones validadoras típicamente deben lanzar `serializers.ValidationError`, pero también se soporta el `ValidationError` incorporado de Django para compatibilidad con validadores definidos en la base de código de Django o paquetes de terceros de Django.
 
 ### `error_messages`
 
-A dictionary of error codes to error messages.
+Un diccionario de códigos de error a mensajes de error.
 
 ### `label`
 
-A short text string that may be used as the name of the field in HTML form fields or other descriptive elements.
+Una cadena de texto corta que puede usarse como el nombre del campo en campos de formulario HTML u otros elementos descriptivos.
 
 ### `help_text`
 
-A text string that may be used as a description of the field in HTML form fields or other descriptive elements.
+Una cadena de texto que puede usarse como descripción del campo en campos de formulario HTML u otros elementos descriptivos.
 
 ### `initial`
 
-A value that should be used for pre-populating the value of HTML form fields. You may pass a callable to it, just as
-you may do with any regular Django `Field`:
+Un valor que debe usarse para pre-poblar el valor de los campos de formulario HTML. Puedes pasarle un callable, igual que
+puedes hacer con cualquier `Field` regular de Django:
 
 ```python
 import datetime
@@ -128,197 +128,197 @@ class ExampleSerializer(serializers.Serializer):
 
 ### `style`
 
-A dictionary of key-value pairs that can be used to control how renderers should render the field.
+Un diccionario de pares clave-valor que puede usarse para controlar cómo los renderizadores deben renderizar el campo.
 
-Two examples here are `'input_type'` and `'base_template'`:
+Dos ejemplos aquí son `'input_type'` y `'base_template'`:
 
 ```python
-# Use <input type="password"> for the input.
+# Usar <input type="password"> para la entrada.
 password = serializers.CharField(
     style={'input_type': 'password'}
 )
 
-# Use a radio input instead of a select input.
+# Usar una entrada de radio en lugar de una entrada de selección.
 color_channel = serializers.ChoiceField(
     choices=['red', 'green', 'blue'],
     style={'base_template': 'radio.html'}
 )
 ```
 
-For more details see the [HTML & Forms][html-and-forms] documentation.
+Para más detalles consulta la documentación de [HTML & Forms][html-and-forms].
 
 ---
 
-# Boolean fields
+# Campos booleanos
 
 ## BooleanField
 
-A boolean representation.
+Una representación booleana.
 
-When using HTML encoded form input be aware that omitting a value will always be treated as setting a field to `False`, even if it has a `default=True` option specified. This is because HTML checkbox inputs represent the unchecked state by omitting the value, so REST framework treats omission as if it is an empty checkbox input.
+Al usar entrada de formulario codificada en HTML, ten en cuenta que omitir un valor siempre se tratará como establecer un campo en `False`, incluso si tiene la opción `default=True` especificada. Esto se debe a que las entradas de checkbox de HTML representan el estado no marcado omitiendo el valor, por lo que REST framework trata la omisión como si fuera una entrada de checkbox vacía.
 
-Note that Django 2.1 removed the `blank` kwarg from `models.BooleanField`.
-Prior to Django 2.1 `models.BooleanField` fields were always `blank=True`. Thus
-since Django 2.1 default `serializers.BooleanField` instances will be generated
-without the `required` kwarg (i.e. equivalent to `required=True`) whereas with
-previous versions of Django, default `BooleanField` instances will be generated
-with a `required=False` option. If you want to control this behavior manually,
-explicitly declare the `BooleanField` on the serializer class, or use the
-`extra_kwargs` option to set the `required` flag.
+Ten en cuenta que Django 2.1 eliminó el kwarg `blank` de `models.BooleanField`.
+Antes de Django 2.1 los campos `models.BooleanField` siempre eran `blank=True`. Por lo tanto,
+desde Django 2.1 las instancias predeterminadas `serializers.BooleanField` se generarán
+sin el kwarg `required` (es decir, equivalente a `required=True`) mientras que con
+versiones anteriores de Django, las instancias predeterminadas `BooleanField` se generarán
+con una opción `required=False`. Si quieres controlar este comportamiento manualmente,
+declara explícitamente el `BooleanField` en la clase del serializer, o usa la
+opción `extra_kwargs` para establecer la bandera `required`.
 
-Corresponds to `django.db.models.fields.BooleanField`.
+Corresponde a `django.db.models.fields.BooleanField`.
 
-**Signature:** `BooleanField()`
+**Firma:** `BooleanField()`
 
 ---
 
-# String fields
+# Campos de texto
 
 ## CharField
 
-A text representation. Optionally validates the text to be shorter than `max_length` and longer than `min_length`.
+Una representación de texto. Opcionalmente valida que el texto sea más corto que `max_length` y más largo que `min_length`.
 
-Corresponds to `django.db.models.fields.CharField` or `django.db.models.fields.TextField`.
+Corresponde a `django.db.models.fields.CharField` o `django.db.models.fields.TextField`.
 
-**Signature:** `CharField(max_length=None, min_length=None, allow_blank=False, trim_whitespace=True)`
+**Firma:** `CharField(max_length=None, min_length=None, allow_blank=False, trim_whitespace=True)`
 
-- `max_length` - Validates that the input contains no more than this number of characters.
-- `min_length` - Validates that the input contains no fewer than this number of characters.
-- `allow_blank` - If set to `True` then the empty string should be considered a valid value. If set to `False` then the empty string is considered invalid and will raise a validation error. Defaults to `False`.
-- `trim_whitespace` - If set to `True` then leading and trailing whitespace is trimmed. Defaults to `True`.
+- `max_length` - Valida que la entrada no contenga más de este número de caracteres.
+- `min_length` - Valida que la entrada contenga al menos este número de caracteres.
+- `allow_blank` - Si se establece en `True` entonces la cadena vacía debe considerarse un valor válido. Si se establece en `False` entonces la cadena vacía se considera inválida y lanzará un error de validación. Por defecto es `False`.
+- `trim_whitespace` - Si se establece en `True` entonces los espacios en blanco al inicio y al final se recortan. Por defecto es `True`.
 
-The `allow_null` option is also available for string fields, although its usage is discouraged in favor of `allow_blank`. It is valid to set both `allow_blank=True` and `allow_null=True`, but doing so means that there will be two differing types of empty value permissible for string representations, which can lead to data inconsistencies and subtle application bugs.
+La opción `allow_null` también está disponible para campos de texto, aunque su uso se desalienta en favor de `allow_blank`. Es válido establecer tanto `allow_blank=True` como `allow_null=True`, pero hacerlo significa que habrá dos tipos diferentes de valores vacíos permitidos para representaciones de texto, lo que puede llevar a inconsistencias de datos y errores sutiles en la aplicación.
 
 ## EmailField
 
-A text representation, validates the text to be a valid e-mail address.
+Una representación de texto, valida que el texto sea una dirección de correo electrónico válida.
 
-Corresponds to `django.db.models.fields.EmailField`
+Corresponde a `django.db.models.fields.EmailField`
 
-**Signature:** `EmailField(max_length=None, min_length=None, allow_blank=False)`
+**Firma:** `EmailField(max_length=None, min_length=None, allow_blank=False)`
 
 ## RegexField
 
-A text representation, that validates the given value matches against a certain regular expression.
+Una representación de texto, que valida que el valor dado coincida con una expresión regular específica.
 
-Corresponds to `django.forms.fields.RegexField`.
+Corresponde a `django.forms.fields.RegexField`.
 
-**Signature:** `RegexField(regex, max_length=None, min_length=None, allow_blank=False)`
+**Firma:** `RegexField(regex, max_length=None, min_length=None, allow_blank=False)`
 
-The mandatory `regex` argument may either be a string, or a compiled python regular expression object.
+El argumento obligatorio `regex` puede ser una cadena o un objeto de expresión regular compilado de python.
 
-Uses Django's `django.core.validators.RegexValidator` for validation.
+Usa el `django.core.validators.RegexValidator` de Django para la validación.
 
 ## SlugField
 
-A `RegexField` that validates the input against the pattern `[a-zA-Z0-9_-]+`.
+Un `RegexField` que valida la entrada contra el patrón `[a-zA-Z0-9_-]+`.
 
-Corresponds to `django.db.models.fields.SlugField`.
+Corresponde a `django.db.models.fields.SlugField`.
 
-**Signature:** `SlugField(max_length=50, min_length=None, allow_blank=False)`
+**Firma:** `SlugField(max_length=50, min_length=None, allow_blank=False)`
 
 ## URLField
 
-A `RegexField` that validates the input against a URL matching pattern. Expects fully qualified URLs of the form `http://<host>/<path>`.
+Un `RegexField` que valida la entrada contra un patrón coincidente de URL. Espera URLs completamente calificadas de la forma `http://<host>/<path>`.
 
-Corresponds to `django.db.models.fields.URLField`. Uses Django's `django.core.validators.URLValidator` for validation.
+Corresponde a `django.db.models.fields.URLField`. Usa el `django.core.validators.URLValidator` de Django para la validación.
 
-**Signature:** `URLField(max_length=200, min_length=None, allow_blank=False)`
+**Firma:** `URLField(max_length=200, min_length=None, allow_blank=False)`
 
 ## UUIDField
 
-A field that ensures the input is a valid UUID string. The `to_internal_value` method will return a `uuid.UUID` instance. On output the field will return a string in the canonical hyphenated format, for example:
+Un campo que asegura que la entrada es una cadena UUID válida. El método `to_internal_value` devolverá una instancia `uuid.UUID`. En la salida, el campo devolverá una cadena en el formato canónico con guiones, por ejemplo:
 
 ```text
 "de305d54-75b4-431b-adb2-eb6b9e546013"
 ```
 
-**Signature:** `UUIDField(format='hex_verbose')`
+**Firma:** `UUIDField(format='hex_verbose')`
 
-- `format`: Determines the representation format of the uuid value
-  - `'hex_verbose'` - The canonical hex representation, including hyphens: `"5ce0e9a5-5ffa-654b-cee0-1238041fb31a"`
-  - `'hex'` - The compact hex representation of the UUID, not including hyphens: `"5ce0e9a55ffa654bcee01238041fb31a"`
-  - `'int'` - A 128 bit integer representation of the UUID: `"123456789012312313134124512351145145114"`
-  - `'urn'` - RFC 4122 URN representation of the UUID: `"urn:uuid:5ce0e9a5-5ffa-654b-cee0-1238041fb31a"`
-    Changing the `format` parameters only affects representation values. All formats are accepted by `to_internal_value`
+- `format`: Determina el formato de representación del valor uuid
+  - `'hex_verbose'` - La representación hexadecimal canónica, incluyendo guiones: `"5ce0e9a5-5ffa-654b-cee0-1238041fb31a"`
+  - `'hex'` - La representación hexadecimal compacta del UUID, sin incluir guiones: `"5ce0e9a55ffa654bcee01238041fb31a"`
+  - `'int'` - Una representación de entero de 128 bits del UUID: `"123456789012312313134124512351145145114"`
+  - `'urn'` - Representación URN RFC 4122 del UUID: `"urn:uuid:5ce0e9a5-5ffa-654b-cee0-1238041fb31a"`
+    Cambiar los parámetros `format` solo afecta los valores de representación. Todos los formatos son aceptados por `to_internal_value`
 
 ## FilePathField
 
-A field whose choices are limited to the filenames in a certain directory on the filesystem
+Un campo cuyas opciones se limitan a los nombres de archivo en un directorio determinado del sistema de archivos
 
-Corresponds to `django.forms.fields.FilePathField`.
+Corresponde a `django.forms.fields.FilePathField`.
 
-**Signature:** `FilePathField(path, match=None, recursive=False, allow_files=True, allow_folders=False, required=None, **kwargs)`
+**Firma:** `FilePathField(path, match=None, recursive=False, allow_files=True, allow_folders=False, required=None, **kwargs)`
 
-- `path` - The absolute filesystem path to a directory from which this FilePathField should get its choice.
-- `match` - A regular expression, as a string, that FilePathField will use to filter filenames.
-- `recursive` - Specifies whether all subdirectories of path should be included. Default is `False`.
-- `allow_files` - Specifies whether files in the specified location should be included. Default is `True`. Either this or `allow_folders` must be `True`.
-- `allow_folders` - Specifies whether folders in the specified location should be included. Default is `False`. Either this or `allow_files` must be `True`.
+- `path` - La ruta absoluta del sistema de archivos a un directorio desde el cual este FilePathField debe obtener sus opciones.
+- `match` - Una expresión regular, como cadena, que FilePathField usará para filtrar nombres de archivo.
+- `recursive` - Especifica si deben incluirse todos los subdirectorios de la ruta. El valor predeterminado es `False`.
+- `allow_files` - Especifica si deben incluirse los archivos en la ubicación especificada. El valor predeterminado es `True`. O esto o `allow_folders` debe ser `True`.
+- `allow_folders` - Especifica si deben incluirse las carpetas en la ubicación especificada. El valor predeterminado es `False`. O esto o `allow_files` debe ser `True`.
 
 ## IPAddressField
 
-A field that ensures the input is a valid IPv4 or IPv6 string.
+Un campo que asegura que la entrada es una cadena IPv4 o IPv6 válida.
 
-Corresponds to `django.forms.fields.IPAddressField` and `django.forms.fields.GenericIPAddressField`.
+Corresponde a `django.forms.fields.IPAddressField` y `django.forms.fields.GenericIPAddressField`.
 
-**Signature**: `IPAddressField(protocol='both', unpack_ipv4=False, **options)`
+**Firma**: `IPAddressField(protocol='both', unpack_ipv4=False, **options)`
 
-- `protocol` Limits valid inputs to the specified protocol. Accepted values are 'both' (default), 'IPv4' or 'IPv6'. Matching is case-insensitive.
-- `unpack_ipv4` Unpacks IPv4 mapped addresses like ::ffff:192.0.2.1. If this option is enabled that address would be unpacked to 192.0.2.1. Default is disabled. Can only be used when protocol is set to 'both'.
+- `protocol` Limita las entradas válidas al protocolo especificado. Los valores aceptados son 'both' (predeterminado), 'IPv4' o 'IPv6'. La coincidencia no distingue mayúsculas/minúsculas.
+- `unpack_ipv4` Desempaqueta direcciones IPv4 mapeadas como ::ffff:192.0.2.1. Si esta opción está habilitada, esa dirección se desempaquetaría a 192.0.2.1. El valor predeterminado está deshabilitado. Solo puede usarse cuando el protocolo está configurado en 'both'.
 
 ---
 
-# Numeric fields
+# Campos numéricos
 
 ## IntegerField
 
-An integer representation.
+Una representación entera.
 
-Corresponds to `django.db.models.fields.IntegerField`, `django.db.models.fields.SmallIntegerField`, `django.db.models.fields.PositiveIntegerField` and `django.db.models.fields.PositiveSmallIntegerField`.
+Corresponde a `django.db.models.fields.IntegerField`, `django.db.models.fields.SmallIntegerField`, `django.db.models.fields.PositiveIntegerField` y `django.db.models.fields.PositiveSmallIntegerField`.
 
-**Signature**: `IntegerField(max_value=None, min_value=None)`
+**Firma**: `IntegerField(max_value=None, min_value=None)`
 
-- `max_value` Validate that the number provided is no greater than this value.
-- `min_value` Validate that the number provided is no less than this value.
+- `max_value` Valida que el número proporcionado no sea mayor que este valor.
+- `min_value` Valida que el número proporcionado no sea menor que este valor.
 
 ## FloatField
 
-A floating point representation.
+Una representación de punto flotante.
 
-Corresponds to `django.db.models.fields.FloatField`.
+Corresponde a `django.db.models.fields.FloatField`.
 
-**Signature**: `FloatField(max_value=None, min_value=None)`
+**Firma**: `FloatField(max_value=None, min_value=None)`
 
-- `max_value` Validate that the number provided is no greater than this value.
-- `min_value` Validate that the number provided is no less than this value.
+- `max_value` Valida que el número proporcionado no sea mayor que este valor.
+- `min_value` Valida que el número proporcionado no sea menor que este valor.
 
 ## DecimalField
 
-A decimal representation, represented in Python by a `Decimal` instance.
+Una representación decimal, representada en Python por una instancia de `Decimal`.
 
-Corresponds to `django.db.models.fields.DecimalField`.
+Corresponde a `django.db.models.fields.DecimalField`.
 
-**Signature**: `DecimalField(max_digits, decimal_places, coerce_to_string=None, max_value=None, min_value=None)`
+**Firma**: `DecimalField(max_digits, decimal_places, coerce_to_string=None, max_value=None, min_value=None)`
 
-- `max_digits` The maximum number of digits allowed in the number. It must be either `None` or an integer greater than or equal to `decimal_places`.
-- `decimal_places` The number of decimal places to store with the number.
-- `coerce_to_string` Set to `True` if string values should be returned for the representation, or `False` if `Decimal` objects should be returned. Defaults to the same value as the `COERCE_DECIMAL_TO_STRING` settings key, which will be `True` unless overridden. If `Decimal` objects are returned by the serializer, then the final output format will be determined by the renderer. Note that setting `localize` will force the value to `True`.
-- `max_value` Validate that the number provided is no greater than this value. Should be an integer or `Decimal` object.
-- `min_value` Validate that the number provided is no less than this value. Should be an integer or `Decimal` object.
-- `localize` Set to `True` to enable localization of input and output based on the current locale. This will also force `coerce_to_string` to `True`. Defaults to `False`. Note that data formatting is enabled if you have set `USE_L10N=True` in your settings file.
-- `rounding` Sets the rounding mode used when quantizing to the configured precision. Valid values are [`decimal` module rounding modes][python-decimal-rounding-modes]. Defaults to `None`.
-- `normalize_output` Will normalize the decimal value when serialized. This will strip all trailing zeroes and change the value's precision to the minimum required precision to be able to represent the value without losing data. Defaults to `False`.
+- `max_digits` El número máximo de dígitos permitidos en el número. Debe ser `None` o un entero mayor o igual a `decimal_places`.
+- `decimal_places` El número de lugares decimales para almacenar con el número.
+- `coerce_to_string` Establecer en `True` si los valores de cadena deben ser devueltos para la representación, o `False` si los objetos `Decimal` deben ser devueltos. Por defecto es el mismo valor que la clave de configuración `COERCE_DECIMAL_TO_STRING`, que será `True` a menos que se anule. Si los objetos `Decimal` son devueltos por el serializador, entonces el formato de salida final será determinado por el renderizador. Tenga en cuenta que configurar `localize` forzará el valor a `True`.
+- `max_value` Valida que el número proporcionado no sea mayor que este valor. Debe ser un entero u objeto `Decimal`.
+- `min_value` Valida que el número proporcionado no sea menor que este valor. Debe ser un entero u objeto `Decimal`.
+- `localize` Establecer en `True` para habilitar la localización de entrada y salida basada en la configuración regional actual. Esto también forzará `coerce_to_string` a `True`. Por defecto es `False`. Tenga en cuenta que el formateo de datos está habilitado si ha configurado `USE_L10N=True` en su archivo de configuración.
+- `rounding` Establece el modo de redondeo utilizado al cuantificar a la precisión configurada. Los valores válidos son [modos de redondeo del módulo `decimal`][python-decimal-rounding-modes]. Por defecto es `None`.
+- `normalize_output` Normalizará el valor decimal cuando se serialice. Esto eliminará todos los ceros finales y cambiará la precisión del valor a la precisión mínima requerida para poder representar el valor sin perder datos. Por defecto es `False`.
 
-#### Example usage
+#### Ejemplo de uso
 
-To validate numbers up to 999 with a resolution of 2 decimal places, you would use:
+Para validar números hasta 999 con una resolución de 2 lugares decimales, usaría:
 
 ```python
 serializers.DecimalField(max_digits=5, decimal_places=2)
 ```
 
-And to validate numbers up to anything less than one billion with a resolution of 10 decimal places:
+Y para validar números hasta cualquier cosa menor a mil millones con una resolución de 10 lugares decimales:
 
 ```python
 serializers.DecimalField(max_digits=19, decimal_places=10)
@@ -326,31 +326,31 @@ serializers.DecimalField(max_digits=19, decimal_places=10)
 
 ---
 
-# Date and time fields
+# Campos de fecha y hora
 
 ## DateTimeField
 
-A date and time representation.
+Una representación de fecha y hora.
 
-Corresponds to `django.db.models.fields.DateTimeField`.
+Corresponde a `django.db.models.fields.DateTimeField`.
 
-**Signature:** `DateTimeField(format=api_settings.DATETIME_FORMAT, input_formats=None, default_timezone=None)`
+**Firma:** `DateTimeField(format=api_settings.DATETIME_FORMAT, input_formats=None, default_timezone=None)`
 
-- `format` - A string representing the output format. If not specified, this defaults to the same value as the `DATETIME_FORMAT` settings key, which will be `'iso-8601'` unless set. Setting to a format string indicates that `to_representation` return values should be coerced to string output. Format strings are described below. Setting this value to `None` indicates that Python `datetime` objects should be returned by `to_representation`. In this case the datetime encoding will be determined by the renderer.
-- `input_formats` - A list of strings representing the input formats which may be used to parse the date. If not specified, the `DATETIME_INPUT_FORMATS` setting will be used, which defaults to `['iso-8601']`.
-- `default_timezone` - A `tzinfo` subclass (`zoneinfo` or `pytz`) representing the timezone. If not specified and the `USE_TZ` setting is enabled, this defaults to the [current timezone][django-current-timezone]. If `USE_TZ` is disabled, then datetime objects will be naive.
+- `format` - Una cadena que representa el formato de salida. Si no se especifica, por defecto es el mismo valor que la clave de configuración `DATETIME_FORMAT`, que será `'iso-8601'` a menos que se configure. Establecer una cadena de formato indica que los valores de retorno de `to_representation` deben ser forzados a salida de cadena. Las cadenas de formato se describen a continuación. Establecer este valor en `None` indica que los objetos `datetime` de Python deben ser devueltos por `to_representation`. En este caso, la codificación de datetime será determinada por el renderizador.
+- `input_formats` - Una lista de cadenas que representan los formatos de entrada que pueden ser utilizados para analizar la fecha. Si no se especifica, se usará la configuración `DATETIME_INPUT_FORMATS`, que por defecto es `['iso-8601']`.
+- `default_timezone` - Una subclase `tzinfo` (`zoneinfo` o `pytz`) que representa la zona horaria. Si no se especifica y la configuración `USE_TZ` está habilitada, por defecto es la [zona horaria actual][django-current-timezone]. Si `USE_TZ` está deshabilitado, entonces los objetos datetime serán ingenuos.
 
-#### `DateTimeField` format strings.
+#### Cadenas de formato de `DateTimeField`.
 
-Format strings may either be [Python strftime formats][strftime] which explicitly specify the format, or the special string `'iso-8601'`, which indicates that [ISO 8601][iso8601] style datetimes should be used. (eg `'2013-01-29T12:34:56.000000Z'`)
+Las cadenas de formato pueden ser [formatos strftime de Python][strftime] que especifican explícitamente el formato, o la cadena especial `'iso-8601'`, que indica que deben usarse datetimes estilo [ISO 8601][iso8601]. (ej. `'2013-01-29T12:34:56.000000Z'`)
 
-When a value of `None` is used for the format `datetime` objects will be returned by `to_representation` and the final output representation will be determined by the renderer class.
+Cuando se usa un valor de `None` para el formato, los objetos `datetime` serán devueltos por `to_representation` y la representación de salida final será determinada por la clase del renderizador.
 
-#### `auto_now` and `auto_now_add` model fields.
+#### Campos de modelo `auto_now` y `auto_now_add`.
 
-When using `ModelSerializer` or `HyperlinkedModelSerializer`, note that any model fields with `auto_now=True` or `auto_now_add=True` will use serializer fields that are `read_only=True` by default.
+Al usar `ModelSerializer` o `HyperlinkedModelSerializer`, tenga en cuenta que cualquier campo de modelo con `auto_now=True` o `auto_now_add=True` usará campos de serializador que son `read_only=True` por defecto.
 
-If you want to override this behavior, you'll need to declare the `DateTimeField` explicitly on the serializer. For example:
+Si desea anular este comportamiento, necesitará declarar el `DateTimeField` explícitamente en el serializador. Por ejemplo:
 
 ```python
 class CommentSerializer(serializers.ModelSerializer):
@@ -362,130 +362,130 @@ class CommentSerializer(serializers.ModelSerializer):
 
 ## DateField
 
-A date representation.
+Una representación de fecha.
 
-Corresponds to `django.db.models.fields.DateField`
+Corresponde a `django.db.models.fields.DateField`
 
-**Signature:** `DateField(format=api_settings.DATE_FORMAT, input_formats=None)`
+**Firma:** `DateField(format=api_settings.DATE_FORMAT, input_formats=None)`
 
-- `format` - A string representing the output format. If not specified, this defaults to the same value as the `DATE_FORMAT` settings key, which will be `'iso-8601'` unless set. Setting to a format string indicates that `to_representation` return values should be coerced to string output. Format strings are described below. Setting this value to `None` indicates that Python `date` objects should be returned by `to_representation`. In this case the date encoding will be determined by the renderer.
-- `input_formats` - A list of strings representing the input formats which may be used to parse the date. If not specified, the `DATE_INPUT_FORMATS` setting will be used, which defaults to `['iso-8601']`.
+- `format` - Una cadena que representa el formato de salida. Si no se especifica, por defecto es el mismo valor que la clave de configuración `DATE_FORMAT`, que será `'iso-8601'` a menos que se configure. Establecer una cadena de formato indica que los valores de retorno de `to_representation` deben ser forzados a salida de cadena. Las cadenas de formato se describen a continuación. Establecer este valor en `None` indica que los objetos `date` de Python deben ser devueltos por `to_representation`. En este caso, la codificación de fecha será determinada por el renderizador.
+- `input_formats` - Una lista de cadenas que representan los formatos de entrada que pueden ser utilizados para analizar la fecha. Si no se especifica, se usará la configuración `DATE_INPUT_FORMATS`, que por defecto es `['iso-8601']`.
 
-#### `DateField` format strings
+#### Cadenas de formato de `DateField`
 
-Format strings may either be [Python strftime formats][strftime] which explicitly specify the format, or the special string `'iso-8601'`, which indicates that [ISO 8601][iso8601] style dates should be used. (eg `'2013-01-29'`)
+Las cadenas de formato pueden ser [formatos strftime de Python][strftime] que especifican explícitamente el formato, o la cadena especial `'iso-8601'`, que indica que deben usarse fechas estilo [ISO 8601][iso8601]. (ej. `'2013-01-29'`)
 
 ## TimeField
 
-A time representation.
+Una representación de tiempo.
 
-Corresponds to `django.db.models.fields.TimeField`
+Corresponde a `django.db.models.fields.TimeField`
 
-**Signature:** `TimeField(format=api_settings.TIME_FORMAT, input_formats=None)`
+**Firma:** `TimeField(format=api_settings.TIME_FORMAT, input_formats=None)`
 
-- `format` - A string representing the output format. If not specified, this defaults to the same value as the `TIME_FORMAT` settings key, which will be `'iso-8601'` unless set. Setting to a format string indicates that `to_representation` return values should be coerced to string output. Format strings are described below. Setting this value to `None` indicates that Python `time` objects should be returned by `to_representation`. In this case the time encoding will be determined by the renderer.
-- `input_formats` - A list of strings representing the input formats which may be used to parse the date. If not specified, the `TIME_INPUT_FORMATS` setting will be used, which defaults to `['iso-8601']`.
+- `format` - Una cadena que representa el formato de salida. Si no se especifica, por defecto es el mismo valor que la clave de configuración `TIME_FORMAT`, que será `'iso-8601'` a menos que se configure. Establecer una cadena de formato indica que los valores de retorno de `to_representation` deben ser forzados a salida de cadena. Las cadenas de formato se describen a continuación. Establecer este valor en `None` indica que los objetos `time` de Python deben ser devueltos por `to_representation`. En este caso, la codificación de tiempo será determinada por el renderizador.
+- `input_formats` - Una lista de cadenas que representan los formatos de entrada que pueden ser utilizados para analizar la fecha. Si no se especifica, se usará la configuración `TIME_INPUT_FORMATS`, que por defecto es `['iso-8601']`.
 
-#### `TimeField` format strings
+#### Cadenas de formato de `TimeField`
 
-Format strings may either be [Python strftime formats][strftime] which explicitly specify the format, or the special string `'iso-8601'`, which indicates that [ISO 8601][iso8601] style times should be used. (eg `'12:34:56.000000'`)
+Las cadenas de formato pueden ser [formatos strftime de Python][strftime] que especifican explícitamente el formato, o la cadena especial `'iso-8601'`, que indica que deben usarse tiempos estilo [ISO 8601][iso8601]. (ej. `'12:34:56.000000'`)
 
 ## DurationField
 
-A Duration representation.
-Corresponds to `django.db.models.fields.DurationField`
+Una representación de duración.
+Corresponde a `django.db.models.fields.DurationField`
 
-The `validated_data` for these fields will contain a `datetime.timedelta` instance.
-The representation is a string following this format `'[DD] [HH:[MM:]]ss[.uuuuuu]'`.
+El `validated_data` para estos campos contendrá una instancia de `datetime.timedelta`.
+La representación es una cadena que sigue este formato `'[DD] [HH:[MM:]]ss[.uuuuuu]'`.
 
-**Signature:** `DurationField(max_value=None, min_value=None)`
+**Firma:** `DurationField(max_value=None, min_value=None)`
 
-- `max_value` Validate that the duration provided is no greater than this value.
-- `min_value` Validate that the duration provided is no less than this value.
+- `max_value` Valida que la duración proporcionada no sea mayor que este valor.
+- `min_value` Valida que la duración proporcionada no sea menor que este valor.
 
 ---
 
-# Choice selection fields
+# Campos de selección de opciones
 
 ## ChoiceField
 
-A field that can accept a value out of a limited set of choices.
+Un campo que puede aceptar un valor de un conjunto limitado de opciones.
 
-Used by `ModelSerializer` to automatically generate fields if the corresponding model field includes a `choices=…` argument.
+Es usado por `ModelSerializer` para generar campos automáticamente si el campo del modelo correspondiente incluye un argumento `choices=…`.
 
-**Signature:** `ChoiceField(choices)`
+**Firma:** `ChoiceField(choices)`
 
-- `choices` - A list of valid values, or a list of `(key, display_name)` tuples.
-- `allow_blank` - If set to `True` then the empty string should be considered a valid value. If set to `False` then the empty string is considered invalid and will raise a validation error. Defaults to `False`.
-- `html_cutoff` - If set this will be the maximum number of choices that will be displayed by a HTML select drop down. Can be used to ensure that automatically generated ChoiceFields with very large possible selections do not prevent a template from rendering. Defaults to `None`.
-- `html_cutoff_text` - If set this will display a textual indicator if the maximum number of items have been cutoff in an HTML select drop down. Defaults to `"More than {count} items…"`
+- `choices` - Una lista de valores válidos, o una lista de tuplas `(key, display_name)`.
+- `allow_blank` - Si se establece en `True` entonces la cadena vacía debe ser considerada un valor válido. Si se establece en `False` entonces la cadena vacía se considera inválida y lanzará un error de validación. Por defecto es `False`.
+- `html_cutoff` - Si se establece, este será el número máximo de opciones que serán mostradas por un desplegable select de HTML. Puede usarse para asegurar que ChoiceFields generados automáticamente con selecciones posibles muy grandes no impidan que una plantilla se renderice. Por defecto es `None`.
+- `html_cutoff_text` - Si se establece, mostrará un indicador textual si el número máximo de elementos ha sido cortado en un desplegable select de HTML. Por defecto es `"Más de {count} elementos…"`
 
-Both the `allow_blank` and `allow_null` are valid options on `ChoiceField`, although it is highly recommended that you only use one and not both. `allow_blank` should be preferred for textual choices, and `allow_null` should be preferred for numeric or other non-textual choices.
+Tanto `allow_blank` como `allow_null` son opciones válidas en `ChoiceField`, aunque es altamente recomendable que solo use una y no ambas. `allow_blank` debe preferirse para opciones textuales, y `allow_null` debe preferirse para opciones numéricas u otras opciones no textuales.
 
 ## MultipleChoiceField
 
-A field that can accept a set of zero, one or many values, chosen from a limited set of choices. Takes a single mandatory argument. `to_internal_value` returns a `set` containing the selected values.
+Un campo que puede aceptar un conjunto de cero, uno o muchos valores, elegidos de un conjunto limitado de opciones. Toma un único argumento obligatorio. `to_internal_value` devuelve un `set` que contiene los valores seleccionados.
 
-**Signature:** `MultipleChoiceField(choices)`
+**Firma:** `MultipleChoiceField(choices)`
 
-- `choices` - A list of valid values, or a list of `(key, display_name)` tuples.
-- `allow_blank` - If set to `True` then the empty string should be considered a valid value. If set to `False` then the empty string is considered invalid and will raise a validation error. Defaults to `False`.
-- `html_cutoff` - If set this will be the maximum number of choices that will be displayed by a HTML select drop down. Can be used to ensure that automatically generated ChoiceFields with very large possible selections do not prevent a template from rendering. Defaults to `None`.
-- `html_cutoff_text` - If set this will display a textual indicator if the maximum number of items have been cutoff in an HTML select drop down. Defaults to `"More than {count} items…"`
+- `choices` - Una lista de valores válidos, o una lista de tuplas `(key, display_name)`.
+- `allow_blank` - Si se establece en `True` entonces la cadena vacía debe ser considerada un valor válido. Si se establece en `False` entonces la cadena vacía se considera inválida y lanzará un error de validación. Por defecto es `False`.
+- `html_cutoff` - Si se establece, este será el número máximo de opciones que serán mostradas por un desplegable select de HTML. Puede usarse para asegurar que ChoiceFields generados automáticamente con selecciones posibles muy grandes no impidan que una plantilla se renderice. Por defecto es `None`.
+- `html_cutoff_text` - Si se establece, mostrará un indicador textual si el número máximo de elementos ha sido cortado en un desplegable select de HTML. Por defecto es `"Más de {count} elementos…"`
 
-As with `ChoiceField`, both the `allow_blank` and `allow_null` options are valid, although it is highly recommended that you only use one and not both. `allow_blank` should be preferred for textual choices, and `allow_null` should be preferred for numeric or other non-textual choices.
+Al igual que con `ChoiceField`, ambas opciones `allow_blank` y `allow_null` son válidas, aunque es altamente recomendable que solo use una y no ambas. `allow_blank` debe preferirse para opciones textuales, y `allow_null` debe preferirse para opciones numéricas u otras opciones no textuales.
 
 ---
 
-# File upload fields
+# Campos de carga de archivos
 
-#### Parsers and file uploads.
+#### Parsers y carga de archivos.
 
-The `FileField` and `ImageField` classes are only suitable for use with `MultiPartParser` or `FileUploadParser`. Most parsers, such as e.g. JSON don't support file uploads.
-Django's regular [FILE_UPLOAD_HANDLERS] are used for handling uploaded files.
+Las clases `FileField` e `ImageField` solo son adecuadas para usar con `MultiPartParser` o `FileUploadParser`. La mayoría de los parsers, como por ejemplo JSON, no soportan carga de archivos.
+Los [FILE_UPLOAD_HANDLERS] regulares de Django se usan para manejar archivos cargados.
 
 ## FileField
 
-A file representation. Performs Django's standard FileField validation.
+Una representación de archivo. Realiza la validación estándar de FileField de Django.
 
-Corresponds to `django.forms.fields.FileField`.
+Corresponde a `django.forms.fields.FileField`.
 
-**Signature:** `FileField(max_length=None, allow_empty_file=False, use_url=UPLOADED_FILES_USE_URL)`
+**Firma:** `FileField(max_length=None, allow_empty_file=False, use_url=UPLOADED_FILES_USE_URL)`
 
-- `max_length` - Designates the maximum length for the file name.
-- `allow_empty_file` - Designates if empty files are allowed.
-- `use_url` - If set to `True` then URL string values will be used for the output representation. If set to `False` then filename string values will be used for the output representation. Defaults to the value of the `UPLOADED_FILES_USE_URL` settings key, which is `True` unless set otherwise.
+- `max_length` - Designa la longitud máxima para el nombre del archivo.
+- `allow_empty_file` - Designa si se permiten archivos vacíos.
+- `use_url` - Si se establece en `True` entonces los valores de cadena URL serán usados para la representación de salida. Si se establece en `False` entonces los valores de cadena de nombre de archivo serán usados para la representación de salida. Por defecto es el valor de la clave de configuración `UPLOADED_FILES_USE_URL`, que es `True` a menos que se configure de otra manera.
 
 ## ImageField
 
-An image representation. Validates the uploaded file content as matching a known image format.
+Una representación de imagen. Valida el contenido del archivo cargado como coincidente con un formato de imagen conocido.
 
-Corresponds to `django.forms.fields.ImageField`.
+Corresponde a `django.forms.fields.ImageField`.
 
-**Signature:** `ImageField(max_length=None, allow_empty_file=False, use_url=UPLOADED_FILES_USE_URL)`
+**Firma:** `ImageField(max_length=None, allow_empty_file=False, use_url=UPLOADED_FILES_USE_URL)`
 
-- `max_length` - Designates the maximum length for the file name.
-- `allow_empty_file` - Designates if empty files are allowed.
-- `use_url` - If set to `True` then URL string values will be used for the output representation. If set to `False` then filename string values will be used for the output representation. Defaults to the value of the `UPLOADED_FILES_USE_URL` settings key, which is `True` unless set otherwise.
+- `max_length` - Designa la longitud máxima para el nombre del archivo.
+- `allow_empty_file` - Designa si se permiten archivos vacíos.
+- `use_url` - Si se establece en `True` entonces los valores de cadena URL serán usados para la representación de salida. Si se establece en `False` entonces los valores de cadena de nombre de archivo serán usados para la representación de salida. Por defecto es el valor de la clave de configuración `UPLOADED_FILES_USE_URL`, que es `True` a menos que se configure de otra manera.
 
-Requires either the `Pillow` package or `PIL` package. The `Pillow` package is recommended, as `PIL` is no longer actively maintained.
+Requiere el paquete `Pillow` o el paquete `PIL`. El paquete `Pillow` es recomendado, ya que `PIL` ya no se mantiene activamente.
 
 ---
 
-# Composite fields
+# Campos compuestos
 
 ## ListField
 
-A field class that validates a list of objects.
+Una clase de campo que valida una lista de objetos.
 
-**Signature**: `ListField(child=<A_FIELD_INSTANCE>, allow_empty=True, min_length=None, max_length=None)`
+**Firma**: `ListField(child=<UNA_INSTANCIA_DE_CAMPO>, allow_empty=True, min_length=None, max_length=None)`
 
-- `child` - A field instance that should be used for validating the objects in the list. If this argument is not provided then objects in the list will not be validated.
-- `allow_empty` - Designates if empty lists are allowed.
-- `min_length` - Validates that the list contains no fewer than this number of elements.
-- `max_length` - Validates that the list contains no more than this number of elements.
+- `child` - Una instancia de campo que debe ser usada para validar los objetos en la lista. Si este argumento no se proporciona entonces los objetos en la lista no serán validados.
+- `allow_empty` - Designa si se permiten listas vacías.
+- `min_length` - Valida que la lista contiene no menos que este número de elementos.
+- `max_length` - Valida que la lista contiene no más que este número de elementos.
 
-For example, to validate a list of integers you might use something like the following:
+Por ejemplo, para validar una lista de enteros podría usar algo como lo siguiente:
 
 ```python
 scores = serializers.ListField(
@@ -493,31 +493,31 @@ scores = serializers.ListField(
 )
 ```
 
-The `ListField` class also supports a declarative style that allows you to write reusable list field classes.
+La clase `ListField` también soporta un estilo declarativo que le permite escribir clases de campo de lista reutilizables.
 
 ```python
 class StringListField(serializers.ListField):
     child = serializers.CharField()
 ```
 
-We can now reuse our custom `StringListField` class throughout our application, without having to provide a `child` argument to it.
+Ahora podemos reutilizar nuestra clase `StringListField` personalizada a través de nuestra aplicación, sin tener que proporcionar un argumento `child`.
 
 ## DictField
 
-A field class that validates a dictionary of objects. The keys in `DictField` are always assumed to be string values.
+Una clase de campo que valida un diccionario de objetos. Las claves en `DictField` siempre se asumen como valores de cadena.
 
-**Signature**: `DictField(child=<A_FIELD_INSTANCE>, allow_empty=True)`
+**Firma**: `DictField(child=<UNA_INSTANCIA_DE_CAMPO>, allow_empty=True)`
 
-- `child` - A field instance that should be used for validating the values in the dictionary. If this argument is not provided then values in the mapping will not be validated.
-- `allow_empty` - Designates if empty dictionaries are allowed.
+- `child` - Una instancia de campo que debe ser usada para validar los valores en el diccionario. Si este argumento no se proporciona entonces los valores en el mapeo no serán validados.
+- `allow_empty` - Designa si se permiten diccionarios vacíos.
 
-For example, to create a field that validates a mapping of strings to strings, you would write something like this:
+Por ejemplo, para crear un campo que valide un mapeo de cadenas a cadenas, escribiría algo como esto:
 
 ```python
 document = DictField(child=CharField())
 ```
 
-You can also use the declarative style, as with `ListField`. For example:
+También puede usar el estilo declarativo, como con `ListField`. Por ejemplo:
 
 ```python
 class DocumentField(DictField):
@@ -526,37 +526,37 @@ class DocumentField(DictField):
 
 ## HStoreField
 
-A preconfigured `DictField` that is compatible with Django's postgres `HStoreField`.
+Un `DictField` preconfigurado que es compatible con el `HStoreField` de postgres de Django.
 
-**Signature**: `HStoreField(child=<A_FIELD_INSTANCE>, allow_empty=True)`
+**Firma**: `HStoreField(child=<UNA_INSTANCIA_DE_CAMPO>, allow_empty=True)`
 
-- `child` - A field instance that is used for validating the values in the dictionary. The default child field accepts both empty strings and null values.
-- `allow_empty` - Designates if empty dictionaries are allowed.
+- `child` - Una instancia de campo que se usa para validar los valores en el diccionario. El campo hijo predeterminado acepta tanto cadenas vacías como valores nulos.
+- `allow_empty` - Designa si se permiten diccionarios vacíos.
 
-Note that the child field **must** be an instance of `CharField`, as the hstore extension stores values as strings.
+Tenga en cuenta que el campo hijo **debe** ser una instancia de `CharField`, ya que la extensión hstore almacena valores como cadenas.
 
 ## JSONField
 
-A field class that validates that the incoming data structure consists of valid JSON primitives. In its alternate binary mode, it will represent and validate JSON-encoded binary strings.
+Una clase de campo que valida que la estructura de datos entrante consiste en primitivos JSON válidos. En su modo binario alternativo, representará y validará cadenas binarias codificadas en JSON.
 
-**Signature**: `JSONField(binary, encoder)`
+**Firma**: `JSONField(binary, encoder)`
 
-- `binary` - If set to `True` then the field will output and validate a JSON encoded string, rather than a primitive data structure. Defaults to `False`.
-- `encoder` - Use this JSON encoder to serialize input object. Defaults to `None`.
+- `binary` - Si se establece en `True` entonces el campo emitirá y validará una cadena codificada en JSON, en lugar de una estructura de datos primitiva. Por defecto es `False`.
+- `encoder` - Use este codificador JSON para serializar el objeto de entrada. Por defecto es `None`.
 
 ---
 
-# Miscellaneous fields
+# Campos misceláneos
 
 ## ReadOnlyField
 
-A field class that simply returns the value of the field without modification.
+Una clase de campo que simplemente devuelve el valor del campo sin modificación.
 
-This field is used by default with `ModelSerializer` when including field names that relate to an attribute rather than a model field.
+Este campo se usa por defecto con `ModelSerializer` al incluir nombres de campo que se relacionan con un atributo en lugar de un campo de modelo.
 
-**Signature**: `ReadOnlyField()`
+**Firma**: `ReadOnlyField()`
 
-For example, if `has_expired` was a property on the `Account` model, then the following serializer would automatically generate it as a `ReadOnlyField`:
+Por ejemplo, si `has_expired` era una propiedad en el modelo `Account`, entonces el siguiente serializador lo generaría automáticamente como un `ReadOnlyField`:
 
 ```python
 class AccountSerializer(serializers.ModelSerializer):
@@ -567,45 +567,45 @@ class AccountSerializer(serializers.ModelSerializer):
 
 ## HiddenField
 
-A field class that does not take a value based on user input, but instead takes its value from a default value or callable.
+Una clase de campo que no toma un valor basado en la entrada del usuario, sino que toma su valor de un valor predeterminado o un callable.
 
-**Signature**: `HiddenField()`
+**Firma**: `HiddenField()`
 
-For example, to include a field that always provides the current time as part of the serializer validated data, you would use the following:
+Por ejemplo, para incluir un campo que siempre proporcione la hora actual como parte de los datos validados del serializador, usaría lo siguiente:
 
 ```python
 modified = serializers.HiddenField(default=timezone.now)
 ```
 
-The `HiddenField` class is usually only needed if you have some validation that needs to run based on some pre-provided field values, but you do not want to expose all of those fields to the end user.
+La clase `HiddenField` generalmente solo se necesita si tiene alguna validación que necesita ejecutarse basándose en algunos valores de campo pre-proporcionados, pero no desea exponer todos esos campos al usuario final.
 
-For further examples on `HiddenField` see the [validators](validators.md) documentation.
+Para más ejemplos sobre `HiddenField` consulte la documentación de [validadores](validators.md).
 
 ---
 
-**Note:** `HiddenField()` does not appear in `partial=True` serializer (when making `PATCH` request).
+**Nota:** `HiddenField()` no aparece en el serializador `partial=True` (al hacer una solicitud `PATCH`).
 
 ---
 
 ## ModelField
 
-A generic field that can be tied to any arbitrary model field. The `ModelField` class delegates the task of serialization/deserialization to its associated model field. This field can be used to create serializer fields for custom model fields, without having to create a new custom serializer field.
+Un campo genérico que puede estar vinculado a cualquier campo de modelo arbitrario. La clase `ModelField` delega la tarea de serialización/deserialización a su campo de modelo asociado. Este campo se puede utilizar para crear campos de serializador para campos de modelo personalizados, sin tener que crear un nuevo campo de serializador personalizado.
 
-This field is used by `ModelSerializer` to correspond to custom model field classes.
+Este campo es utilizado por `ModelSerializer` para corresponder a clases de campo de modelo personalizadas.
 
-**Signature:** `ModelField(model_field=<Django ModelField instance>)`
+**Firma:** `ModelField(model_field=<instancia de Django ModelField>)`
 
-The `ModelField` class is generally intended for internal use, but can be used by your API if needed. In order to properly instantiate a `ModelField`, it must be passed a field that is attached to an instantiated model. For example: `ModelField(model_field=MyModel()._meta.get_field('custom_field'))`
+La clase `ModelField` está generalmente destinada para uso interno, pero puede ser utilizada por su API si es necesario. Para instanciar correctamente un `ModelField`, se le debe pasar un campo que esté adjunto a un modelo instanciado. Por ejemplo: `ModelField(model_field=MyModel()._meta.get_field('custom_field'))`
 
 ## SerializerMethodField
 
-This is a read-only field. It gets its value by calling a method on the serializer class it is attached to. It can be used to add any sort of data to the serialized representation of your object.
+Este es un campo de solo lectura. Obtiene su valor llamando a un método en la clase de serializador a la que está adjunto. Se puede usar para agregar cualquier tipo de datos a la representación serializada de su objeto.
 
-**Signature**: `SerializerMethodField(method_name=None)`
+**Firma**: `SerializerMethodField(method_name=None)`
 
-- `method_name` - The name of the method on the serializer to be called. If not included this defaults to `get_<field_name>`.
+- `method_name` - El nombre del método en el serializador que se llamará. Si no se incluye, esto por defecto es `get_<field_name>`.
 
-The serializer method referred to by the `method_name` argument should accept a single argument (in addition to `self`), which is the object being serialized. It should return whatever you want to be included in the serialized representation of the object. For example:
+El método del serializador referido por el argumento `method_name` debe aceptar un solo argumento (además de `self`), que es el objeto que se está serializando. Debe devolver lo que quiera que se incluya en la representación serializada del objeto. Por ejemplo:
 
 ```python
 from django.contrib.auth.models import User
@@ -625,24 +625,24 @@ class UserSerializer(serializers.ModelSerializer):
 
 ---
 
-# Custom fields
+# Campos personalizados
 
-If you want to create a custom field, you'll need to subclass `Field` and then override either one or both of the `.to_representation()` and `.to_internal_value()` methods. These two methods are used to convert between the initial datatype, and a primitive, serializable datatype. Primitive datatypes will typically be any of a number, string, boolean, `date`/`time`/`datetime` or `None`. They may also be any list or dictionary like object that only contains other primitive objects. Other types might be supported, depending on the renderer that you are using.
+Si desea crear un campo personalizado, necesitará subclasificar `Field` y luego sobreescribir uno o ambos de los métodos `.to_representation()` y `.to_internal_value()`. Estos dos métodos se usan para convertir entre el tipo de dato inicial y un tipo de dato primitivo, serializable. Los tipos de datos primitivos normalmente serán cualquiera de número, cadena, booleano, `date`/`time`/`datetime` o `None`. También pueden ser cualquier objeto tipo lista o diccionario que solo contenga otros objetos primitivos. Otros tipos pueden ser soportados, dependiendo del renderizador que esté utilizando.
 
-The `.to_representation()` method is called to convert the initial datatype into a primitive, serializable datatype.
+El método `.to_representation()` se llama para convertir el tipo de dato inicial en un tipo de dato primitivo, serializable.
 
-The `.to_internal_value()` method is called to restore a primitive datatype into its internal python representation. This method should raise a `serializers.ValidationError` if the data is invalid.
+El método `.to_internal_value()` se llama para restaurar un tipo de dato primitivo a su representación interna de python. Este método debe lanzar una `serializers.ValidationError` si los datos no son válidos.
 
-## Examples
+## Ejemplos
 
-### A Basic Custom Field
+### Un Campo Personalizado Básico
 
-Let's look at an example of serializing a class that represents an RGB color value:
+Veamos un ejemplo de serializar una clase que representa un valor de color RGB:
 
 ```python
 class Color:
     """
-    A color represented in the RGB colorspace.
+    Un color representado en el espacio de color RGB.
     """
     def __init__(self, red, green, blue):
         assert(red >= 0 and green >= 0 and blue >= 0)
@@ -651,7 +651,7 @@ class Color:
 
 class ColorField(serializers.Field):
     """
-    Color objects are serialized into 'rgb(#, #, #)' notation.
+    Los objetos de color se serializan en notación 'rgb(#, #, #)'.
     """
     def to_representation(self, value):
         return "rgb(%d, %d, %d)" % (value.red, value.green, value.blue)
@@ -662,54 +662,54 @@ class ColorField(serializers.Field):
         return Color(red, green, blue)
 ```
 
-By default field values are treated as mapping to an attribute on the object. If you need to customize how the field value is accessed and set you need to override `.get_attribute()` and/or `.get_value()`.
+Por defecto, los valores de los campos se tratan como mapeo a un atributo en el objeto. Si necesita personalizar cómo se accede y establece el valor del campo, necesita sobreescribir `.get_attribute()` y/o `.get_value()`.
 
-As an example, let's create a field that can be used to represent the class name of the object being serialized:
+Como ejemplo, creemos un campo que se pueda usar para representar el nombre de la clase del objeto que se está serializando:
 
 ```python
 class ClassNameField(serializers.Field):
     def get_attribute(self, instance):
-        # We pass the object instance onto `to_representation`,
-        # not just the field attribute.
+        # Pasamos la instancia del objeto a `to_representation`,
+        # no solo el atributo del campo.
         return instance
 
     def to_representation(self, value):
         """
-        Serialize the value's class name.
+        Serializa el nombre de la clase del valor.
         """
         return value.__class__.__name__
 ```
 
-### Raising validation errors
+### Lanzando errores de validación
 
-Our `ColorField` class above currently does not perform any data validation.
-To indicate invalid data, we should raise a `serializers.ValidationError`, like so:
+Nuestra clase `ColorField` anterior actualmente no realiza ninguna validación de datos.
+Para indicar datos no válidos, deberíamos lanzar una `serializers.ValidationError`, así:
 
 ```python
 def to_internal_value(self, data):
     if not isinstance(data, str):
-        msg = 'Incorrect type. Expected a string, but got %s'
+        msg = 'Tipo incorrecto. Se esperaba una cadena, pero se obtuvo %s'
         raise ValidationError(msg % type(data).__name__)
 
     if not re.match(r'^rgb\([0-9]+,[0-9]+,[0-9]+\)$', data):
-        raise ValidationError('Incorrect format. Expected `rgb(#,#,#)`.')
+        raise ValidationError('Formato incorrecto. Se esperaba `rgb(#,#,#)`.')
 
     data = data.strip('rgb(').rstrip(')')
     red, green, blue = [int(col) for col in data.split(',')]
 
     if any([col > 255 or col < 0 for col in (red, green, blue)]):
-        raise ValidationError('Value out of range. Must be between 0 and 255.')
+        raise ValidationError('Valor fuera de rango. Debe estar entre 0 y 255.')
 
     return Color(red, green, blue)
 ```
 
-The `.fail()` method is a shortcut for raising `ValidationError` that takes a message string from the `error_messages` dictionary. For example:
+El método `.fail()` es un atajo para lanzar `ValidationError` que toma una cadena de mensaje del diccionario `error_messages`. Por ejemplo:
 
 ```python
 default_error_messages = {
-    'incorrect_type': 'Incorrect type. Expected a string, but got {input_type}',
-    'incorrect_format': 'Incorrect format. Expected `rgb(#,#,#)`.',
-    'out_of_range': 'Value out of range. Must be between 0 and 255.'
+    'incorrect_type': 'Tipo incorrecto. Se esperaba una cadena, pero se obtuvo {input_type}',
+    'incorrect_format': 'Formato incorrecto. Se esperaba `rgb(#,#,#)`.',
+    'out_of_range': 'Valor fuera de rango. Debe estar entre 0 y 255.'
 }
 
 def to_internal_value(self, data):
@@ -728,11 +728,11 @@ def to_internal_value(self, data):
     return Color(red, green, blue)
 ```
 
-This style keeps your error messages cleaner and more separated from your code, and should be preferred.
+Este estilo mantiene sus mensajes de error más limpios y separados de su código, y debe ser preferido.
 
-### Using `source='*'`
+### Usando `source='*'`
 
-Here we'll take an example of a _flat_ `DataPoint` model with `x_coordinate` and `y_coordinate` attributes.
+Aquí tomaremos un ejemplo de un modelo `DataPoint` _plano_ con atributos `x_coordinate` y `y_coordinate`.
 
 ```python
 class DataPoint(models.Model):
@@ -741,8 +741,7 @@ class DataPoint(models.Model):
     y_coordinate = models.SmallIntegerField()
 ```
 
-Using a custom field and `source='*'` we can provide a nested representation of
-the coordinate pair:
+Usando un campo personalizado y `source='*'` podemos proporcionar una representación anidada del par de coordenadas:
 
 ```python
 class CoordinateField(serializers.Field):
@@ -770,15 +769,11 @@ class DataPointSerializer(serializers.ModelSerializer):
         fields = ['label', 'coordinates']
 ```
 
-Note that this example doesn't handle validation. Partly for that reason, in a
-real project, the coordinate nesting might be better handled with a nested serializer
-using `source='*'`, with two `IntegerField` instances, each with their own `source`
-pointing to the relevant field.
+Note que este ejemplo no maneja la validación. Parcialmente por esa razón, en un proyecto real, el anidamiento de coordenadas podría ser mejor manejado con un serializador anidado usando `source='*'`, con dos instancias de `IntegerField`, cada una con su propio `source` apuntando al campo relevante.
 
-The key points from the example, though, are:
+Los puntos clave del ejemplo, sin embargo, son:
 
-- `to_representation` is passed the entire `DataPoint` object and must map from that
-  to the desired output.
+- `to_representation` recibe el objeto `DataPoint` completo y debe mapear desde ese a la salida deseada.
 
 ```bash
 >>> instance = DataPoint(label='Example', x_coordinate=1, y_coordinate=2)
@@ -787,9 +782,7 @@ The key points from the example, though, are:
 ReturnDict([('label', 'Example'), ('coordinates', {'x': 1, 'y': 2})])
 ```
 
-- Unless our field is to be read-only, `to_internal_value` must map back to a dict
-  suitable for updating our target object. With `source='*'`, the return from
-  `to_internal_value` will update the root validated data dictionary, rather than a single key.
+- A menos que nuestro campo sea de solo lectura, `to_internal_value` debe mapear de vuelta a un diccionario adecuado para actualizar nuestro objeto objetivo. Con `source='*'`, el retorno de `to_internal_value` actualizará el diccionario raíz de datos validados, en lugar de una sola clave.
 
 ```bash
 >>> data = {
@@ -808,8 +801,7 @@ OrderedDict([('label', 'Second Example'),
                 ('x_coordinate', 3)])
 ```
 
-For completeness lets do the same thing again but with the nested serializer
-approach suggested above:
+Para completar, hagamos lo mismo de nuevo pero con el enfoque de serializador anidado sugerido anteriormente:
 
 ```python
 class NestedCoordinateSerializer(serializers.Serializer):
@@ -825,14 +817,11 @@ class DataPointSerializer(serializers.ModelSerializer):
         fields = ['label', 'coordinates']
 ```
 
-Here the mapping between the target and source attribute pairs (`x` and
-`x_coordinate`, `y` and `y_coordinate`) is handled in the `IntegerField`
-declarations. It's our `NestedCoordinateSerializer` that takes `source='*'`.
+Aquí el mapeo entre los pares de atributos objetivo y fuente (`x` y `x_coordinate`, `y` y `y_coordinate`) se maneja en las declaraciones de `IntegerField`. Es nuestro `NestedCoordinateSerializer` que toma `source='*'`.
 
-Our new `DataPointSerializer` exhibits the same behavior as the custom field
-approach.
+Nuestro `DataPointSerializer` nuevo exhibe el mismo comportamiento que el enfoque de campo personalizado.
 
-Serializing:
+Serializando:
 
 ```bash
 >>> out_serializer = DataPointSerializer(instance)
@@ -841,7 +830,7 @@ ReturnDict([('label', 'testing'),
             ('coordinates', OrderedDict([('x', 1), ('y', 2)]))])
 ```
 
-Deserializing:
+Deserializando:
 
 ```bash
 >>> in_serializer = DataPointSerializer(data=data)
@@ -853,7 +842,7 @@ OrderedDict([('label', 'still testing'),
                 ('y_coordinate', 4)])
 ```
 
-But we also get the built-in validation for free:
+Pero también obtenemos la validación incorporada gratis:
 
 ```bash
 >>> invalid_data = {
@@ -872,33 +861,31 @@ ReturnDict([('coordinates',
                 'y': ['A valid integer is required.']})])
 ```
 
-For this reason, the nested serializer approach would be the first to try. You
-would use the custom field approach when the nested serializer becomes infeasible
-or overly complex.
+Por esta razón, el enfoque de serializador anidado sería el primero a intentar. Usaría el enfoque de campo personalizado cuando el serializador anidado se vuelve inviable o excesivamente complejo.
 
-# Third party packages
+# Paquetes de terceros
 
-The following third party packages are also available.
+Los siguientes paquetes de terceros también están disponibles.
 
 ## DRF Compound Fields
 
-The [drf-compound-fields][drf-compound-fields] package provides "compound" serializer fields, such as lists of simple values, which can be described by other fields rather than serializers with the `many=True` option. Also provided are fields for typed dictionaries and values that can be either a specific type or a list of items of that type.
+El paquete [drf-compound-fields][drf-compound-fields] proporciona campos de serializador "compuestos", como listas de valores simples, que pueden ser descritos por otros campos en lugar de serializadores con la opción `many=True`. También se proporcionan campos para diccionarios tipados y valores que pueden ser de un tipo específico o una lista de elementos de ese tipo.
 
 ## DRF Extra Fields
 
-The [drf-extra-fields][drf-extra-fields] package provides extra serializer fields for REST framework, including `Base64ImageField` and `PointField` classes.
+El paquete [drf-extra-fields][drf-extra-fields] proporciona campos de serializador adicionales para REST framework, incluyendo clases `Base64ImageField` y `PointField`.
 
 ## djangorestframework-recursive
 
-the [djangorestframework-recursive][djangorestframework-recursive] package provides a `RecursiveField` for serializing and deserializing recursive structures
+el paquete [djangorestframework-recursive][djangorestframework-recursive] proporciona un `RecursiveField` para serializar y deserializar estructuras recursivas
 
 ## django-rest-framework-gis
 
-The [django-rest-framework-gis][django-rest-framework-gis] package provides geographic addons for django rest framework like a `GeometryField` field and a GeoJSON serializer.
+El paquete [django-rest-framework-gis][django-rest-framework-gis] proporciona complementos geográficos para django rest framework como un campo `GeometryField` y un serializador GeoJSON.
 
 ## django-rest-framework-hstore
 
-The [django-rest-framework-hstore][django-rest-framework-hstore] package provides an `HStoreField` to support [django-hstore][django-hstore] `DictionaryField` model field.
+El paquete [django-rest-framework-hstore][django-rest-framework-hstore] proporciona un `HStoreField` para soportar el campo de modelo `DictionaryField` de [django-hstore][django-hstore].
 
 [cite]: https://docs.djangoproject.com/en/stable/ref/forms/api/#django.forms.Form.cleaned_data
 [html-and-forms]: ../topics/html-and-forms.md

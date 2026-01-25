@@ -1,18 +1,18 @@
 ---
-title: "Settings"
-keywords: ["django", "rest", "framework", "api", "settings"]
+title: "Configuración"
+keywords: ["django", "rest", "framework", "api", "configuración"]
 order: 27
 ---
 
-# Settings
+# Configuración
 
-> Namespaces are one honking great idea - let's do more of those!
+> Los espacios de nombres son una gran idea - ¡hagamos más de esos!
 >
-> &mdash; [The Zen of Python][cite]
+> &mdash; [El Zen de Python][cite]
 
-Configuration for REST framework is all namespaced inside a single Django setting, named `REST_FRAMEWORK`.
+La configuración para REST framework está toda dentro de un solo espacio de nombres de Django, llamado `REST_FRAMEWORK`.
 
-For example your project's `settings.py` file might include something like this:
+Por ejemplo, el archivo `settings.py` de tu proyecto podría incluir algo como esto:
 
 ```python
 REST_FRAMEWORK = {
@@ -25,10 +25,10 @@ REST_FRAMEWORK = {
 }
 ```
 
-## Accessing settings
+## Accediendo a la configuración
 
-If you need to access the values of REST framework's API settings in your project,
-you should use the `api_settings` object. For example.
+Si necesitas acceder a los valores de la configuración de la API de REST framework en tu proyecto,
+deberías usar el objeto `api_settings`. Por ejemplo:
 
 ```python
 from rest_framework.settings import api_settings
@@ -36,21 +36,21 @@ from rest_framework.settings import api_settings
 print(api_settings.DEFAULT_AUTHENTICATION_CLASSES)
 ```
 
-The `api_settings` object will check for any user-defined settings, and otherwise fall back to the default values. Any setting that uses string import paths to refer to a class will automatically import and return the referenced class, instead of the string literal.
+El objeto `api_settings` verificará cualquier configuración definida por el usuario, y de lo contrario volverá a los valores predeterminados. Cualquier configuración que use rutas de importación de cadenas para referirse a una clase importará y devolverá automáticamente la clase referenciada, en lugar de la cadena literal.
 
 ---
 
-# API Reference
+# Referencia de la API
 
-## API policy settings
+## Configuración de la política de la API
 
-_The following settings control the basic API policies, and are applied to every `APIView` class-based view, or `@api_view` function based view._
+_Las siguientes configuraciones controlan las políticas básicas de la API, y se aplican a cada vista basada en clases `APIView`, o vista basada en funciones `@api_view`._
 
 #### DEFAULT_RENDERER_CLASSES
 
-A list or tuple of renderer classes, that determines the default set of renderers that may be used when returning a `Response` object.
+Una lista o tupla de clases de renderizador, que determina el conjunto predeterminado de renderizadores que pueden usarse al devolver un objeto `Response`.
 
-Default:
+Predeterminado:
 
 ```python
 [
@@ -61,9 +61,9 @@ Default:
 
 #### DEFAULT_PARSER_CLASSES
 
-A list or tuple of parser classes, that determines the default set of parsers used when accessing the `request.data` property.
+Una lista o tupla de clases de analizador, que determina el conjunto predeterminado de analizadores usados al acceder a la propiedad `request.data`.
 
-Default:
+Predeterminado:
 
 ```python
 [
@@ -75,9 +75,9 @@ Default:
 
 #### DEFAULT_AUTHENTICATION_CLASSES
 
-A list or tuple of authentication classes, that determines the default set of authenticators used when accessing the `request.user` or `request.auth` properties.
+Una lista o tupla de clases de autenticación, que determina el conjunto predeterminado de autenticadores usados al acceder a las propiedades `request.user` o `request.auth`.
 
-Default:
+Predeterminado:
 
 ```python
 [
@@ -88,9 +88,9 @@ Default:
 
 #### DEFAULT_PERMISSION_CLASSES
 
-A list or tuple of permission classes, that determines the default set of permissions checked at the start of a view. Permission must be granted by every class in the list.
+Una lista o tupla de clases de permisos, que determina el conjunto predeterminado de permisos verificados al inicio de una vista. El permiso debe ser concedido por cada clase en la lista.
 
-Default:
+Predeterminado:
 
 ```python
 [
@@ -100,129 +100,129 @@ Default:
 
 #### DEFAULT_THROTTLE_CLASSES
 
-A list or tuple of throttle classes, that determines the default set of throttles checked at the start of a view.
+Una lista o tupla de clases de estrangulación, que determina el conjunto predeterminado de estrangulaciones verificadas al inicio de una vista.
 
-Default: `[]`
+Predeterminado: `[]`
 
 #### DEFAULT_CONTENT_NEGOTIATION_CLASS
 
-A content negotiation class, that determines how a renderer is selected for the response, given an incoming request.
+Una clase de negociación de contenido, que determina cómo se selecciona un renderizador para la respuesta, dada una solicitud entrante.
 
-Default: `'rest_framework.negotiation.DefaultContentNegotiation'`
+Predeterminado: `'rest_framework.negotiation.DefaultContentNegotiation'`
 
 #### DEFAULT_SCHEMA_CLASS
 
-A view inspector class that will be used for schema generation.
+Una clase de inspector de vistas que se usará para la generación de esquemas.
 
-Default: `'rest_framework.schemas.openapi.AutoSchema'`
+Predeterminado: `'rest_framework.schemas.openapi.AutoSchema'`
 
 ---
 
-## Generic view settings
+## Configuración de vistas genéricas
 
-_The following settings control the behavior of the generic class-based views._
+_Las siguientes configuraciones controlan el comportamiento de las vistas genéricas basadas en clases._
 
 #### DEFAULT_FILTER_BACKENDS
 
-A list of filter backend classes that should be used for generic filtering.
-If set to `None` then generic filtering is disabled.
+Una lista de clases de backend de filtro que deberían usarse para filtrado genérico.
+Si se establece en `None` entonces el filtrado genérico está deshabilitado.
 
 #### DEFAULT_PAGINATION_CLASS
 
-The default class to use for queryset pagination. If set to `None`, pagination
-is disabled by default. See the pagination documentation for further guidance on
-[setting](pagination.md#setting-the-pagination-style) and
-[modifying](pagination.md#modifying-the-pagination-style) the pagination style.
+La clase predeterminada a usar para la paginación de queryset. Si se establece en `None`, la paginación
+está deshabilitada por defecto. Ver la documentación de paginación para más orientación sobre
+[establecer](pagination.md#setting-the-pagination-style) y
+[modificar](pagination.md#modifying-the-pagination-style) el estilo de paginación.
 
-Default: `None`
+Predeterminado: `None`
 
 #### PAGE_SIZE
 
-The default page size to use for pagination. If set to `None`, pagination is disabled by default.
+El tamaño de página predeterminado a usar para la paginación. Si se establece en `None`, la paginación está deshabilitada por defecto.
 
-Default: `None`
+Predeterminado: `None`
 
 ### SEARCH_PARAM
 
-The name of a query parameter, which can be used to specify the search term used by `SearchFilter`.
+El nombre de un parámetro de consulta, que puede usarse para especificar el término de búsqueda usado por `SearchFilter`.
 
-Default: `search`
+Predeterminado: `search`
 
 #### ORDERING_PARAM
 
-The name of a query parameter, which can be used to specify the ordering of results returned by `OrderingFilter`.
+El nombre de un parámetro de consulta, que puede usarse para especificar el ordenamiento de resultados devueltos por `OrderingFilter`.
 
-Default: `ordering`
+Predeterminado: `ordering`
 
 ---
 
-## Versioning settings
+## Configuración de versionamiento
 
 #### DEFAULT_VERSION
 
-The value that should be used for `request.version` when no versioning information is present.
+El valor que debería usarse para `request.version` cuando no hay información de versionamiento presente.
 
-Default: `None`
+Predeterminado: `None`
 
 #### ALLOWED_VERSIONS
 
-If set, this value will restrict the set of versions that may be returned by the versioning scheme, and will raise an error if the provided version if not in this set.
+Si se establece, este valor restringirá el conjunto de versiones que pueden ser devueltas por el esquema de versionamiento, y lanzará un error si la versión proporcionada no está en este conjunto.
 
-Default: `None`
+Predeterminado: `None`
 
 #### VERSION_PARAM
 
-The string that should used for any versioning parameters, such as in the media type or URL query parameters.
+La cadena que debería usarse para cualquier parámetro de versionamiento, como en el tipo de medio o parámetros de consulta de URL.
 
-Default: `'version'`
+Predeterminado: `'version'`
 
 #### DEFAULT_VERSIONING_CLASS
 
-The default versioning scheme to use.
+El esquema de versionamiento predeterminado a usar.
 
-Default: `None`
+Predeterminado: `None`
 
 ---
 
-## Authentication settings
+## Configuración de autenticación
 
-_The following settings control the behavior of unauthenticated requests._
+_Las siguientes configuraciones controlan el comportamiento de solicitudes no autenticadas._
 
 #### UNAUTHENTICATED_USER
 
-The class that should be used to initialize `request.user` for unauthenticated requests.
-(If removing authentication entirely, e.g. by removing `django.contrib.auth` from
-`INSTALLED_APPS`, set `UNAUTHENTICATED_USER` to `None`.)
+La clase que debería usarse para inicializar `request.user` para solicitudes no autenticadas.
+(Si se elimina completamente la autenticación, ej. al eliminar `django.contrib.auth` de
+`INSTALLED_APPS`, establece `UNAUTHENTICATED_USER` a `None`.)
 
-Default: `django.contrib.auth.models.AnonymousUser`
+Predeterminado: `django.contrib.auth.models.AnonymousUser`
 
 #### UNAUTHENTICATED_TOKEN
 
-The class that should be used to initialize `request.auth` for unauthenticated requests.
+La clase que debería usarse para inicializar `request.auth` para solicitudes no autenticadas.
 
-Default: `None`
+Predeterminado: `None`
 
 ---
 
-## Test settings
+## Configuración de pruebas
 
-_The following settings control the behavior of APIRequestFactory and APIClient_
+_Las siguientes configuraciones controlan el comportamiento de APIRequestFactory y APIClient_
 
 #### TEST_REQUEST_DEFAULT_FORMAT
 
-The default format that should be used when making test requests.
+El formato predeterminado que debería usarse al hacer solicitudes de prueba.
 
-This should match up with the format of one of the renderer classes in the `TEST_REQUEST_RENDERER_CLASSES` setting.
+Esto debería coincidir con el formato de una de las clases de renderizador en la configuración `TEST_REQUEST_RENDERER_CLASSES`.
 
-Default: `'multipart'`
+Predeterminado: `'multipart'`
 
 #### TEST_REQUEST_RENDERER_CLASSES
 
-The renderer classes that are supported when building test requests.
+Las clases de renderizador que son compatibles al construir solicitudes de prueba.
 
-The format of any of these renderer classes may be used when constructing a test request, for example: `client.post('/users', {'username': 'jamie'}, format='json')`
+El formato de cualquiera de estas clases de renderizador puede usarse al construir una solicitud de prueba, por ejemplo: `client.post('/users', {'username': 'jamie'}, format='json')`
 
-Default:
+Predeterminado:
 
 ```python
 [
@@ -233,258 +233,258 @@ Default:
 
 ---
 
-## Schema generation controls
+## Controles de generación de esquemas
 
 #### SCHEMA_COERCE_PATH_PK
 
-If set, this maps the `'pk'` identifier in the URL conf onto the actual field
-name when generating a schema path parameter. Typically this will be `'id'`.
-This gives a more suitable representation as "primary key" is an implementation
-detail, whereas "identifier" is a more general concept.
+Si se establece, esto mapea el identificador `'pk'` en la configuración de URL al nombre de campo real
+al generar un parámetro de ruta de esquema. Típicamente esto será `'id'`.
+Esto da una representación más adecuada ya que "clave primaria" es un detalle de implementación,
+mientras que "identificador" es un concepto más general.
 
-Default: `True`
+Predeterminado: `True`
 
 #### SCHEMA_COERCE_METHOD_NAMES
 
-If set, this is used to map internal viewset method names onto external action
-names used in the schema generation. This allows us to generate names that
-are more suitable for an external representation than those that are used
-internally in the codebase.
+Si se establece, esto se usa para mapear nombres de métodos internos de viewset a nombres de acción externos
+usados en la generación de esquemas. Esto nos permite generar nombres que
+son más adecuados para una representación externa que los que se usan
+internamente en la base de código.
 
-Default: `{'retrieve': 'read', 'destroy': 'delete'}`
+Predeterminado: `{'retrieve': 'read', 'destroy': 'delete'}`
 
 ---
 
-## Content type controls
+## Controles de tipo de contenido
 
 #### URL_FORMAT_OVERRIDE
 
-The name of a URL parameter that may be used to override the default content negotiation `Accept` header behavior, by using a `format=…` query parameter in the request URL.
+El nombre de un parámetro de URL que puede usarse para sobrescribir el comportamiento del encabezado `Accept` de negociación de contenido predeterminado, usando un parámetro de consulta `format=…` en la URL de solicitud.
 
-For example: `http://example.com/organizations/?format=csv`
+Por ejemplo: `http://example.com/organizations/?format=csv`
 
-If the value of this setting is `None` then URL format overrides will be disabled.
+Si el valor de esta configuración es `None` entonces las sobrescrituras de formato de URL estarán deshabilitadas.
 
-Default: `'format'`
+Predeterminado: `'format'`
 
 #### FORMAT_SUFFIX_KWARG
 
-The name of a parameter in the URL conf that may be used to provide a format suffix. This setting is applied when using `format_suffix_patterns` to include suffixed URL patterns.
+El nombre de un parámetro en la configuración de URL que puede usarse para proporcionar un sufijo de formato. Esta configuración se aplica al usar `format_suffix_patterns` para incluir patrones de URL con sufijo.
 
-For example: `http://example.com/organizations.csv/`
+Por ejemplo: `http://example.com/organizations.csv/`
 
-Default: `'format'`
+Predeterminado: `'format'`
 
 ---
 
-## Date and time formatting
+## Formato de fecha y hora
 
-_The following settings are used to control how date and time representations may be parsed and rendered._
+_Las siguientes configuraciones se usan para controlar cómo pueden analizarse y renderizarse las representaciones de fecha y hora._
 
 #### DATETIME_FORMAT
 
-A format string that should be used by default for rendering the output of `DateTimeField` serializer fields. If `None`, then `DateTimeField` serializer fields will return Python `datetime` objects, and the datetime encoding will be determined by the renderer.
+Una cadena de formato que debería usarse por defecto para renderizar la salida de campos de serializador `DateTimeField`. Si es `None`, entonces los campos de serializador `DateTimeField` devolverán objetos `datetime` de Python, y la codificación de datetime será determinada por el renderizador.
 
-May be any of `None`, `'iso-8601'` or a Python [strftime format][strftime] string.
+Puede ser cualquiera de `None`, `'iso-8601'` o una cadena de formato [strftime de Python][strftime].
 
-Default: `'iso-8601'`
+Predeterminado: `'iso-8601'`
 
 #### DATETIME_INPUT_FORMATS
 
-A list of format strings that should be used by default for parsing inputs to `DateTimeField` serializer fields.
+Una lista de cadenas de formato que deberían usarse por defecto para analizar entradas a campos de serializador `DateTimeField`.
 
-May be a list including the string `'iso-8601'` or Python [strftime format][strftime] strings.
+Puede ser una lista incluyendo la cadena `'iso-8601'` o cadenas de formato [strftime de Python][strftime].
 
-Default: `['iso-8601']`
+Predeterminado: `['iso-8601']`
 
 #### DATE_FORMAT
 
-A format string that should be used by default for rendering the output of `DateField` serializer fields. If `None`, then `DateField` serializer fields will return Python `date` objects, and the date encoding will be determined by the renderer.
+Una cadena de formato que debería usarse por defecto para renderizar la salida de campos de serializador `DateField`. Si es `None`, entonces los campos de serializador `DateField` devolverán objetos `date` de Python, y la codificación de fecha será determinada por el renderizador.
 
-May be any of `None`, `'iso-8601'` or a Python [strftime format][strftime] string.
+Puede ser cualquiera de `None`, `'iso-8601'` o una cadena de formato [strftime de Python][strftime].
 
-Default: `'iso-8601'`
+Predeterminado: `'iso-8601'`
 
 #### DATE_INPUT_FORMATS
 
-A list of format strings that should be used by default for parsing inputs to `DateField` serializer fields.
+Una lista de cadenas de formato que deberían usarse por defecto para analizar entradas a campos de serializador `DateField`.
 
-May be a list including the string `'iso-8601'` or Python [strftime format][strftime] strings.
+Puede ser una lista incluyendo la cadena `'iso-8601'` o cadenas de formato [strftime de Python][strftime].
 
-Default: `['iso-8601']`
+Predeterminado: `['iso-8601']`
 
 #### TIME_FORMAT
 
-A format string that should be used by default for rendering the output of `TimeField` serializer fields. If `None`, then `TimeField` serializer fields will return Python `time` objects, and the time encoding will be determined by the renderer.
+Una cadena de formato que debería usarse por defecto para renderizar la salida de campos de serializador `TimeField`. Si es `None`, entonces los campos de serializador `TimeField` devolverán objetos `time` de Python, y la codificación de hora será determinada por el renderizador.
 
-May be any of `None`, `'iso-8601'` or a Python [strftime format][strftime] string.
+Puede ser cualquiera de `None`, `'iso-8601'` o una cadena de formato [strftime de Python][strftime].
 
-Default: `'iso-8601'`
+Predeterminado: `'iso-8601'`
 
 #### TIME_INPUT_FORMATS
 
-A list of format strings that should be used by default for parsing inputs to `TimeField` serializer fields.
+Una lista de cadenas de formato que deberían usarse por defecto para analizar entradas a campos de serializador `TimeField`.
 
-May be a list including the string `'iso-8601'` or Python [strftime format][strftime] strings.
+Puede ser una lista incluyendo la cadena `'iso-8601'` o cadenas de formato [strftime de Python][strftime].
 
-Default: `['iso-8601']`
+Predeterminado: `['iso-8601']`
 
 ---
 
-## Encodings
+## Codificaciones
 
 #### UNICODE_JSON
 
-When set to `True`, JSON responses will allow unicode characters in responses. For example:
+Cuando se establece en `True`, las respuestas JSON permitirán caracteres unicode en las respuestas. Por ejemplo:
 
 ```json
 { "unicode black star": "★" }
 ```
 
-When set to `False`, JSON responses will escape non-ascii characters, like so:
+Cuando se establece en `False`, las respuestas JSON escaparán caracteres no ascii, así:
 
 ```json
 { "unicode black star": "\u2605" }
 ```
 
-Both styles conform to [RFC 4627][rfc4627], and are syntactically valid JSON. The unicode style is preferred as being more user-friendly when inspecting API responses.
+Ambos estilos se conforman a [RFC 4627][rfc4627], y son JSON sintácticamente válidos. El estilo unicode es preferido como más amigable para el usuario al inspeccionar respuestas de API.
 
-Default: `True`
+Predeterminado: `True`
 
 #### COMPACT_JSON
 
-When set to `True`, JSON responses will return compact representations, with no spacing after `':'` and `','` characters. For example:
+Cuando se establece en `True`, las respuestas JSON devolverán representaciones compactas, sin espaciado después de los caracteres `':'` y `','`. Por ejemplo:
 
 ```json
 { "is_admin": false, "email": "jane@example" }
 ```
 
-When set to `False`, JSON responses will return slightly more verbose representations, like so:
+Cuando se establece en `False`, las respuestas JSON devolverán representaciones ligeramente más verbosas, así:
 
 ```json
 { "is_admin": false, "email": "jane@example" }
 ```
 
-The default style is to return minified responses, in line with [Heroku's API design guidelines][heroku-minified-json].
+El estilo predeterminado es devolver respuestas minimizadas, en línea con las [directrices de diseño de API de Heroku][heroku-minified-json].
 
-Default: `True`
+Predeterminado: `True`
 
 #### STRICT_JSON
 
-When set to `True`, JSON rendering and parsing will only observe syntactically valid JSON, raising an exception for the extended float values (`nan`, `inf`, `-inf`) accepted by Python's `json` module. This is the recommended setting, as these values are not generally supported. e.g., neither Javascript's `JSON.Parse` nor PostgreSQL's JSON data type accept these values.
+Cuando se establece en `True`, el renderizado y análisis de JSON solo observará JSON sintácticamente válido, lanzando una excepción para los valores de flotante extendidos (`nan`, `inf`, `-inf`) aceptados por el módulo `json` de Python. Esta es la configuración recomendada, ya que estos valores generalmente no son compatibles. ej., ni el `JSON.Parse` de Javascript ni el tipo de dato JSON de PostgreSQL aceptan estos valores.
 
-When set to `False`, JSON rendering and parsing will be permissive. However, these values are still invalid and will need to be specially handled in your code.
+Cuando se establece en `False`, el renderizado y análisis de JSON será permisivo. Sin embargo, estos valores siguen siendo inválidos y necesitarán ser manejados especialmente en tu código.
 
-Default: `True`
+Predeterminado: `True`
 
 #### COERCE_DECIMAL_TO_STRING
 
-When returning decimal objects in API representations that do not support a native decimal type, it is normally best to return the value as a string. This avoids the loss of precision that occurs with binary floating point implementations.
+Al devolver objetos decimales en representaciones de API que no soportan un tipo decimal nativo, normalmente es mejor devolver el valor como una cadena. Esto evita la pérdida de precisión que ocurre con las implementaciones de punto flotante binario.
 
-When set to `True`, the serializer `DecimalField` class will return strings instead of `Decimal` objects. When set to `False`, serializers will return `Decimal` objects, which the default JSON encoder will return as floats.
+Cuando se establece en `True`, la clase de serializador `DecimalField` devolverá cadenas en lugar de objetos `Decimal`. Cuando se establece en `False`, los serializadores devolverán objetos `Decimal`, que el codificador JSON predeterminado devolverá como flotantes.
 
-Default: `True`
+Predeterminado: `True`
 
 ---
 
-## View names and descriptions
+## Nombres y descripciones de vistas
 
-**The following settings are used to generate the view names and descriptions, as used in responses to `OPTIONS` requests, and as used in the browsable API.**
+**Las siguientes configuraciones se usan para generar los nombres y descripciones de vistas, como se usan en respuestas a solicitudes `OPTIONS`, y como se usan en la API navegable.**
 
 #### VIEW_NAME_FUNCTION
 
-A string representing the function that should be used when generating view names.
+Una cadena que representa la función que debería usarse al generar nombres de vista.
 
-This should be a function with the following signature:
+Esto debería ser una función con la siguiente firma:
 
 ```python
 view_name(self)
 ```
 
-- `self`: The view instance. Typically the name function would inspect the name of the class when generating a descriptive name, by accessing `self.__class__.__name__`.
+- `self`: La instancia de vista. Típicamente la función de nombre inspeccionaría el nombre de la clase al generar un nombre descriptivo, accediendo a `self.__class__.__name__`.
 
-If the view instance inherits `ViewSet`, it may have been initialized with several optional arguments:
+Si la instancia de vista hereda `ViewSet`, puede haber sido inicializada con varios argumentos opcionales:
 
-- `name`: A name explicitly provided to a view in the viewset. Typically, this value should be used as-is when provided.
-- `suffix`: Text used when differentiating individual views in a viewset. This argument is mutually exclusive to `name`.
-- `detail`: Boolean that differentiates an individual view in a viewset as either being a 'list' or 'detail' view.
+- `name`: Un nombre explícitamente proporcionado a una vista en el viewset. Típicamente, este valor debería usarse tal como está cuando se proporciona.
+- `suffix`: Texto usado al diferenciar vistas individuales en un viewset. Este argumento es mutuamente exclusivo con `name`.
+- `detail`: Booleano que diferencia una vista individual en un viewset como siendo una vista 'list' o 'detail'.
 
-Default: `'rest_framework.views.get_view_name'`
+Predeterminado: `'rest_framework.views.get_view_name'`
 
 #### VIEW_DESCRIPTION_FUNCTION
 
-A string representing the function that should be used when generating view descriptions.
+Una cadena que representa la función que debería usarse al generar descripciones de vista.
 
-This setting can be changed to support markup styles other than the default markdown. For example, you can use it to support `rst` markup in your view docstrings being output in the browsable API.
+Esta configuración puede cambiarse para soportar estilos de marcado diferentes al markdown predeterminado. Por ejemplo, puedes usarla para soportar marcado `rst` en las cadenas de documentación de vista siendo salida en la API navegable.
 
-This should be a function with the following signature:
+Esto debería ser una función con la siguiente firma:
 
 ```python
 view_description(self, html=False)
 ```
 
-- `self`: The view instance. Typically the description function would inspect the docstring of the class when generating a description, by accessing `self.__class__.__doc__`
-- `html`: A boolean indicating if HTML output is required. `True` when used in the browsable API, and `False` when used in generating `OPTIONS` responses.
+- `self`: La instancia de vista. Típicamente la función de descripción inspeccionaría la cadena de documentación de la clase al generar una descripción, accediendo a `self.__class__.__doc__`
+- `html`: Un booleano que indica si se requiere salida HTML. `True` cuando se usa en la API navegable, y `False` cuando se usa en generar respuestas `OPTIONS`.
 
-If the view instance inherits `ViewSet`, it may have been initialized with several optional arguments:
+Si la instancia de vista hereda `ViewSet`, puede haber sido inicializada con varios argumentos opcionales:
 
-- `description`: A description explicitly provided to the view in the viewset. Typically, this is set by extra viewset `action`s, and should be used as-is.
+- `description`: Una descripción explícitamente proporcionada a la vista en el viewset. Típicamente, esto es establecido por acciones adicionales de viewset, y debería usarse tal como está.
 
-Default: `'rest_framework.views.get_view_description'`
+Predeterminado: `'rest_framework.views.get_view_description'`
 
-## HTML Select Field cutoffs
+## Límites de campo de selección HTML
 
-Global settings for [select field cutoffs for rendering relational fields](relations.md#select-field-cutoffs) in the browsable API.
+Configuraciones globales para [límites de campo de selección para renderizar campos relacionales](relations.md#select-field-cutoffs) en la API navegable.
 
 #### HTML_SELECT_CUTOFF
 
-Global setting for the `html_cutoff` value. Must be an integer.
+Configuración global para el valor `html_cutoff`. Debe ser un entero.
 
-Default: 1000
+Predeterminado: 1000
 
 #### HTML_SELECT_CUTOFF_TEXT
 
-A string representing a global setting for `html_cutoff_text`.
+Una cadena que representa una configuración global para `html_cutoff_text`.
 
-Default: `"More than {count} items..."`
+Predeterminado: `"Más de {count} elementos..."`
 
 ---
 
-## Miscellaneous settings
+## Configuraciones misceláneas
 
 #### EXCEPTION_HANDLER
 
-A string representing the function that should be used when returning a response for any given exception. If the function returns `None`, a 500 error will be raised.
+Una cadena que representa la función que debería usarse al devolver una respuesta para cualquier excepción dada. Si la función devuelve `None`, se lanzará un error 500.
 
-This setting can be changed to support error responses other than the default `{"detail": "Failure..."}` responses. For example, you can use it to provide API responses like `{"errors": [{"message": "Failure...", "code": ""} ...]}`.
+Esta configuración puede cambiarse para soportar respuestas de error diferentes de las respuestas predeterminadas `{"detail": "Fallo..."}`. Por ejemplo, puedes usarla para proporcionar respuestas de API como `{"errors": [{"message": "Fallo...", "code": ""} ...]}`.
 
-This should be a function with the following signature:
+Esto debería ser una función con la siguiente firma:
 
 ```python
 exception_handler(exc, context)
 ```
 
-- `exc`: The exception.
+- `exc`: La excepción.
 
-Default: `'rest_framework.views.exception_handler'`
+Predeterminado: `'rest_framework.views.exception_handler'`
 
 #### NON_FIELD_ERRORS_KEY
 
-A string representing the key that should be used for serializer errors that do not refer to a specific field, but are instead general errors.
+Una cadena que representa la clave que debería usarse para errores de serializador que no se refieren a un campo específico, sino que son errores generales.
 
-Default: `'non_field_errors'`
+Predeterminado: `'non_field_errors'`
 
 #### URL_FIELD_NAME
 
-A string representing the key that should be used for the URL fields generated by `HyperlinkedModelSerializer`.
+Una cadena que representa la clave que debería usarse para los campos de URL generados por `HyperlinkedModelSerializer`.
 
-Default: `'url'`
+Predeterminado: `'url'`
 
 #### NUM_PROXIES
 
-An integer of 0 or more, that may be used to specify the number of application proxies that the API runs behind. This allows throttling to more accurately identify client IP addresses. If set to `None` then less strict IP matching will be used by the throttle classes.
+Un entero de 0 o más, que puede usarse para especificar el número de proxies de aplicación detrás de los cuales se ejecuta la API. Esto permite que la estrangulación identifique más precisamente las direcciones IP del cliente. Si se establece en `None` entonces se usará coincidencia de IP menos estricta por las clases de estrangulación.
 
-Default: `None`
+Predeterminado: `None`
 
 [cite]: https://www.python.org/dev/peps/pep-0020/
 [rfc4627]: https://www.ietf.org/rfc/rfc4627.txt

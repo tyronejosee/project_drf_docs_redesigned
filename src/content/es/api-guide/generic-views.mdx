@@ -1,24 +1,24 @@
 ---
-title: "Generic views"
-keywords: ["django", "rest", "framework", "api", "generic", "views"]
+title: "Vistas genéricas"
+keywords: ["django", "rest", "framework", "api", "generic", "vistas"]
 order: 4
 ---
 
-# Generic views
+# Vistas genéricas
 
-> Django’s generic views... were developed as a shortcut for common usage patterns... They take certain common idioms and patterns found in view development and abstract them so that you can quickly write common views of data without having to repeat yourself.
+> Las vistas genéricas de Django... se desarrollaron como un atajo para patrones de uso comunes... Toman ciertos modismos y patrones comunes encontrados en el desarrollo de vistas y los abstraen para que puedas escribir rápidamente vistas comunes de datos sin tener que repetirte.
 >
 > &mdash; [Django Documentation][cite]
 
-One of the key benefits of class-based views is the way they allow you to compose bits of reusable behavior. REST framework takes advantage of this by providing a number of pre-built views that provide for commonly used patterns.
+Uno de los beneficios clave de las vistas basadas en clases es la forma en que te permiten componer bits de comportamiento reutilizable. REST framework se aprovecha de esto proporcionando una serie de vistas preconstruidas que proporcionan patrones comúnmente utilizados.
 
-The generic views provided by REST framework allow you to quickly build API views that map closely to your database models.
+Las vistas genéricas proporcionadas por REST framework te permiten construir rápidamente vistas de API que se mapean estrechamente a tus modelos de base de datos.
 
-If the generic views don't suit the needs of your API, you can drop down to using the regular `APIView` class, or reuse the mixins and base classes used by the generic views to compose your own set of reusable generic views.
+Si las vistas genéricas no se adaptan a las necesidades de tu API, puedes pasar a usar la clase regular `APIView`, o reutilizar los mixins y clases base usados por las vistas genéricas para componer tu propio conjunto de vistas genéricas reutilizables.
 
-## Examples
+## Ejemplos
 
-Typically when using the generic views, you'll override the view, and set several class attributes.
+Típicamente, cuando usas las vistas genéricas, sobreescribirás la vista y establecerás varios atributos de clase.
 
 ```python
 from django.contrib.auth.models import User
@@ -32,7 +32,7 @@ class UserList(generics.ListCreateAPIView):
     permission_classes = [IsAdminUser]
 ```
 
-For more complex cases you might also want to override various methods on the view class. For example.
+Para casos más complejos también podrías querer sobreescribir varios métodos en la clase de vista. Por ejemplo:
 
 ```python
 class UserList(generics.ListCreateAPIView):
@@ -41,13 +41,13 @@ class UserList(generics.ListCreateAPIView):
     permission_classes = [IsAdminUser]
 
     def list(self, request):
-        # Note the use of `get_queryset()` instead of `self.queryset`
+        # Nota el uso de `get_queryset()` en lugar de `self.queryset`
         queryset = self.get_queryset()
         serializer = UserSerializer(queryset, many=True)
         return Response(serializer.data)
 ```
 
-For very simple cases you might want to pass through any class attributes using the `.as_view()` method. For example, your URLconf might include something like the following entry:
+Para casos muy simples podrías querer pasar cualquier atributo de clase usando el método `.as_view()`. Por ejemplo, tu URLconf podría incluir algo como la siguiente entrada:
 
 ```python
 path('users/', ListCreateAPIView.as_view(queryset=User.objects.all(), serializer_class=UserSerializer), name='user-list')
@@ -55,48 +55,48 @@ path('users/', ListCreateAPIView.as_view(queryset=User.objects.all(), serializer
 
 ---
 
-# API Reference
+# Referencia de la API
 
 ## GenericAPIView
 
-This class extends REST framework's `APIView` class, adding commonly required behavior for standard list and detail views.
+Esta clase extiende la clase `APIView` de REST framework, añadiendo comportamiento comúnmente requerido para vistas estándar de lista y detalle.
 
-Each of the concrete generic views provided is built by combining `GenericAPIView`, with one or more mixin classes.
+Cada una de las vistas genéricas concretas proporcionadas se construye combinando `GenericAPIView` con una o más clases mixin.
 
-### Attributes
+### Atributos
 
-**Basic settings**:
+**Configuración básica**:
 
-The following attributes control the basic view behavior.
+Los siguientes atributos controlan el comportamiento básico de la vista.
 
-- `queryset` - The queryset that should be used for returning objects from this view. Typically, you must either set this attribute, or override the `get_queryset()` method. If you are overriding a view method, it is important that you call `get_queryset()` instead of accessing this property directly, as `queryset` will get evaluated once, and those results will be cached for all subsequent requests.
-- `serializer_class` - The serializer class that should be used for validating and deserializing input, and for serializing output. Typically, you must either set this attribute, or override the `get_serializer_class()` method.
-- `lookup_field` - The model field that should be used for performing object lookup of individual model instances. Defaults to `'pk'`. Note that when using hyperlinked APIs you'll need to ensure that _both_ the API views _and_ the serializer classes set the lookup fields if you need to use a custom value.
-- `lookup_url_kwarg` - The URL keyword argument that should be used for object lookup. The URL conf should include a keyword argument corresponding to this value. If unset this defaults to using the same value as `lookup_field`.
+- `queryset` - El queryset que debería usarse para devolver objetos desde esta vista. Típicamente, debes establecer este atributo o sobreescribir el método `get_queryset()`. Si estás sobrescribiendo un método de vista, es importante que llames a `get_queryset()` en lugar de acceder a esta propiedad directamente, ya que `queryset` se evaluará una sola vez, y esos resultados se cachearán para todas las solicitudes subsequentes.
+- `serializer_class` - La clase de serializador que debería usarse para validar y deserializar la entrada, y para serializar la salida. Típicamente, debes establecer este atributo o sobreescribir el método `get_serializer_class()`.
+- `lookup_field` - El campo del modelo que debería usarse para realizar la búsqueda de objetos de instancias de modelo individuales. Por defecto es `'pk'`. Ten en cuenta que cuando usas APIs enlazadas, necesitarás asegurar que tanto las vistas de API como las clases de serializador establezcan los campos de búsqueda si necesitas usar un valor personalizado.
+- `lookup_url_kwarg` - El argumento de palabra clave de URL que debería usarse para la búsqueda de objetos. La configuración de URL debería incluir un argumento de palabra clave correspondiente a este valor. Si no se establece, por defecto usa el mismo valor que `lookup_field`.
 
-**Pagination**:
+**Paginación**:
 
-The following attributes are used to control pagination when used with list views.
+Los siguientes atributos se usan para controlar la paginación cuando se usan con vistas de lista.
 
-- `pagination_class` - The pagination class that should be used when paginating list results. Defaults to the same value as the `DEFAULT_PAGINATION_CLASS` setting, which is `'rest_framework.pagination.PageNumberPagination'`. Setting `pagination_class=None` will disable pagination on this view.
+- `pagination_class` - La clase de paginación que debería usarse al paginar resultados de lista. Por defecto usa el mismo valor que la configuración `DEFAULT_PAGINATION_CLASS`, que es `'rest_framework.pagination.PageNumberPagination'`. Establecer `pagination_class=None` desactivará la paginación en esta vista.
 
-**Filtering**:
+**Filtrado**:
 
-- `filter_backends` - A list of filter backend classes that should be used for filtering the queryset. Defaults to the same value as the `DEFAULT_FILTER_BACKENDS` setting.
+- `filter_backends` - Una lista de clases de backend de filtrado que deberían usarse para filtrar el queryset. Por defecto usa el mismo valor que la configuración `DEFAULT_FILTER_BACKENDS`.
 
-### Methods
+### Métodos
 
-**Base methods**:
+**Métodos base**:
 
 #### `get_queryset(self)`
 
-Returns the queryset that should be used for list views, and that should be used as the base for lookups in detail views. Defaults to returning the queryset specified by the `queryset` attribute.
+Devuelve el queryset que debería usarse para vistas de lista, y que debería usarse como base para búsquedas en vistas de detalle. Por defecto devuelve el queryset especificado por el atributo `queryset`.
 
-This method should always be used rather than accessing `self.queryset` directly, as `self.queryset` gets evaluated only once, and those results are cached for all subsequent requests.
+Este método siempre debería usarse en lugar de acceder a `self.queryset` directamente, ya que `self.queryset` solo se evalúa una vez, y esos resultados se cachearán para todas las solicitudes posteriores.
 
-May be overridden to provide dynamic behavior, such as returning a queryset, that is specific to the user making the request.
+Puede ser sobrescrito para proporcionar comportamiento dinámico, como devolver un queryset específico para el usuario que realiza la solicitud.
 
-For example:
+Por ejemplo:
 
 ```python
 def get_queryset(self):
@@ -106,17 +106,17 @@ def get_queryset(self):
 
 ---
 
-**Note:** If the `serializer_class` used in the generic view spans orm relations, leading to an n+1 problem, you could optimize your queryset in this method using `select_related` and `prefetch_related`. To get more information about n+1 problem and use cases of the mentioned methods refer to related section in [django documentation][django-docs-select-related].
+**Nota:** Si el `serializer_class` usado en la vista genérica abarca relaciones orm, llevando a un problema n+1, podrías optimizar tu queryset en este método usando `select_related` y `prefetch_related`. Para obtener más información sobre el problema n+1 y casos de uso de los métodos mencionados, consulta la sección relacionada en la [documentación de Django][django-docs-select-related].
 
 ---
 
 #### `get_object(self)`
 
-Returns an object instance that should be used for detail views. Defaults to using the `lookup_field` parameter to filter the base queryset.
+Devuelve una instancia de objeto que debería usarse para vistas de detalle. Por defecto usa el parámetro `lookup_field` para filtrar el queryset base.
 
-May be overridden to provide more complex behavior, such as object lookups based on more than one URL kwarg.
+Puede ser sobrescrito para proporcionar comportamiento más complejo, como búsquedas de objetos basadas en más de un kwarg de URL.
 
-For example:
+Por ejemplo:
 
 ```python
 def get_object(self):
@@ -130,13 +130,13 @@ def get_object(self):
     return obj
 ```
 
-Note that if your API doesn't include any object level permissions, you may optionally exclude the `self.check_object_permissions`, and simply return the object from the `get_object_or_404` lookup.
+Nota que si tu API no incluye ningún permiso a nivel de objeto, puedes opcionalmente excluir `self.check_object_permissions`, y simplemente devolver el objeto de la búsqueda `get_object_or_404`.
 
 #### `filter_queryset(self, queryset)`
 
-Given a queryset, filter it with whichever filter backends are in use, returning a new queryset.
+Dado un queryset, filtra con los backends de filtro que estén en uso, devolviendo un nuevo queryset.
 
-For example:
+Por ejemplo:
 
 ```python
 def filter_queryset(self, queryset):
@@ -155,11 +155,11 @@ def filter_queryset(self, queryset):
 
 #### `get_serializer_class(self)`
 
-Returns the class that should be used for the serializer. Defaults to returning the `serializer_class` attribute.
+Devuelve la clase que debería usarse para el serializador. Por defecto devuelve el atributo `serializer_class`.
 
-May be overridden to provide dynamic behavior, such as using different serializers for read and write operations, or providing different serializers to different types of users.
+Puede ser sobrescrito para proporcionar comportamiento dinámico, como usar diferentes serializadores para operaciones de lectura y escritura, o proporcionar diferentes serializadores para diferentes tipos de usuarios.
 
-For example:
+Por ejemplo:
 
 ```python
 def get_serializer_class(self):
@@ -168,22 +168,22 @@ def get_serializer_class(self):
     return BasicAccountSerializer
 ```
 
-**Save and deletion hooks**:
+**Ganchos de guardado y eliminación**:
 
-The following methods are provided by the mixin classes, and provide easy overriding of the object save or deletion behavior.
+Los siguientes métodos son proporcionados por las clases mixin, y proporcionan fácil sobrescritura del comportamiento de guardado o eliminación de objetos.
 
-- `perform_create(self, serializer)` - Called by `CreateModelMixin` when saving a new object instance.
-- `perform_update(self, serializer)` - Called by `UpdateModelMixin` when saving an existing object instance.
-- `perform_destroy(self, instance)` - Called by `DestroyModelMixin` when deleting an object instance.
+- `perform_create(self, serializer)` - Llamado por `CreateModelMixin` al guardar una nueva instancia de objeto.
+- `perform_update(self, serializer)` - Llamado por `UpdateModelMixin` al guardar una instancia de objeto existente.
+- `perform_destroy(self, instance)` - Llamado por `DestroyModelMixin` al eliminar una instancia de objeto.
 
-These hooks are particularly useful for setting attributes that are implicit in the request, but are not part of the request data. For instance, you might set an attribute on the object based on the request user, or based on a URL keyword argument.
+Estos ganchos son particularmente útiles para establecer atributos que son implícitos en la solicitud, pero no son parte de los datos de la solicitud. Por ejemplo, podrías establecer un atributo en el objeto basado en el usuario de la solicitud, o basado en un argumento de palabra clave de URL.
 
 ```python
 def perform_create(self, serializer):
     serializer.save(user=self.request.user)
 ```
 
-These override points are also particularly useful for adding behavior that occurs before or after saving an object, such as emailing a confirmation, or logging the update.
+Estos puntos de sobrescritura también son particularmente útiles para añadir comportamiento que ocurre antes o después de guardar un objeto, como enviar un correo de confirmación, o registrar la actualización.
 
 ```python
 def perform_update(self, serializer):
@@ -191,179 +191,180 @@ def perform_update(self, serializer):
     send_email_confirmation(user=self.request.user, modified=instance)
 ```
 
-You can also use these hooks to provide additional validation, by raising a `ValidationError()`. This can be useful if you need some validation logic to apply at the point of database save. For example:
+También puedes usar estos ganchos para proporcionar validación adicional, lanzando un `ValidationError()`. Esto puede ser útil si necesitas que alguna lógica de validación se aplique en el punto de guardado en la base de datos. Por ejemplo:
 
 ```python
 def perform_create(self, serializer):
     queryset = SignupRequest.objects.filter(user=self.request.user)
     if queryset.exists():
-        raise ValidationError('You have already signed up')
+        raise ValidationError('Ya te has registrado')
     serializer.save(user=self.request.user)
 ```
 
-**Other methods**:
+**Otros métodos**:
 
-You won't typically need to override the following methods, although you might need to call into them if you're writing custom views using `GenericAPIView`.
+Típicamente no necesitarás sobrescribir los siguientes métodos, aunque podrías necesitar llamarlos si estás escribiendo vistas personalizadas usando `GenericAPIView`.
 
-- `get_serializer_context(self)` - Returns a dictionary containing any extra context that should be supplied to the serializer. Defaults to including `'request'`, `'view'` and `'format'` keys.
-- `get_serializer(self, instance=None, data=None, many=False, partial=False)` - Returns a serializer instance.
-- `get_paginated_response(self, data)` - Returns a paginated style `Response` object.
-- `paginate_queryset(self, queryset)` - Paginate a queryset if required, either returning a page object, or `None` if pagination is not configured for this view.
-- `filter_queryset(self, queryset)` - Given a queryset, filter it with whichever filter backends are in use, returning a new queryset.
+- `get_serializer_context(self)` - Devuelve un diccionario que contiene cualquier contexto adicional que debería suministrarse al serializador. Por defecto incluye las claves `'request'`, `'view'` y `'format'`.
+- `get_serializer(self, instance=None, data=None, many=False, partial=False)` - Devuelve una instancia de serializador.
+- `get_paginated_response(self, data)` - Devuelve un objeto `Response` de estilo paginado.
+- `paginate_queryset(self, queryset)` - Pagina un queryset si es requerido, ya sea devolviendo un objeto de página, o `None` si la paginación no está configurada para esta vista.
+- `filter_queryset(self, queryset)` - Dado un queryset, filtra con los backends de filtro que estén en uso, devolviendo un nuevo queryset.
 
 ---
 
 # Mixins
 
-The mixin classes provide the actions that are used to provide the basic view behavior. Note that the mixin classes provide action methods rather than defining the handler methods, such as `.get()` and `.post()`, directly. This allows for more flexible composition of behavior.
+Las clases mixin proporcionan las acciones que se usan para proporcionar el comportamiento básico de la vista. Nota que las clases mixin proporcionan métodos de acción en lugar de definir los métodos handler, como `.get()` y `.post()`, directamente. Esto permite una composición más flexible del comportamiento.
 
-The mixin classes can be imported from `rest_framework.mixins`.
+Las clases mixin pueden ser importadas desde `rest_framework.mixins`.
 
 ## ListModelMixin
 
-Provides a `.list(request, *args, **kwargs)` method, that implements listing a queryset.
+Proporciona un método `.list(request, *args, **kwargs)`, que implementa listar un queryset.
 
-If the queryset is populated, this returns a `200 OK` response, with a serialized representation of the queryset as the body of the response. The response data may optionally be paginated.
+Si el queryset está poblado, devuelve una respuesta `200 OK`, con una representación serializada del queryset como el cuerpo de la respuesta. Los datos de respuesta pueden opcionalmente estar paginados.
 
 ## CreateModelMixin
 
-Provides a `.create(request, *args, **kwargs)` method, that implements creating and saving a new model instance.
+Proporciona un método `.create(request, *args, **kwargs)`, que implementa crear y guardar una nueva instancia de modelo.
 
-If an object is created this returns a `201 Created` response, with a serialized representation of the object as the body of the response. If the representation contains a key named `url`, then the `Location` header of the response will be populated with that value.
+Si se crea un objeto, devuelve una respuesta `201 Created`, con una representación serializada del objeto como el cuerpo de la respuesta. Si la representación contiene una clave llamada `url`, entonces el encabezado `Location` de la respuesta será poblado con ese valor.
 
-If the request data provided for creating the object was invalid, a `400 Bad Request` response will be returned, with the error details as the body of the response.
+Si los datos de solicitud proporcionados para crear el objeto son inválidos, se devolverá una respuesta `400 Bad Request`, con los detalles del error como el cuerpo de la respuesta.
 
 ## RetrieveModelMixin
 
-Provides a `.retrieve(request, *args, **kwargs)` method, that implements returning an existing model instance in a response.
+Proporciona un método `.retrieve(request, *args, **kwargs)`, que implementa devolver una instancia de modelo existente en una respuesta.
 
-If an object can be retrieved this returns a `200 OK` response, with a serialized representation of the object as the body of the response. Otherwise, it will return a `404 Not Found`.
+Si se puede recuperar un objeto, devuelve una respuesta `200 OK`, con una representación serializada del objeto como el cuerpo de la respuesta. De lo contrario, devolverá `404 Not Found`.
 
 ## UpdateModelMixin
 
-Provides a `.update(request, *args, **kwargs)` method, that implements updating and saving an existing model instance.
+Proporciona un método `.update(request, *args, **kwargs)`, que implementa actualizar y guardar una instancia de modelo existente.
 
-Also provides a `.partial_update(request, *args, **kwargs)` method, which is similar to the `update` method, except that all fields for the update will be optional. This allows support for HTTP `PATCH` requests.
+También proporciona un método `.partial_update(request, *args, **kwargs)`, que es similar al método `update`, excepto que todos los campos para la actualización serán opcionales. Esto permite soporte para solicitudes HTTP `PATCH`.
 
-If an object is updated this returns a `200 OK` response, with a serialized representation of the object as the body of the response.
+Si un objeto es actualizado, devuelve una respuesta `200 OK`, con una representación serializada del objeto como el cuerpo de la respuesta.
 
-If the request data provided for updating the object was invalid, a `400 Bad Request` response will be returned, with the error details as the body of the response.
+Si los datos de solicitud proporcionados para actualizar el objeto son inválidos, se devolverá una respuesta `400 Bad Request`, con los detalles del error como el cuerpo de la respuesta.
 
 ## DestroyModelMixin
 
-Provides a `.destroy(request, *args, **kwargs)` method, that implements deletion of an existing model instance.
+Proporciona un método `.destroy(request, *args, **kwargs)`, que implementa la eliminación de una instancia de modelo existente.
 
-If an object is deleted this returns a `204 No Content` response, otherwise it will return a `404 Not Found`.
+Si un objeto es eliminado, devuelve una respuesta `204 No Content`, de lo contrario devolverá `404 Not Found`.
 
 ---
 
-# Concrete View Classes
+# Clases de Vista Concretas
 
-The following classes are the concrete generic views. If you're using generic views this is normally the level you'll be working at unless you need heavily customized behavior.
+Las siguientes clases son las vistas genéricas concretas. Si estás usando vistas genéricas, normalmente este es el nivel en el que trabajarás a menos que necesites comportamiento muy personalizado.
 
-The view classes can be imported from `rest_framework.generics`.
+Las clases de vista pueden ser importadas desde `rest_framework.generics`.
 
 ## CreateAPIView
 
-Used for **create-only** endpoints.
+Usada para endpoints de **solo creación**.
 
-Provides a `post` method handler.
+Proporciona un método handler `post`.
 
-Extends: [GenericAPIView], [CreateModelMixin]
+Extiende: [GenericAPIView], [CreateModelMixin]
 
 ## ListAPIView
 
-Used for **read-only** endpoints to represent a **collection of model instances**.
+Usada para endpoints de **solo lectura** para representar una **colección de instancias de modelo**.
 
-Provides a `get` method handler.
+Proporciona un método handler `get`.
 
-Extends: [GenericAPIView], [ListModelMixin]
+Extiende: [GenericAPIView], [ListModelMixin]
 
 ## RetrieveAPIView
 
-Used for **read-only** endpoints to represent a **single model instance**.
+Usada para endpoints de **solo lectura** para representar una **instancia de modelo única**.
 
-Provides a `get` method handler.
+Proporciona un método handler `get`.
 
-Extends: [GenericAPIView], [RetrieveModelMixin]
+Extiende: [GenericAPIView], [RetrieveModelMixin]
 
 ## DestroyAPIView
 
-Used for **delete-only** endpoints for a **single model instance**.
+Usada para endpoints de **solo eliminación** para una **instancia de modelo única**.
 
-Provides a `delete` method handler.
+Proporciona un método handler `delete`.
 
-Extends: [GenericAPIView], [DestroyModelMixin]
+Extiende: [GenericAPIView], [DestroyModelMixin]
 
 ## UpdateAPIView
 
-Used for **update-only** endpoints for a **single model instance**.
+Usada para endpoints de **solo actualización** para una **instancia de modelo única**.
 
-Provides `put` and `patch` method handlers.
+Proporciona métodos handler `put` y `patch`.
 
-Extends: [GenericAPIView], [UpdateModelMixin]
+Extiende: [GenericAPIView], [UpdateModelMixin]
 
 ## ListCreateAPIView
 
-Used for **read-write** endpoints to represent a **collection of model instances**.
+Usada para endpoints de **lectura-escritura** para representar una **colección de instancias de modelo**.
 
-Provides `get` and `post` method handlers.
+Proporciona métodos handler `get` y `post`.
 
-Extends: [GenericAPIView], [ListModelMixin], [CreateModelMixin]
+Extiende: [GenericAPIView], [ListModelMixin], [CreateModelMixin]
 
 ## RetrieveUpdateAPIView
 
-Used for **read or update** endpoints to represent a **single model instance**.
+Usada para endpoints de **lectura o actualización** para representar una **instancia de modelo única**.
 
-Provides `get`, `put` and `patch` method handlers.
+Proporciona métodos handler `get`, `put` y `patch`.
 
-Extends: [GenericAPIView], [RetrieveModelMixin], [UpdateModelMixin]
+Extiende: [GenericAPIView], [RetrieveModelMixin], [UpdateModelMixin]
 
 ## RetrieveDestroyAPIView
 
-Used for **read or delete** endpoints to represent a **single model instance**.
+Usada para endpoints de **lectura o eliminación** para representar una **instancia de modelo única**.
 
-Provides `get` and `delete` method handlers.
+Proporciona métodos handler `get` y `delete`.
 
-Extends: [GenericAPIView], [RetrieveModelMixin], [DestroyModelMixin]
+Extiende: [GenericAPIView], [RetrieveModelMixin], [DestroyModelMixin]
 
 ## RetrieveUpdateDestroyAPIView
 
-Used for **read-write-delete** endpoints to represent a **single model instance**.
+Usada para endpoints de **lectura-escritura-eliminación** para representar una **instancia de modelo única**.
 
-Provides `get`, `put`, `patch` and `delete` method handlers.
+Proporciona métodos handler `get`, `put`, `patch` y `delete`.
 
-Extends: [GenericAPIView], [RetrieveModelMixin], [UpdateModelMixin], [DestroyModelMixin]
+Extiende: [GenericAPIView], [RetrieveModelMixin], [UpdateModelMixin], [DestroyModelMixin]
 
 ---
 
-# Customizing the generic views
+# Personalizando las vistas genéricas
 
-Often you'll want to use the existing generic views, but use some slightly customized behavior. If you find yourself reusing some bit of customized behavior in multiple places, you might want to refactor the behavior into a common class that you can then just apply to any view or viewset as needed.
+A menudo querrás usar las vistas genéricas existentes, pero usar algo de comportamiento ligeramente personalizado. Si te encuentras reusando algún comportamiento personalizado en múltiples lugares, podrías querer refactorizar el comportamiento en una clase común que puedas simplemente aplicar a cualquier vista o viewset según sea necesario.
 
-## Creating custom mixins
+## Creando mixins personalizados
 
-For example, if you need to lookup objects based on multiple fields in the URL conf, you could create a mixin class like the following:
+Por ejemplo, si necesitas buscar objetos basados en múltiples campos en la configuración de URL, podrías crear una clase mixin como la siguiente:
 
 ```python
 class MultipleFieldLookupMixin:
     """
-    Apply this mixin to any view or viewset to get multiple field filtering
-    based on a `lookup_fields` attribute, instead of the default single field filtering.
+    Aplica este mixin a cualquier vista o viewset para obtener filtrado 
+    de múltiples campos basado en un atributo `lookup_fields`, en lugar del 
+    filtrado de campo único predeterminado.
     """
     def get_object(self):
-        queryset = self.get_queryset()             # Get the base queryset
-        queryset = self.filter_queryset(queryset)  # Apply any filter backends
+        queryset = self.get_queryset()             # Obtener el queryset base
+        queryset = self.filter_queryset(queryset)  # Aplicar cualquier backend de filtro
         filter = {}
         for field in self.lookup_fields:
-            if self.kwargs.get(field): # Ignore empty fields.
+            if self.kwargs.get(field): # Ignorar campos vacíos.
                 filter[field] = self.kwargs[field]
-        obj = get_object_or_404(queryset, **filter)  # Lookup the object
+        obj = get_object_or_404(queryset, **filter)  # Buscar el objeto
         self.check_object_permissions(self.request, obj)
         return obj
 ```
 
-You can then simply apply this mixin to a view or viewset anytime you need to apply the custom behavior.
+Luego puedes simplemente aplicar este mixin a una vista o viewset cada vez que necesites aplicar el comportamiento personalizado.
 
 ```python
 class RetrieveUserView(MultipleFieldLookupMixin, generics.RetrieveAPIView):
@@ -372,11 +373,11 @@ class RetrieveUserView(MultipleFieldLookupMixin, generics.RetrieveAPIView):
     lookup_fields = ['account', 'username']
 ```
 
-Using custom mixins is a good option if you have custom behavior that needs to be used.
+Usar mixins personalizados es una buena opción si tienes comportamiento personalizado que necesita ser usado.
 
-## Creating custom base classes
+## Creando clases base personalizadas
 
-If you are using a mixin across multiple views, you can take this a step further and create your own set of base views that can then be used throughout your project. For example:
+Si estás usando un mixin a través de múltiples vistas, puedes dar un paso más y crear tu propio conjunto de vistas base que puedan ser usadas a través de todo tu proyecto. Por ejemplo:
 
 ```python
 class BaseRetrieveView(MultipleFieldLookupMixin,
@@ -388,29 +389,29 @@ class BaseRetrieveUpdateDestroyView(MultipleFieldLookupMixin,
     pass
 ```
 
-Using custom base classes is a good option if you have custom behavior that consistently needs to be repeated across a large number of views throughout your project.
+Usar clases base personalizadas es una buena opción si tienes comportamiento personalizado que consistentemente necesita ser repetido a través de un gran número de vistas en todo tu proyecto.
 
 ---
 
-# PUT as create
+# PUT como creación
 
-Prior to version 3.0 the REST framework mixins treated `PUT` as either an update or a create operation, depending on if the object already existed or not.
+Antes de la versión 3.0, los mixins de REST framework trataban `PUT` como una operación de actualización o creación, dependiendo de si el objeto ya existía o no.
 
-Allowing `PUT` as create operations is problematic, as it necessarily exposes information about the existence or non-existence of objects. It's also not obvious that transparently allowing re-creating of previously deleted instances is necessarily a better default behavior than simply returning `404` responses.
+Permitir `PUT` como operaciones de creación es problemático, ya que necesariamente expone información sobre la existencia o no existencia de objetos. Tampoco es obvio que permitir transparentemente recrear instancias previamente eliminadas sea necesariamente un mejor comportamiento predeterminado que simplemente devolver respuestas `404`.
 
-Both styles "`PUT` as 404" and "`PUT` as create" can be valid in different circumstances, but from version 3.0 onwards we now use 404 behavior as the default, due to it being simpler and more obvious.
+Ambos estilos "`PUT` como 404" y "`PUT` como creación" pueden ser válidos en diferentes circunstancias, pero desde la versión 3.0 en adelante ahora usamos el comportamiento 404 como predeterminado, debido a que es más simple y obvio.
 
-If you need to generic PUT-as-create behavior you may want to include something like [this `AllowPUTAsCreateMixin` class](https://gist.github.com/tomchristie/a2ace4577eff2c603b1b) as a mixin to your views.
+Si necesitas comportamiento genérico de PUT-como-creación, podrías querer incluir algo como [esta clase `AllowPUTAsCreateMixin`](https://gist.github.com/tomchristie/a2ace4577eff2c603b1b) como un mixin en tus vistas.
 
 ---
 
-# Third party packages
+# Paquetes de terceros
 
-The following third party packages provide additional generic view implementations.
+Los siguientes paquetes de terceros proporcionan implementaciones adicionales de vistas genéricas.
 
 ## Django Rest Multiple Models
 
-[Django Rest Multiple Models][django-rest-multiple-models] provides a generic view (and mixin) for sending multiple serialized models and/or querysets via a single API request.
+[Django Rest Multiple Models][django-rest-multiple-models] proporciona una vista genérica (y mixin) para enviar múltiples modelos serializados y/o querysets a través de una única solicitud de API.
 
 [cite]: https://docs.djangoproject.com/en/stable/ref/class-based-views/#base-vs-generic-views
 [GenericAPIView]: #genericapiview

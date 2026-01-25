@@ -1,86 +1,86 @@
 ---
-title: "Testing"
-keywords: ["django", "rest", "framework", "api", "testing"]
+title: "Pruebas"
+keywords: ["django", "rest", "framework", "api", "pruebas"]
 order: 26
 ---
 
-# Testing
+# Pruebas
 
-> Code without tests is broken as designed.
+> El código sin pruebas está roto por diseño.
 >
 > &mdash; [Jacob Kaplan-Moss][cite]
 
-REST framework includes a few helper classes that extend Django's existing test framework, and improve support for making API requests.
+REST framework incluye algunas clases de ayuda que extienden el framework de pruebas existente de Django, y mejoran el soporte para hacer solicitudes de API.
 
 # APIRequestFactory
 
-Extends [Django's existing `RequestFactory` class][requestfactory].
+Extiende [la clase `RequestFactory` existente de Django][requestfactory].
 
-## Creating test requests
+## Creando solicitudes de prueba
 
-The `APIRequestFactory` class supports an almost identical API to Django's standard `RequestFactory` class. This means that the standard `.get()`, `.post()`, `.put()`, `.patch()`, `.delete()`, `.head()` and `.options()` methods are all available.
+La clase `APIRequestFactory` soporta una API casi idéntica a la clase `RequestFactory` estándar de Django. Esto significa que los métodos estándar `.get()`, `.post()`, `.put()`, `.patch()`, `.delete()`, `.head()` y `.options()` están todos disponibles.
 
 ```python
 from rest_framework.test import APIRequestFactory
 
-# Using the standard RequestFactory API to create a form POST request
+# Usando la API estándar de RequestFactory para crear una solicitud POST de formulario
 factory = APIRequestFactory()
-request = factory.post('/notes/', {'title': 'new idea'})
+request = factory.post('/notes/', {'title': 'nueva idea'})
 
-# Using the standard RequestFactory API to encode JSON data
-request = factory.post('/notes/', {'title': 'new idea'}, content_type='application/json')
+# Usando la API estándar de RequestFactory para codificar datos JSON
+request = factory.post('/notes/', {'title': 'nueva idea'}, content_type='application/json')
 ```
 
-#### Using the `format` argument
+#### Usando el argumento `format`
 
-Methods which create a request body, such as `post`, `put` and `patch`, include a `format` argument, which make it easy to generate requests using a wide set of request formats. When using this argument, the factory will select an appropriate renderer and its configured `content_type`. For example:
+Los métodos que crean un cuerpo de solicitud, como `post`, `put` y `patch`, incluyen un argumento `format`, que facilita generar solicitudes usando un conjunto amplio de formatos de solicitud. Al usar este argumento, la fábrica seleccionará un renderizador apropiado y su `content_type` configurado. Por ejemplo:
 
 ```python
-# Create a JSON POST request
+# Crear una solicitud POST JSON
 factory = APIRequestFactory()
-request = factory.post('/notes/', {'title': 'new idea'}, format='json')
+request = factory.post('/notes/', {'title': 'nueva idea'}, format='json')
 ```
 
-By default the available formats are `'multipart'` and `'json'`. For compatibility with Django's existing `RequestFactory` the default format is `'multipart'`.
+Por defecto los formatos disponibles son `'multipart'` y `'json'`. Para compatibilidad con el `RequestFactory` existente de Django, el formato predeterminado es `'multipart'`.
 
-To support a wider set of request formats, or change the default format, [see the configuration section][configuration].
+Para soportar un conjunto más amplio de formatos de solicitud, o cambiar el formato predeterminado, [ver la sección de configuración][configuration].
 
-#### Explicitly encoding the request body
+#### Codificando explícitamente el cuerpo de la solicitud
 
-If you need to explicitly encode the request body, you can do so by setting the `content_type` flag. For example:
+Si necesitas codificar explícitamente el cuerpo de la solicitud, puedes hacerlo estableciendo el flag `content_type`. Por ejemplo:
 
 ```python
-request = factory.post('/notes/', yaml.dump({'title': 'new idea'}), content_type='application/yaml')
+request = factory.post('/notes/', yaml.dump({'title': 'nueva idea'}), content_type='application/yaml')
 ```
 
-#### PUT and PATCH with form data
+#### PUT y PATCH con datos de formulario
 
-One difference worth noting between Django's `RequestFactory` and REST framework's `APIRequestFactory` is that multipart form data will be encoded for methods other than just `.post()`.
+Una diferencia que vale la pena notar entre el `RequestFactory` de Django y el `APIRequestFactory` de REST framework es que los datos de formulario multipart serán codificados para métodos distintos a solo `.post()`.
 
-For example, using `APIRequestFactory`, you can make a form PUT request like so:
+Por ejemplo, usando `APIRequestFactory`, puedes hacer una solicitud PUT de formulario así:
 
 ```python
 factory = APIRequestFactory()
-request = factory.put('/notes/547/', {'title': 'remember to email dave'})
+request = factory.put('/notes/547/', {'title': 'recordar email a dave'})
 ```
 
-Using Django's `RequestFactory`, you'd need to explicitly encode the data yourself:
+Usando el `RequestFactory` de Django, necesitarías codificar explícitamente los datos tú mismo:
 
 ```python
 from django.test.client import encode_multipart, RequestFactory
 
 factory = RequestFactory()
-data = {'title': 'remember to email dave'}
+data = {'title': 'recordar email a dave'}
 content = encode_multipart('BoUnDaRyStRiNg', data)
 content_type = 'multipart/form-data; boundary=BoUnDaRyStRiNg'
 request = factory.put('/notes/547/', content, content_type=content_type)
 ```
 
-## Forcing authentication
+## Forzando autenticación
 
-When testing views directly using a request factory, it's often convenient to be able to directly authenticate the request, rather than having to construct the correct authentication credentials.
+Al probar vistas directamente usando una fábrica de solicitudes, a menudo es conveniente poder autenticar directamente la solicitud, en lugar de tener que construir las credenciales de autenticación correctas.
 
-To forcibly authenticate a request, use the `force_authenticate()` method.
+Para forzar la autenticación de una solicitud, usa el método `force_authenticate()`.
 
 ```python
 from rest_framework.test import force_authenticate
@@ -89,15 +89,15 @@ factory = APIRequestFactory()
 user = User.objects.get(username='olivia')
 view = AccountDetail.as_view()
 
-# Make an authenticated request to the view...
+# Hacer una solicitud autenticada a la vista...
 request = factory.get('/accounts/django-superstars/')
 force_authenticate(request, user=user)
 response = view(request)
 ```
 
-The signature for the method is `force_authenticate(request, user=None, token=None)`. When making the call, either or both of the user and token may be set.
+La firma del método es `force_authenticate(request, user=None, token=None)`. Al hacer la llamada, se pueden establecer uno o ambos del usuario y token.
 
-For example, when forcibly authenticating using a token, you might do something like the following:
+Por ejemplo, al forzar la autenticación usando un token, podrías hacer algo como lo siguiente:
 
 ```python
 user = User.objects.get(username='olivia')
@@ -107,16 +107,16 @@ force_authenticate(request, user=user, token=user.auth_token)
 
 ---
 
-**Note**: `force_authenticate` directly sets `request.user` to the in-memory `user` instance. If you are re-using the same `user` instance across multiple tests that update the saved `user` state, you may need to call [`refresh_from_db()`][refresh_from_db_docs] between tests.
+**Nota**: `force_authenticate` establece directamente `request.user` a la instancia `user` en memoria. Si estás reutilizando la misma instancia `user` a través de múltiples pruebas que actualizan el estado guardado del `user`, podrías necesitar llamar a [`refresh_from_db()`][refresh_from_db_docs] entre pruebas.
 
 ---
 
-**Note**: When using `APIRequestFactory`, the object that is returned is Django's standard `HttpRequest`, and not REST framework's `Request` object, which is only generated once the view is called.
+**Nota**: Al usar `APIRequestFactory`, el objeto que se devuelve es el `HttpRequest` estándar de Django, y no el objeto `Request` de REST framework, que solo se genera una vez que se llama a la vista.
 
-This means that setting attributes directly on the request object may not always have the effect you expect. For example, setting `.token` directly will have no effect, and setting `.user` directly will only work if session authentication is being used.
+Esto significa que establecer atributos directamente en el objeto de solicitud puede no siempre tener el efecto que esperas. Por ejemplo, establecer `.token` directamente no tendrá efecto, y establecer `.user` directamente solo funcionará si se está usando autenticación de sesión.
 
 ```python
-# Request will only authenticate if `SessionAuthentication` is in use.
+# La solicitud solo se autenticará si `SessionAuthentication` está en uso.
 request = factory.get('/accounts/django-superstars/')
 request.user = user
 response = view(request)
@@ -124,9 +124,9 @@ response = view(request)
 
 ---
 
-## Forcing CSRF validation
+## Forzando validación CSRF
 
-By default, requests created with `APIRequestFactory` will not have CSRF validation applied when passed to a REST framework view. If you need to explicitly turn CSRF validation on, you can do so by setting the `enforce_csrf_checks` flag when instantiating the factory.
+Por defecto, las solicitudes creadas con `APIRequestFactory` no tendrán validación CSRF aplicada cuando se pasen a una vista de REST framework. Si necesitas activar explícitamente la validación CSRF, puedes hacerlo estableciendo el flag `enforce_csrf_checks` al instanciar la fábrica.
 
 ```python
 factory = APIRequestFactory(enforce_csrf_checks=True)
@@ -134,76 +134,76 @@ factory = APIRequestFactory(enforce_csrf_checks=True)
 
 ---
 
-**Note**: It's worth noting that Django's standard `RequestFactory` doesn't need to include this option, because when using regular Django the CSRF validation takes place in middleware, which is not run when testing views directly. When using REST framework, CSRF validation takes place inside the view, so the request factory needs to disable view-level CSRF checks.
+**Nota**: Vale la pena notar que el `RequestFactory` estándar de Django no necesita incluir esta opción, porque al usar Django regular la validación CSRF tiene lugar en el middleware, que no se ejecuta al probar vistas directamente. Al usar REST framework, la validación CSRF tiene lugar dentro de la vista, así que la fábrica de solicitudes necesita deshabilitar las verificaciones CSRF a nivel de vista.
 
 ---
 
 # APIClient
 
-Extends [Django's existing `Client` class][client].
+Extiende [la clase `Client` existente de Django][client].
 
-## Making requests
+## Haciendo solicitudes
 
-The `APIClient` class supports the same request interface as Django's standard `Client` class. This means that the standard `.get()`, `.post()`, `.put()`, `.patch()`, `.delete()`, `.head()` and `.options()` methods are all available. For example:
+La clase `APIClient` soporta la misma interfaz de solicitud que la clase `Client` estándar de Django. Esto significa que los métodos estándar `.get()`, `.post()`, `.put()`, `.patch()`, `.delete()`, `.head()` y `.options()` están todos disponibles. Por ejemplo:
 
 ```python
 from rest_framework.test import APIClient
 
 client = APIClient()
-client.post('/notes/', {'title': 'new idea'}, format='json')
+client.post('/notes/', {'title': 'nueva idea'}, format='json')
 ```
 
-To support a wider set of request formats, or change the default format, [see the configuration section][configuration].
+Para soportar un conjunto más amplio de formatos de solicitud, o cambiar el formato predeterminado, [ver la sección de configuración][configuration].
 
-## Authenticating
+## Autenticando
 
-#### .login(\*\*kwargs)
+#### .login(**kwargs)
 
-The `login` method functions exactly as it does with Django's regular `Client` class. This allows you to authenticate requests against any views which include `SessionAuthentication`.
+El método `login` funciona exactamente como lo hace con la clase `Client` regular de Django. Esto te permite autenticar solicitudes contra cualquier vista que incluya `SessionAuthentication`.
 
 ```python
-# Make all requests in the context of a logged in session.
+# Hacer todas las solicitudes en el contexto de una sesión iniciada.
 client = APIClient()
 client.login(username='lauren', password='secret')
 ```
 
-To logout, call the `logout` method as usual.
+Para cerrar sesión, llama al método `logout` como de costumbre.
 
 ```python
-# Log out
+# Cerrar sesión
 client.logout()
 ```
 
-The `login` method is appropriate for testing APIs that use session authentication, for example web sites which include AJAX interaction with the API.
+El método `login` es apropiado para probar APIs que usan autenticación de sesión, por ejemplo sitios web que incluyen interacción AJAX con la API.
 
-#### .credentials(\*\*kwargs)
+#### .credentials(**kwargs)
 
-The `credentials` method can be used to set headers that will then be included on all subsequent requests by the test client.
+El método `credentials` puede usarse para establecer encabezados que luego se incluirán en todas las solicitudes subsiguientes del cliente de prueba.
 
 ```python
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient
 
-# Include an appropriate `Authorization:` header on all requests.
+# Incluir un encabezado `Authorization:` apropiado en todas las solicitudes.
 token = Token.objects.get(user__username='lauren')
 client = APIClient()
 client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
 ```
 
-Note that calling `credentials` a second time overwrites any existing credentials. You can unset any existing credentials by calling the method with no arguments.
+Ten en cuenta que llamar a `credentials` una segunda vez sobrescribe cualquier credencial existente. Puedes desestablecer cualquier credencial existente llamando al método sin argumentos.
 
 ```python
-# Stop including any credentials
+# Dejar de incluir cualquier credencial
 client.credentials()
 ```
 
-The `credentials` method is appropriate for testing APIs that require authentication headers, such as basic authentication, OAuth1a and OAuth2 authentication, and simple token authentication schemes.
+El método `credentials` es apropiado para probar APIs que requieren encabezados de autenticación, como autenticación básica, autenticación OAuth1a y OAuth2, y esquemas simples de autenticación por token.
 
 #### .force_authenticate(user=None, token=None)
 
-Sometimes you may want to bypass authentication entirely and force all requests by the test client to be automatically treated as authenticated.
+A veces podrías querer omitir completamente la autenticación y forzar que todas las solicitudes del cliente de prueba sean tratadas automáticamente como autenticadas.
 
-This can be a useful shortcut if you're testing the API but don't want to have to construct valid authentication credentials in order to make test requests.
+Esto puede ser un atajo útil si estás probando la API pero no quieres tener que construir credenciales de autenticación válidas para hacer solicitudes de prueba.
 
 ```python
 user = User.objects.get(username='lauren')
@@ -211,36 +211,36 @@ client = APIClient()
 client.force_authenticate(user=user)
 ```
 
-To unauthenticate subsequent requests, call `force_authenticate` setting the user and/or token to `None`.
+Para desautenticar solicitudes subsiguientes, llama a `force_authenticate` estableciendo el usuario y/o token a `None`.
 
 ```python
 client.force_authenticate(user=None)
 ```
 
-## CSRF validation
+## Validación CSRF
 
-By default CSRF validation is not applied when using `APIClient`. If you need to explicitly enable CSRF validation, you can do so by setting the `enforce_csrf_checks` flag when instantiating the client.
+Por defecto la validación CSRF no se aplica al usar `APIClient`. Si necesitas habilitar explícitamente la validación CSRF, puedes hacerlo estableciendo el flag `enforce_csrf_checks` al instanciar el cliente.
 
 ```python
 client = APIClient(enforce_csrf_checks=True)
 ```
 
-As usual CSRF validation will only apply to any session authenticated views. This means CSRF validation will only occur if the client has been logged in by calling `login()`.
+Como de costumbre, la validación CSRF solo se aplicará a cualquier vista autenticada por sesión. Esto significa que la validación CSRF solo ocurrirá si el cliente ha iniciado sesión llamando a `login()`.
 
 ---
 
 # RequestsClient
 
-REST framework also includes a client for interacting with your application
-using the popular Python library, `requests`. This may be useful if:
+REST framework también incluye un cliente para interactuar con tu aplicación
+usando la popular biblioteca de Python, `requests`. Esto puede ser útil si:
 
-- You are expecting to interface with the API primarily from another Python service,
-  and want to test the service at the same level as the client will see.
-- You want to write tests in such a way that they can also be run against a staging or
-  live environment. (See "Live tests" below.)
+- Esperas interactuar con la API principalmente desde otro servicio Python,
+  y quieres probar el servicio al mismo nivel que el cliente verá.
+- Quieres escribir pruebas de tal manera que también puedan ejecutarse contra un entorno de staging
+  o de producción. (Ver "Pruebas en vivo" abajo.)
 
-This exposes exactly the same interface as if you were using a requests session
-directly.
+Esto expone exactamente la misma interfaz que si estuvieras usando una sesión de requests
+directamente.
 
 ```python
 from rest_framework.test import RequestsClient
@@ -250,18 +250,18 @@ response = client.get('http://testserver/users/')
 assert response.status_code == 200
 ```
 
-Note that the requests client requires you to pass fully qualified URLs.
+Ten en cuenta que el cliente de solicitudes requiere que pases URLs completamente calificadas.
 
-## RequestsClient and working with the database
+## RequestsClient y trabajando con la base de datos
 
-The `RequestsClient` class is useful if you want to write tests that solely interact with the service interface. This is a little stricter than using the standard Django test client, as it means that all interactions should be via the API.
+La clase `RequestsClient` es útil si quieres escribir pruebas que interactúen únicamente con la interfaz del servicio. Esto es un poco más estricto que usar el cliente de prueba estándar de Django, ya que significa que todas las interacciones deberían ser a través de la API.
 
-If you're using `RequestsClient` you'll want to ensure that test setup, and results assertions are performed as regular API calls, rather than interacting with the database models directly. For example, rather than checking that `Customer.objects.count() == 3` you would list the customers endpoint, and ensure that it contains three records.
+Si estás usando `RequestsClient`, querrás asegurar que la configuración de prueba y las aserciones de resultados se realicen como llamadas de API regulares, en lugar de interactuar directamente con los modelos de la base de datos. Por ejemplo, en lugar de verificar que `Customer.objects.count() == 3`, listarías el endpoint de clientes y asegurarías que contiene tres registros.
 
-## Headers and Authentication with RequestsClient
+## Encabezados y Autenticación con RequestsClient
 
-Custom headers and authentication credentials can be provided in the same way
-as [when using a standard `requests.Session` instance][session_objects].
+Los encabezados personalizados y las credenciales de autenticación pueden proporcionarse de la misma manera
+que [al usar una instancia estándar de `requests.Session`][session_objects].
 
 ```python
 from requests.auth import HTTPBasicAuth
@@ -272,24 +272,24 @@ client.headers.update({'x-test': 'true'})
 
 ## CSRF
 
-If you're using `SessionAuthentication` then you'll need to include a CSRF token
-for any `POST`, `PUT`, `PATCH` or `DELETE` requests.
+Si estás usando `SessionAuthentication`, entonces necesitarás incluir un token CSRF
+para cualquier solicitud `POST`, `PUT`, `PATCH` o `DELETE`.
 
-You can do so by following the same flow that a JavaScript based client would use.
-First, make a `GET` request in order to obtain a CSRF token, then present that
-token in the following request.
+Puedes hacerlo siguiendo el mismo flujo que un cliente basado en JavaScript usaría.
+Primero, haz una solicitud `GET` para obtener un token CSRF, luego presenta ese
+token en la siguiente solicitud.
 
-For example...
+Por ejemplo...
 
 ```python
 client = RequestsClient()
 
-# Obtain a CSRF token.
+# Obtener un token CSRF.
 response = client.get('http://testserver/homepage/')
 assert response.status_code == 200
 csrftoken = response.cookies['csrftoken']
 
-# Interact with the API.
+# Interactuar con la API.
 response = client.post('http://testserver/organisations/', json={
     'name': 'MegaCorp',
     'status': 'active'
@@ -297,43 +297,43 @@ response = client.post('http://testserver/organisations/', json={
 assert response.status_code == 200
 ```
 
-## Live tests
+## Pruebas en vivo
 
-With careful usage both the `RequestsClient` and the `CoreAPIClient` provide
-the ability to write test cases that can run either in development, or be run
-directly against your staging server or production environment.
+Con un uso cuidadoso, tanto el `RequestsClient` como el `CoreAPIClient` proporcionan
+la capacidad de escribir casos de prueba que pueden ejecutarse ya sea en desarrollo, o ejecutarse
+directamente contra tu servidor de staging o entorno de producción.
 
-Using this style to create basic tests of a few core pieces of functionality is
-a powerful way to validate your live service. Doing so may require some careful
-attention to setup and teardown to ensure that the tests run in a way that they
-do not directly affect customer data.
+Usar este estilo para crear pruebas básicas de algunas piezas centrales de funcionalidad es
+una manera poderosa de validar tu servicio en vivo. Hacerlo puede requerir alguna atención
+cuidadosa a la configuración y desmontaje para asegurar que las pruebas se ejecuten de una manera que no
+afecten directamente los datos del cliente.
 
 ---
 
 # CoreAPIClient
 
-The CoreAPIClient allows you to interact with your API using the Python
-`coreapi` client library.
+El CoreAPIClient te permite interactuar con tu API usando la biblioteca de cliente
+de Python `coreapi`.
 
 ```python
-# Fetch the API schema
+# Obtener el esquema de la API
 client = CoreAPIClient()
 schema = client.get('http://testserver/schema/')
 
-# Create a new organisation
+# Crear una nueva organización
 params = {'name': 'MegaCorp', 'status': 'active'}
 client.action(schema, ['organisations', 'create'], params)
 
-# Ensure that the organisation exists in the listing
+# Asegurar que la organización existe en el listado
 data = client.action(schema, ['organisations', 'list'])
 assert(len(data) == 1)
 assert(data == [{'name': 'MegaCorp', 'status': 'active'}])
 ```
 
-## Headers and Authentication with CoreAPIClient
+## Encabezados y Autenticación con CoreAPIClient
 
-Custom headers and authentication may be used with `CoreAPIClient` in a
-similar way as with `RequestsClient`.
+Los encabezados personalizados y la autenticación pueden usarse con `CoreAPIClient` de una
+manera similar a con `RequestsClient`.
 
 ```python
 from requests.auth import HTTPBasicAuth
@@ -345,18 +345,18 @@ client.session.headers.update({'x-test': 'true'})
 
 ---
 
-# API Test cases
+# Casos de prueba de API
 
-REST framework includes the following test case classes, that mirror the existing [Django's test case classes][provided_test_case_classes], but use `APIClient` instead of Django's default `Client`.
+REST framework incluye las siguientes clases de casos de prueba, que reflejan las [clases de casos de prueba existentes de Django][provided_test_case_classes], pero usan `APIClient` en lugar del `Client` predeterminado de Django.
 
 - `APISimpleTestCase`
 - `APITransactionTestCase`
 - `APITestCase`
 - `APILiveServerTestCase`
 
-**Example**
+**Ejemplo**
 
-You can use any of REST framework's test case classes as you would for the regular Django test case classes. The `self.client` attribute will be an `APIClient` instance.
+Puedes usar cualquiera de las clases de caso de prueba de REST framework como lo harías para las clases de caso de prueba regulares de Django. El atributo `self.client` será una instancia de `APIClient`.
 
 ```python
 from django.urls import reverse
@@ -367,7 +367,7 @@ from myproject.apps.core.models import Account
 class AccountTests(APITestCase):
     def test_create_account(self):
         """
-        Ensure we can create a new account object.
+        Asegurar que podemos crear un nuevo objeto de cuenta.
         """
         url = reverse('account-list')
         data = {'name': 'DabApps'}
@@ -381,9 +381,9 @@ class AccountTests(APITestCase):
 
 # URLPatternsTestCase
 
-REST framework also provides a test case class for isolating `urlpatterns` on a per-class basis. Note that this inherits from Django's `SimpleTestCase`, and will most likely need to be mixed with another test case class.
+REST framework también proporciona una clase de caso de prueba para aislar `urlpatterns` en una base por clase. Ten en cuenta que esto hereda de `SimpleTestCase` de Django, y muy probablemente necesitará mezclarse con otra clase de caso de prueba.
 
-**Example**
+**Ejemplo**
 
 ```python
 from django.urls import include, path, reverse
@@ -397,7 +397,7 @@ class AccountTests(APITestCase, URLPatternsTestCase):
 
     def test_create_account(self):
         """
-        Ensure we can create a new account object.
+        Asegurar que podemos crear un nuevo objeto de cuenta.
         """
         url = reverse('account-list')
         response = self.client.get(url, format='json')
@@ -407,45 +407,45 @@ class AccountTests(APITestCase, URLPatternsTestCase):
 
 ---
 
-# Testing responses
+# Probando respuestas
 
-## Checking the response data
+## Verificando los datos de respuesta
 
-When checking the validity of test responses it's often more convenient to inspect the data that the response was created with, rather than inspecting the fully rendered response.
+Al verificar la validez de las respuestas de prueba, a menudo es más conveniente inspeccionar los datos con los que se creó la respuesta, en lugar de inspeccionar la respuesta completamente renderizada.
 
-For example, it's easier to inspect `response.data`:
+Por ejemplo, es más fácil inspeccionar `response.data`:
 
 ```python
 response = self.client.get('/users/4/')
 self.assertEqual(response.data, {'id': 4, 'username': 'lauren'})
 ```
 
-Instead of inspecting the result of parsing `response.content`:
+En lugar de inspeccionar el resultado de parsear `response.content`:
 
 ```python
 response = self.client.get('/users/4/')
 self.assertEqual(json.loads(response.content), {'id': 4, 'username': 'lauren'})
 ```
 
-## Rendering responses
+## Renderizando respuestas
 
-If you're testing views directly using `APIRequestFactory`, the responses that are returned will not yet be rendered, as rendering of template responses is performed by Django's internal request-response cycle. In order to access `response.content`, you'll first need to render the response.
+Si estás probando vistas directamente usando `APIRequestFactory`, las respuestas que se devuelven aún no estarán renderizadas, ya que el renderizado de respuestas de plantilla es realizado por el ciclo solicitud-respuesta interno de Django. Para acceder a `response.content`, primero necesitarás renderizar la respuesta.
 
 ```python
 view = UserDetail.as_view()
 request = factory.get('/users/4')
 response = view(request, pk='4')
-response.render()  # Cannot access `response.content` without this.
+response.render()  # No se puede acceder a `response.content` sin esto.
 self.assertEqual(response.content, '{"username": "lauren", "id": 4}')
 ```
 
 ---
 
-# Configuration
+# Configuración
 
-## Setting the default format
+## Estableciendo el formato predeterminado
 
-The default format used to make test requests may be set using the `TEST_REQUEST_DEFAULT_FORMAT` setting key. For example, to always use JSON for test requests by default instead of standard multipart form requests, set the following in your `settings.py` file:
+El formato predeterminado usado para hacer solicitudes de prueba puede establecerse usando la clave de configuración `TEST_REQUEST_DEFAULT_FORMAT`. Por ejemplo, para usar siempre JSON para solicitudes de prueba por defecto en lugar de solicitudes de formulario multipart estándar, establece lo siguiente en tu archivo `settings.py`:
 
 ```python
 REST_FRAMEWORK = {
@@ -454,11 +454,11 @@ REST_FRAMEWORK = {
 }
 ```
 
-## Setting the available formats
+## Estableciendo los formatos disponibles
 
-If you need to test requests using something other than multipart or json requests, you can do so by setting the `TEST_REQUEST_RENDERER_CLASSES` setting.
+Si necesitas probar solicitudes usando algo diferente a solicitudes multipart o json, puedes hacerlo estableciendo la configuración `TEST_REQUEST_RENDERER_CLASSES`.
 
-For example, to add support for using `format='html'` in test requests, you might have something like this in your `settings.py` file.
+Por ejemplo, para agregar soporte para usar `format='html'` en solicitudes de prueba, podrías tener algo como esto en tu archivo `settings.py`.
 
 ```python
 REST_FRAMEWORK = {

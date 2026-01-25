@@ -1,36 +1,34 @@
 ---
-title: "Parsers"
-keywords: ["django", "rest", "framework", "api", "parsers"]
+title: "Analizadores"
+keywords: ["django", "rest", "framework", "api", "analizadores"]
 order: 7
 ---
 
-# Parsers
+# Analizadores
 
-> Machine interacting web services tend to use more
-> structured formats for sending data than form-encoded, since they're
-> sending more complex data than simple forms
+> Los servicios web que interactúan con máquinas tienden a usar formatos más estructurados para enviar datos que codificados en formulario, ya que están enviando datos más complejos que formularios simples
 >
 > &mdash; Malcom Tredinnick, [Django developers group][cite]
 
-REST framework includes a number of built-in Parser classes, that allow you to accept requests with various media types. There is also support for defining your own custom parsers, which gives you the flexibility to design the media types that your API accepts.
+REST framework incluye una serie de clases de Parser incorporadas, que te permiten aceptar solicitudes con varios tipos de medios. También hay soporte para definir tus propios analizadores personalizados, lo que te da la flexibilidad de diseñar los tipos de medios que tu API acepta.
 
-## How the parser is determined
+## Cómo se determina el analizador
 
-The set of valid parsers for a view is always defined as a list of classes. When `request.data` is accessed, REST framework will examine the `Content-Type` header on the incoming request, and determine which parser to use to parse the request content.
-
----
-
-**Note**: When developing client applications always remember to make sure you're setting the `Content-Type` header when sending data in an HTTP request.
-
-If you don't set the content type, most clients will default to using `'application/x-www-form-urlencoded'`, which may not be what you wanted.
-
-As an example, if you are sending `json` encoded data using jQuery with the [.ajax() method][jquery-ajax], you should make sure to include the `contentType: 'application/json'` setting.
+El conjunto de analizadores válidos para una vista siempre se define como una lista de clases. Cuando se accede a `request.data`, REST framework examinará el encabezado `Content-Type` en la solicitud entrante, y determinará qué analizador usar para analizar el contenido de la solicitud.
 
 ---
 
-## Setting the parsers
+**Nota**: Al desarrollar aplicaciones cliente, recuerde siempre asegurarse de configurar el encabezado `Content-Type` al enviar datos en una solicitud HTTP.
 
-The default set of parsers may be set globally, using the `DEFAULT_PARSER_CLASSES` setting. For example, the following settings would allow only requests with `JSON` content, instead of the default of JSON or form data.
+Si no configura el tipo de contenido, la mayoría de los clientes usarán por defecto `'application/x-www-form-urlencoded'`, que puede no ser lo que deseaba.
+
+Por ejemplo, si está enviando datos codificados en `json` usando jQuery con el [método .ajax()][jquery-ajax], debe asegurarse de incluir la configuración `contentType: 'application/json'`.
+
+---
+
+## Configuración de los analizadores
+
+El conjunto predeterminado de analizadores se puede configurar globalmente usando la configuración `DEFAULT_PARSER_CLASSES`. Por ejemplo, las siguientes configuraciones permitirían solo solicitudes con contenido `JSON`, en lugar del valor predeterminado de JSON o datos de formulario.
 
 ```python
 REST_FRAMEWORK = {
@@ -40,8 +38,8 @@ REST_FRAMEWORK = {
 }
 ```
 
-You can also set the parsers used for an individual view, or viewset,
-using the `APIView` class-based views.
+También puede configurar los analizadores utilizados para una vista individual o viewset,
+usando las vistas basadas en clases `APIView`.
 
 ```python
 from rest_framework.parsers import JSONParser
@@ -50,7 +48,7 @@ from rest_framework.views import APIView
 
 class ExampleView(APIView):
     """
-    A view that can accept POST requests with JSON content.
+    Una vista que puede aceptar solicitudes POST con contenido JSON.
     """
     parser_classes = [JSONParser]
 
@@ -58,7 +56,7 @@ class ExampleView(APIView):
         return Response({'received data': request.data})
 ```
 
-Or, if you're using the `@api_view` decorator with function based views.
+O si está usando el decorador `@api_view` con vistas basadas en funciones.
 
 ```python
 from rest_framework.decorators import api_view
@@ -69,54 +67,54 @@ from rest_framework.parsers import JSONParser
 @parser_classes([JSONParser])
 def example_view(request, format=None):
     """
-    A view that can accept POST requests with JSON content.
+    Una vista que puede aceptar solicitudes POST con contenido JSON.
     """
     return Response({'received data': request.data})
 ```
 
 ---
 
-# API Reference
+# Referencia de la API
 
 ## JSONParser
 
-Parses `JSON` request content. `request.data` will be populated with a dictionary of data.
+Analiza el contenido de la solicitud `JSON`. `request.data` se llenará con un diccionario de datos.
 
 **.media_type**: `application/json`
 
 ## FormParser
 
-Parses HTML form content. `request.data` will be populated with a `QueryDict` of data.
+Analiza el contenido de formularios HTML. `request.data` se llenará con un `QueryDict` de datos.
 
-You will typically want to use both `FormParser` and `MultiPartParser` together in order to fully support HTML form data.
+Normalmente querrá usar tanto `FormParser` como `MultiPartParser` juntos para soportar completamente los datos de formularios HTML.
 
 **.media_type**: `application/x-www-form-urlencoded`
 
 ## MultiPartParser
 
-Parses multipart HTML form content, which supports file uploads. `request.data` and `request.FILES` will be populated with a `QueryDict` and `MultiValueDict` respectively.
+Analiza el contenido de formularios HTML multiparte, que soporta la subida de archivos. `request.data` y `request.FILES` se llenarán con un `QueryDict` y `MultiValueDict` respectivamente.
 
-You will typically want to use both `FormParser` and `MultiPartParser` together in order to fully support HTML form data.
+Normalmente querrá usar tanto `FormParser` como `MultiPartParser` juntos para soportar completamente los datos de formularios HTML.
 
 **.media_type**: `multipart/form-data`
 
 ## FileUploadParser
 
-Parses raw file upload content. The `request.data` property will be a dictionary with a single key `'file'` containing the uploaded file.
+Analiza el contenido de subida de archivos sin procesar. La propiedad `request.data` será un diccionario con una única clave `'file'` que contiene el archivo subido.
 
-If the view used with `FileUploadParser` is called with a `filename` URL keyword argument, then that argument will be used as the filename.
+Si la vista usada con `FileUploadParser` es llamada con un argumento de URL `filename`, entonces ese argumento se usará como el nombre del archivo.
 
-If it is called without a `filename` URL keyword argument, then the client must set the filename in the `Content-Disposition` HTTP header. For example `Content-Disposition: attachment; filename=upload.jpg`.
+Si es llamada sin un argumento de URL `filename`, entonces el cliente debe establecer el nombre del archivo en el encabezado HTTP `Content-Disposition`. Por ejemplo `Content-Disposition: attachment; filename=upload.jpg`.
 
 **.media_type**: `*/*`
 
-##### Notes:
+##### Notas:
 
-- The `FileUploadParser` is for usage with native clients that can upload the file as a raw data request. For web-based uploads, or for native clients with multipart upload support, you should use the `MultiPartParser` instead.
-- Since this parser's `media_type` matches any content type, `FileUploadParser` should generally be the only parser set on an API view.
-- `FileUploadParser` respects Django's standard `FILE_UPLOAD_HANDLERS` setting, and the `request.upload_handlers` attribute. See the [Django documentation][upload-handlers] for more details.
+- El `FileUploadParser` es para uso con clientes nativos que pueden subir el archivo como una solicitud de datos sin procesar. Para subidas basadas en web, o para clientes nativos con soporte de subida multiparte, debería usar `MultiPartParser` en su lugar.
+- Dado que el `media_type` de este analizador coincide con cualquier tipo de contenido, `FileUploadParser` generalmente debería ser el único analizador configurado en una vista de API.
+- `FileUploadParser` respeta la configuración estándar de Django `FILE_UPLOAD_HANDLERS` y el atributo `request.upload_handlers`. Vea la [documentación de Django][upload-handlers] para más detalles.
 
-##### Basic usage example:
+##### Ejemplo de uso básico:
 
 ```python
 # views.py
@@ -126,7 +124,7 @@ class FileUploadView(views.APIView):
     def put(self, request, filename, format=None):
         file_obj = request.data['file']
         # ...
-        # do some stuff with uploaded file
+        # hacer algo con el archivo subido
         # ...
         return Response(status=204)
 
@@ -139,67 +137,67 @@ urlpatterns = [
 
 ---
 
-# Custom parsers
+# Analizadores personalizados
 
-To implement a custom parser, you should override `BaseParser`, set the `.media_type` property, and implement the `.parse(self, stream, media_type, parser_context)` method.
+Para implementar un analizador personalizado, debe sobreescribir `BaseParser`, establecer la propiedad `.media_type` e implementar el método `.parse(self, stream, media_type, parser_context)`.
 
-The method should return the data that will be used to populate the `request.data` property.
+El método debe devolver los datos que se usarán para llenar la propiedad `request.data`.
 
-The arguments passed to `.parse()` are:
+Los argumentos pasados a `.parse()` son:
 
 ### stream
 
-A stream-like object representing the body of the request.
+Un objeto similar a un stream que representa el cuerpo de la solicitud.
 
 ### media_type
 
-Optional. If provided, this is the media type of the incoming request content.
+Opcional. Si se proporciona, este es el tipo de medio del contenido de la solicitud entrante.
 
-Depending on the request's `Content-Type:` header, this may be more specific than the renderer's `media_type` attribute, and may include media type parameters. For example `"text/plain; charset=utf-8"`.
+Dependiendo del encabezado `Content-Type:` de la solicitud, esto puede ser más específico que el atributo `media_type` del renderizador, y puede incluir parámetros de tipo de medio. Por ejemplo `"text/plain; charset=utf-8"`.
 
 ### parser_context
 
-Optional. If supplied, this argument will be a dictionary containing any additional context that may be required to parse the request content.
+Opcional. Si se proporciona, este argumento será un diccionario que contiene cualquier contexto adicional que pueda ser necesario para analizar el contenido de la solicitud.
 
-By default this will include the following keys: `view`, `request`, `args`, `kwargs`.
+Por defecto esto incluirá las siguientes claves: `view`, `request`, `args`, `kwargs`.
 
-## Example
+## Ejemplo
 
-The following is an example plaintext parser that will populate the `request.data` property with a string representing the body of the request.
+El siguiente es un ejemplo de analizador de texto plano que llenará la propiedad `request.data` con una cadena que representa el cuerpo de la solicitud.
 
 ```python
 class PlainTextParser(BaseParser):
     """
-    Plain text parser.
+    Analizador de texto plano.
     """
     media_type = 'text/plain'
 
     def parse(self, stream, media_type=None, parser_context=None):
         """
-        Simply return a string representing the body of the request.
+        Simplemente devuelve una cadena que representa el cuerpo de la solicitud.
         """
         return stream.read()
 ```
 
 ---
 
-# Third party packages
+# Paquetes de terceros
 
-The following third party packages are also available.
+Los siguientes paquetes de terceros también están disponibles.
 
 ## YAML
 
-[REST framework YAML][rest-framework-yaml] provides [YAML][yaml] parsing and rendering support. It was previously included directly in the REST framework package, and is now instead supported as a third-party package.
+[REST framework YAML][rest-framework-yaml] proporciona soporte de análisis y renderizado [YAML][yaml]. Anteriormente se incluía directamente en el paquete REST framework, y ahora se admite como un paquete de terceros.
 
-#### Installation & configuration
+#### Instalación y configuración
 
-Install using pip.
+Instale usando pip.
 
 ```bash
 pip install djangorestframework-yaml
 ```
 
-Modify your REST framework settings.
+Modifique su configuración de REST framework.
 
 ```python
 REST_FRAMEWORK = {
@@ -214,17 +212,17 @@ REST_FRAMEWORK = {
 
 ## XML
 
-[REST Framework XML][rest-framework-xml] provides a simple informal XML format. It was previously included directly in the REST framework package, and is now instead supported as a third-party package.
+[REST Framework XML][rest-framework-xml] proporciona un formato XML simple e informal. Anteriormente se incluía directamente en el paquete REST framework, y ahora se admite como un paquete de terceros.
 
-#### Installation & configuration
+#### Instalación y configuración
 
-Install using pip.
+Instale usando pip.
 
 ```bash
 pip install djangorestframework-xml
 ```
 
-Modify your REST framework settings.
+Modifique su configuración de REST framework.
 
 ```python
 REST_FRAMEWORK = {
@@ -239,11 +237,11 @@ REST_FRAMEWORK = {
 
 ## MessagePack
 
-[MessagePack][messagepack] is a fast, efficient binary serialization format. [Juan Riaza][juanriaza] maintains the [djangorestframework-msgpack][djangorestframework-msgpack] package which provides MessagePack renderer and parser support for REST framework.
+[MessagePack][messagepack] es un formato de serialización binaria rápido y eficiente. [Juan Riaza][juanriaza] mantiene el paquete [djangorestframework-msgpack][djangorestframework-msgpack] que proporciona soporte de renderizador y analizador MessagePack para REST framework.
 
 ## CamelCase JSON
 
-[djangorestframework-camel-case] provides camel case JSON renderers and parsers for REST framework. This allows serializers to use Python-style underscored field names, but be exposed in the API as Javascript-style camel case field names. It is maintained by [Vitaly Babiy][vbabiy].
+[djangorestframework-camel-case] proporciona renderizadores y analizadores JSON en camel case para REST framework. Esto permite que los serializadores usen nombres de campo con guiones bajos al estilo Python, pero se expongan en la API como nombres de campo en camel case al estilo Javascript. Es mantenido por [Vitaly Babiy][vbabiy].
 
 [jquery-ajax]: https://api.jquery.com/jQuery.ajax/
 [cite]: https://groups.google.com/d/topic/django-developers/dxI4qVzrBY4/discussion

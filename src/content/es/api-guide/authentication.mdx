@@ -1,44 +1,44 @@
 ---
-title: "Authentication"
-keywords: ["django", "rest", "framework", "api", "requests", "responses"]
+title: "Autenticación"
+keywords: ["django", "rest", "framework", "api", "peticiones", "respuestas"]
 order: 12
 ---
 
-# Authentication
+# Autenticación
 
-> Auth needs to be pluggable.
+> La autenticación debe ser conectable.
 >
-> &mdash; Jacob Kaplan-Moss, ["REST worst practices"][cite]
+> &mdash; Jacob Kaplan-Moss, ["Peores prácticas de REST"][cite]
 
-Authentication is the mechanism of associating an incoming request with a set of identifying credentials, such as the user the request came from, or the token that it was signed with. The [permission] and [throttling] policies can then use those credentials to determine if the request should be permitted.
+La autenticación es el mecanismo de asociar una petición entrante con un conjunto de credenciales de identificación, como el usuario del que proviene la petición, o el token con el que fue firmada. Las políticas de [permisos] y [limitación] pueden entonces usar esas credenciales para determinar si la petición debe ser permitida.
 
-REST framework provides several authentication schemes out of the box, and also allows you to implement custom schemes.
+REST framework proporciona varios esquemas de autenticación listos para usar, y también te permite implementar esquemas personalizados.
 
-Authentication always runs at the very start of the view, before the permission and throttling checks occur, and before any other code is allowed to proceed.
+La autenticación siempre se ejecuta al principio de la vista, antes de que ocurran las verificaciones de permisos y limitación, y antes de que se permita proceder a cualquier otro código.
 
-The `request.user` property will typically be set to an instance of the `contrib.auth` package's `User` class.
+La propiedad `request.user` normalmente se establecerá en una instancia de la clase `User` del paquete `contrib.auth`.
 
-The `request.auth` property is used for any additional authentication information, for example, it may be used to represent an authentication token that the request was signed with.
-
----
-
-**Note:** Don't forget that **authentication by itself won't allow or disallow an incoming request**, it simply identifies the credentials that the request was made with.
-
-For information on how to set up the permission policies for your API please see the [permissions documentation][permission].
+La propiedad `request.auth` se usa para cualquier información de autenticación adicional, por ejemplo, puede usarse para representar un token de autenticación con el que fue firmada la petición.
 
 ---
 
-## How authentication is determined
+**Nota:** No olvides que **la autenticación por sí sola no permitirá ni denegará una petición entrante**, simplemente identifica las credenciales con las que se realizó la petición.
 
-The authentication schemes are always defined as a list of classes. REST framework will attempt to authenticate with each class in the list, and will set `request.user` and `request.auth` using the return value of the first class that successfully authenticates.
+Para información sobre cómo configurar las políticas de permisos para tu API, por favor consulta la [documentación de permisos][permission].
 
-If no class authenticates, `request.user` will be set to an instance of `django.contrib.auth.models.AnonymousUser`, and `request.auth` will be set to `None`.
+---
 
-The value of `request.user` and `request.auth` for unauthenticated requests can be modified using the `UNAUTHENTICATED_USER` and `UNAUTHENTICATED_TOKEN` settings.
+## Cómo se determina la autenticación
 
-## Setting the authentication scheme
+Los esquemas de autenticación siempre se definen como una lista de clases. REST framework intentará autenticarse con cada clase en la lista, y establecerá `request.user` y `request.auth` usando el valor de retorno de la primera clase que se autentique exitosamente.
 
-The default authentication schemes may be set globally, using the `DEFAULT_AUTHENTICATION_CLASSES` setting. For example.
+Si ninguna clase se autentica, `request.user` se establecerá en una instancia de `django.contrib.auth.models.AnonymousUser`, y `request.auth` se establecerá en `None`.
+
+El valor de `request.user` y `request.auth` para peticiones no autenticadas puede modificarse usando las configuraciones `UNAUTHENTICATED_USER` y `UNAUTHENTICATED_TOKEN`.
+
+## Configuración del esquema de autenticación
+
+Los esquemas de autenticación predeterminados pueden establecerse globalmente, usando la configuración `DEFAULT_AUTHENTICATION_CLASSES`. Por ejemplo:
 
 ```python
 REST_FRAMEWORK = {
@@ -49,8 +49,8 @@ REST_FRAMEWORK = {
 }
 ```
 
-You can also set the authentication scheme on a per-view or per-viewset basis,
-using the `APIView` class-based views.
+También puedes establecer el esquema de autenticación por vista o por viewset,
+usando las vistas basadas en clases `APIView`.
 
 ```python
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
@@ -64,13 +64,13 @@ class ExampleView(APIView):
 
     def get(self, request, format=None):
         content = {
-            'user': str(request.user),  # `django.contrib.auth.User` instance.
+            'user': str(request.user),  # Instancia de `django.contrib.auth.User`.
             'auth': str(request.auth),  # None
         }
         return Response(content)
 ```
 
-Or, if you're using the `@api_view` decorator with function based views.
+O, si estás usando el decorador `@api_view` con vistas basadas en funciones:
 
 ```python
 @api_view(['GET'])
@@ -78,76 +78,76 @@ Or, if you're using the `@api_view` decorator with function based views.
 @permission_classes([IsAuthenticated])
 def example_view(request, format=None):
     content = {
-        'user': str(request.user),  # `django.contrib.auth.User` instance.
+        'user': str(request.user),  # Instancia de `django.contrib.auth.User`.
         'auth': str(request.auth),  # None
     }
     return Response(content)
 ```
 
-## Unauthorized and Forbidden responses
+## Respuestas No Autorizado y Prohibido
 
-When an unauthenticated request is denied permission there are two different error codes that may be appropriate.
+Cuando una petición no autenticada es denegada por permisos, hay dos códigos de error diferentes que pueden ser apropiados.
 
-- [HTTP 401 Unauthorized][http401]
-- [HTTP 403 Permission Denied][http403]
+- [HTTP 401 No Autorizado][http401]
+- [HTTP 403 Permiso Denegado][http403]
 
-HTTP 401 responses must always include a `WWW-Authenticate` header, that instructs the client how to authenticate. HTTP 403 responses do not include the `WWW-Authenticate` header.
+Las respuestas HTTP 401 siempre deben incluir un encabezado `WWW-Authenticate`, que instruye al cliente cómo autenticarse. Las respuestas HTTP 403 no incluyen el encabezado `WWW-Authenticate`.
 
-The kind of response that will be used depends on the authentication scheme. Although multiple authentication schemes may be in use, only one scheme may be used to determine the type of response. **The first authentication class set on the view is used when determining the type of response**.
+El tipo de respuesta que se usará depende del esquema de autenticación. Aunque múltiples esquemas de autenticación pueden estar en uso, solo un esquema puede usarse para determinar el tipo de respuesta. **La primera clase de autenticación establecida en la vista se usa al determinar el tipo de respuesta**.
 
-Note that when a request may successfully authenticate, but still be denied permission to perform the request, in which case a `403 Permission Denied` response will always be used, regardless of the authentication scheme.
+Ten en cuenta que cuando una petición puede autenticarse exitosamente, pero aún así es denegada la permisión para realizar la petición, en cuyo caso siempre se usará una respuesta `403 Permiso Denegado`, independientemente del esquema de autenticación.
 
 ## Django 5.1+ `LoginRequiredMiddleware`
 
-If you're running Django 5.1+ and use the [`LoginRequiredMiddleware`][login-required-middleware], please note that all views from DRF are opted-out of this middleware. This is because the authentication in DRF is based authentication and permissions classes, which may be determined after the middleware has been applied. Additionally, when the request is not authenticated, the middleware redirects the user to the login page, which is not suitable for API requests, where it's preferable to return a 401 status code.
+Si estás ejecutando Django 5.1+ y usas el [`LoginRequiredMiddleware`][login-required-middleware], ten en cuenta que todas las vistas de DRF están excluidas de este middleware. Esto es porque la autenticación en DRF se basa en clases de autenticación y permisos, que pueden determinarse después de que se haya aplicado el middleware. Además, cuando la petición no está autenticada, el middleware redirige al usuario a la página de inicio de sesión, lo cual no es adecuado para peticiones de API, donde es preferible devolver un código de estado 401.
 
-REST framework offers an equivalent mechanism for DRF views via the global settings, `DEFAULT_AUTHENTICATION_CLASSES` and `DEFAULT_PERMISSION_CLASSES`. They should be changed accordingly if you need to enforce that API requests are logged in.
+REST framework ofrece un mecanismo equivalente para vistas de DRF a través de las configuraciones globales, `DEFAULT_AUTHENTICATION_CLASSES` y `DEFAULT_PERMISSION_CLASSES`. Deben cambiarse en consecuencia si necesitas forzar que las peticiones de API estén iniciadas.
 
-## Apache mod_wsgi specific configuration
+## Configuración específica de Apache mod_wsgi
 
-Note that if deploying to [Apache using mod_wsgi][mod_wsgi_official], the authorization header is not passed through to a WSGI application by default, as it is assumed that authentication will be handled by Apache, rather than at an application level.
+Ten en cuenta que si despliegas en [Apache usando mod_wsgi][mod_wsgi_official], el encabezado de autorización no se pasa a una aplicación WSGI por defecto, ya que se asume que la autenticación será manejada por Apache, en lugar de a nivel de aplicación.
 
-If you are deploying to Apache, and using any non-session based authentication, you will need to explicitly configure mod_wsgi to pass the required headers through to the application. This can be done by specifying the `WSGIPassAuthorization` directive in the appropriate context and setting it to `'On'`.
+Si estás desplegando en Apache, y usas cualquier autenticación no basada en sesiones, necesitarás configurar explícitamente mod_wsgi para pasar los encabezados requeridos a la aplicación. Esto puede hacerse especificando la directiva `WSGIPassAuthorization` en el contexto apropiado y estableciéndola en `'On'`.
 
 ```txt
-# this can go in either server config, virtual host, directory or .htaccess
+# esto puede ir en la configuración del servidor, host virtual, directorio o .htaccess
 WSGIPassAuthorization On
 ```
 
 ---
 
-# API Reference
+# Referencia de API
 
 ## BasicAuthentication
 
-This authentication scheme uses [HTTP Basic Authentication][basicauth], signed against a user's username and password. Basic authentication is generally only appropriate for testing.
+Este esquema de autenticación usa [Autenticación Básica HTTP][basicauth], firmada contra el nombre de usuario y contraseña de un usuario. La autenticación básica generalmente solo es apropiada para pruebas.
 
-If successfully authenticated, `BasicAuthentication` provides the following credentials.
+Si se autentica exitosamente, `BasicAuthentication` proporciona las siguientes credenciales:
 
-- `request.user` will be a Django `User` instance.
-- `request.auth` will be `None`.
+- `request.user` será una instancia de Django `User`.
+- `request.auth` será `None`.
 
-Unauthenticated responses that are denied permission will result in an `HTTP 401 Unauthorized` response with an appropriate WWW-Authenticate header. For example:
+Las respuestas no autenticadas que son denegadas por permisos resultarán en una respuesta `HTTP 401 No Autorizado` con un encabezado WWW-Authenticate apropiado. Por ejemplo:
 
 ```http
 WWW-Authenticate: Basic realm="api"
 ```
 
-**Note:** If you use `BasicAuthentication` in production you must ensure that your API is only available over `https`. You should also ensure that your API clients will always re-request the username and password at login, and will never store those details to persistent storage.
+**Nota:** Si usas `BasicAuthentication` en producción, debes asegurar que tu API solo esté disponible sobre `https`. También debes asegurar que tus clientes de API siempre volverán a solicitar el nombre de usuario y contraseña al iniciar sesión, y nunca almacenarán esos detalles en almacenamiento persistente.
 
 ## TokenAuthentication
 
 ---
 
-**Note:** The token authentication provided by Django REST framework is a fairly simple implementation.
+**Nota:** La autenticación por token proporcionada por Django REST framework es una implementación bastante simple.
 
-For an implementation which allows more than one token per user, has some tighter security implementation details, and supports token expiry, please see the [Django REST Knox][django-rest-knox] third party package.
+Para una implementación que permite más de un token por usuario, tiene detalles de implementación de seguridad más estrictos, y soporta expiración de tokens, por favor consulta el paquete de terceros [Django REST Knox][django-rest-knox].
 
 ---
 
-This authentication scheme uses a simple token-based HTTP Authentication scheme. Token authentication is appropriate for client-server setups, such as native desktop and mobile clients.
+Este esquema de autenticación usa un esquema simple de Autenticación HTTP basado en tokens. La autenticación por token es apropiada para configuraciones cliente-servidor, como clientes de escritorio nativos y móviles.
 
-To use the `TokenAuthentication` scheme you'll need to [configure the authentication classes](#setting-the-authentication-scheme) to include `TokenAuthentication`, and additionally include `rest_framework.authtoken` in your `INSTALLED_APPS` setting:
+Para usar el esquema `TokenAuthentication`, necesitarás [configurar las clases de autenticación](#configuración-del-esquema-de-autenticación) para incluir `TokenAuthentication`, y adicionalmente incluir `rest_framework.authtoken` en tu configuración `INSTALLED_APPS`:
 
 ```python
 INSTALLED_APPS = [
@@ -156,11 +156,11 @@ INSTALLED_APPS = [
 ]
 ```
 
-Make sure to run `manage.py migrate` after changing your settings.
+Asegúrate de ejecutar `manage.py migrate` después de cambiar tu configuración.
 
-The `rest_framework.authtoken` app provides Django database migrations.
+La aplicación `rest_framework.authtoken` proporciona migraciones de base de datos de Django.
 
-You'll also need to create tokens for your users.
+También necesitarás crear tokens para tus usuarios:
 
 ```python
 from rest_framework.authtoken.models import Token
@@ -169,26 +169,26 @@ token = Token.objects.create(user=...)
 print(token.key)
 ```
 
-For clients to authenticate, the token key should be included in the `Authorization` HTTP header. The key should be prefixed by the string literal "Token", with whitespace separating the two strings. For example:
+Para que los clientes se autentiquen, la clave del token debe incluirse en el encabezado HTTP `Authorization`. La clave debe estar precedida por el literal de cadena "Token", con espacio en blanco separando las dos cadenas. Por ejemplo:
 
 ```http
 Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
 ```
 
-_If you want to use a different keyword in the header, such as `Bearer`, simply subclass `TokenAuthentication` and set the `keyword` class variable._
+_Si quieres usar una palabra clave diferente en el encabezado, como `Bearer`, simplemente subclasifica `TokenAuthentication` y establece la variable de clase `keyword`._
 
-If successfully authenticated, `TokenAuthentication` provides the following credentials.
+Si se autentica exitosamente, `TokenAuthentication` proporciona las siguientes credenciales:
 
-- `request.user` will be a Django `User` instance.
-- `request.auth` will be a `rest_framework.authtoken.models.Token` instance.
+- `request.user` será una instancia de Django `User`.
+- `request.auth` será una instancia de `rest_framework.authtoken.models.Token`.
 
-Unauthenticated responses that are denied permission will result in an `HTTP 401 Unauthorized` response with an appropriate WWW-Authenticate header. For example:
+Las respuestas no autenticadas que son denegadas por permisos resultarán en una respuesta `HTTP 401 No Autorizado` con un encabezado WWW-Authenticate apropiado. Por ejemplo:
 
 ```http
 WWW-Authenticate: Token
 ```
 
-The `curl` command line tool may be useful for testing token authenticated APIs. For example:
+La herramienta de línea de comandos `curl` puede ser útil para probar APIs autenticadas por token. Por ejemplo:
 
 ```bash
 curl -X GET http://127.0.0.1:8000/api/example/ -H 'Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b'
@@ -196,15 +196,15 @@ curl -X GET http://127.0.0.1:8000/api/example/ -H 'Authorization: Token 9944b091
 
 ---
 
-**Note:** If you use `TokenAuthentication` in production you must ensure that your API is only available over `https`.
+**Nota:** Si usas `TokenAuthentication` en producción, debes asegurar que tu API solo esté disponible sobre `https`.
 
 ---
 
-### Generating Tokens
+### Generación de Tokens
 
-#### By using signals
+#### Usando señales
 
-If you want every user to have an automatically generated Token, you can simply catch the User's `post_save` signal.
+Si quieres que cada usuario tenga un Token generado automáticamente, simplemente puedes capturar la señal `post_save` del User.
 
 ```python
 from django.conf import settings
@@ -218,9 +218,9 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
         Token.objects.create(user=instance)
 ```
 
-Note that you'll want to ensure you place this code snippet in an installed `models.py` module, or some other location that will be imported by Django on startup.
+Ten en cuenta que querrás asegurar que coloques este fragmento de código en un módulo `models.py` instalado, o en algún otro lugar que será importado por Django al iniciar.
 
-If you've already created some users, you can generate tokens for all existing users like this:
+Si ya has creado algunos usuarios, puedes generar tokens para todos los usuarios existentes así:
 
 ```python
 from django.contrib.auth.models import User
@@ -230,9 +230,9 @@ for user in User.objects.all():
     Token.objects.get_or_create(user=user)
 ```
 
-#### By exposing an api endpoint
+#### Exponiendo un endpoint de API
 
-When using `TokenAuthentication`, you may want to provide a mechanism for clients to obtain a token given the username and password. REST framework provides a built-in view to provide this behavior. To use it, add the `obtain_auth_token` view to your URLconf:
+Cuando usas `TokenAuthentication`, puedes querer proporcionar un mecanismo para que los clientes obtengan un token dado el nombre de usuario y contraseña. REST framework proporciona una vista incorporada para proporcionar este comportamiento. Para usarla, añade la vista `obtain_auth_token` a tu URLconf:
 
 ```python
 from rest_framework.authtoken import views
@@ -241,9 +241,9 @@ urlpatterns += [
 ]
 ```
 
-Note that the URL part of the pattern can be whatever you want to use.
+Ten en cuenta que la parte de la URL del patrón puede ser lo que quieras usar.
 
-The `obtain_auth_token` view will return a JSON response when valid `username` and `password` fields are POSTed to the view using form data or JSON:
+La vista `obtain_auth_token` devolverá una respuesta JSON cuando campos válidos de `username` y `password` se envíen a la vista usando datos de formulario o JSON:
 
 ```json
 {
@@ -251,14 +251,14 @@ The `obtain_auth_token` view will return a JSON response when valid `username` a
 }
 ```
 
-Note that the default `obtain_auth_token` view explicitly uses JSON requests and responses, rather than using default renderer and parser classes in your settings.
+Ten en cuenta que la vista `obtain_auth_token` predeterminada usa explícitamente peticiones y respuestas JSON, en lugar de usar las clases de renderizador y parser predeterminadas en tu configuración.
 
-By default, there are no permissions or throttling applied to the `obtain_auth_token` view. If you do wish to apply throttling you'll need to override the view class,
-and include them using the `throttle_classes` attribute.
+Por defecto, no hay permisos o limitación aplicados a la vista `obtain_auth_token`. Si deseas aplicar limitación, necesitarás sobrescribir la clase de vista,
+e incluirlas usando el atributo `throttle_classes`.
 
-If you need a customized version of the `obtain_auth_token` view, you can do so by subclassing the `ObtainAuthToken` view class, and using that in your url conf instead.
+Si necesitas una versión personalizada de la vista `obtain_auth_token`, puedes hacerlo subclasificando la clase de vista `ObtainAuthToken`, y usándola en tu configuración de URLs en su lugar.
 
-For example, you may return additional user information beyond the `token` value:
+Por ejemplo, puedes devolver información adicional del usuario más allá del valor del `token`:
 
 ```python
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -280,7 +280,7 @@ class CustomAuthToken(ObtainAuthToken):
         })
 ```
 
-And in your `urls.py`:
+Y en tu `urls.py`:
 
 ```python
 urlpatterns += [
@@ -288,9 +288,9 @@ urlpatterns += [
 ]
 ```
 
-#### With Django admin
+#### Con el admin de Django
 
-It is also possible to create Tokens manually through the admin interface. In case you are using a large user base, we recommend that you monkey patch the `TokenAdmin` class to customize it to your needs, more specifically by declaring the `user` field as `raw_field`.
+También es posible crear Tokens manualmente a través de la interfaz de administración. En caso de que estés usando una base de usuarios grande, recomendamos que apliques un monkey patch a la clase `TokenAdmin` para personalizarla a tus necesidades, más específicamente declarando el campo `user` como `raw_field`.
 
 `your_app/admin.py`:
 
@@ -300,21 +300,21 @@ from rest_framework.authtoken.admin import TokenAdmin
 TokenAdmin.raw_id_fields = ['user']
 ```
 
-#### Using Django manage.py command
+#### Usando el comando manage.py de Django
 
-Since version 3.6.4 it's possible to generate a user token using the following command:
+Desde la versión 3.6.4 es posible generar un token de usuario usando el siguiente comando:
 
 ```bash
 ./manage.py drf_create_token <username>
 ```
 
-this command will return the API token for the given user, creating it if it doesn't exist:
+este comando devolverá el token de API para el usuario dado, creándolo si no existe:
 
 ```bash
 Generated token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b for user user1
 ```
 
-In case you want to regenerate the token (for example if it has been compromised or leaked) you can pass an additional parameter:
+En caso de que quieras regenerar el token (por ejemplo si ha sido comprometido o filtrado) puedes pasar un parámetro adicional:
 
 ```bash
 ./manage.py drf_create_token -r <username>
@@ -322,65 +322,61 @@ In case you want to regenerate the token (for example if it has been compromised
 
 ## SessionAuthentication
 
-This authentication scheme uses Django's default session backend for authentication. Session authentication is appropriate for AJAX clients that are running in the same session context as your website.
+Este esquema de autenticación usa el backend de sesión predeterminado de Django para autenticación. La autenticación de sesión es apropiada para clientes AJAX que se ejecutan en el mismo contexto de sesión que tu sitio web.
 
-If successfully authenticated, `SessionAuthentication` provides the following credentials.
+Si se autentica exitosamente, `SessionAuthentication` proporciona las siguientes credenciales:
 
-- `request.user` will be a Django `User` instance.
-- `request.auth` will be `None`.
+- `request.user` será una instancia de Django `User`.
+- `request.auth` será `None`.
 
-Unauthenticated responses that are denied permission will result in an `HTTP 403 Forbidden` response.
+Las respuestas no autenticadas que son denegadas por permisos resultarán en una respuesta `HTTP 403 Prohibido`.
 
-If you're using an AJAX-style API with SessionAuthentication, you'll need to make sure you include a valid CSRF token for any "unsafe" HTTP method calls, such as `PUT`, `PATCH`, `POST` or `DELETE` requests. See the [Django CSRF documentation][csrf-ajax] for more details.
+Si estás usando una API estilo AJAX con SessionAuthentication, necesitarás asegurarte de incluir un token CSRF válido para cualquier llamada a método HTTP "inseguro", como peticiones `PUT`, `PATCH`, `POST` o `DELETE`. Consulta la [documentación de CSRF de Django][csrf-ajax] para más detalles.
 
-**Warning**: Always use Django's standard login view when creating login pages. This will ensure your login views are properly protected.
+**Advertencia**: Siempre usa la vista de inicio de sesión estándar de Django al crear páginas de inicio de sesión. Esto asegurará que tus vistas de inicio de sesión estén protegidas adecuadamente.
 
-CSRF validation in REST framework works slightly differently from standard Django due to the need to support both session and non-session based authentication to the same views. This means that only authenticated requests require CSRF tokens, and anonymous requests may be sent without CSRF tokens. This behavior is not suitable for login views, which should always have CSRF validation applied.
+La validación CSRF en REST framework funciona ligeramente diferente del Django estándar debido a la necesidad de soportar tanto autenticación basada en sesiones como no basada en sesiones en las mismas vistas. Esto significa que solo las peticiones autenticadas requieren tokens CSRF, y las peticiones anónimas pueden enviarse sin tokens CSRF. Este comportamiento no es adecuado para vistas de inicio de sesión, que siempre deben tener validación CSRF aplicada.
 
 ## RemoteUserAuthentication
 
-This authentication scheme allows you to delegate authentication to your web server, which sets the `REMOTE_USER`
-environment variable.
+Este esquema de autenticación te permite delegar la autenticación a tu servidor web, que establece la variable de entorno `REMOTE_USER`.
 
-To use it, you must have `django.contrib.auth.backends.RemoteUserBackend` (or a subclass) in your
-`AUTHENTICATION_BACKENDS` setting. By default, `RemoteUserBackend` creates `User` objects for usernames that don't
-already exist. To change this and other behavior, consult the
-[Django documentation](https://docs.djangoproject.com/en/stable/howto/auth-remote-user/).
+Para usarlo, debes tener `django.contrib.auth.backends.RemoteUserBackend` (o una subclase) en tu configuración `AUTHENTICATION_BACKENDS`. Por defecto, `RemoteUserBackend` crea objetos `User` para nombres de usuario que no existen ya. Para cambiar esto y otro comportamiento, consulta la [documentación de Django](https://docs.djangoproject.com/en/stable/howto/auth-remote-user/).
 
-If successfully authenticated, `RemoteUserAuthentication` provides the following credentials:
+Si se autentica exitosamente, `RemoteUserAuthentication` proporciona las siguientes credenciales:
 
-- `request.user` will be a Django `User` instance.
-- `request.auth` will be `None`.
+- `request.user` será una instancia de Django `User`.
+- `request.auth` será `None`.
 
-Consult your web server's documentation for information about configuring an authentication method, for example:
+Consulta la documentación de tu servidor web para información sobre cómo configurar un método de autenticación, por ejemplo:
 
 - [Apache Authentication How-To](https://httpd.apache.org/docs/2.4/howto/auth.html)
 - [NGINX (Restricting Access)](https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/)
 
-# Custom authentication
+# Autenticación personalizada
 
-To implement a custom authentication scheme, subclass `BaseAuthentication` and override the `.authenticate(self, request)` method. The method should return a two-tuple of `(user, auth)` if authentication succeeds, or `None` otherwise.
+Para implementar un esquema de autenticación personalizado, subclasifica `BaseAuthentication` y sobrescribe el método `.authenticate(self, request)`. El método debe devolver una tupla de dos elementos de `(user, auth)` si la autenticación tiene éxito, o `None` en caso contrario.
 
-In some circumstances instead of returning `None`, you may want to raise an `AuthenticationFailed` exception from the `.authenticate()` method.
+En algunas circunstancias, en lugar de devolver `None`, puedes querer lanzar una excepción `AuthenticationFailed` desde el método `.authenticate()`.
 
-Typically the approach you should take is:
+Típicamente, el enfoque que debes tomar es:
 
-- If authentication is not attempted, return `None`. Any other authentication schemes also in use will still be checked.
-- If authentication is attempted but fails, raise an `AuthenticationFailed` exception. An error response will be returned immediately, regardless of any permissions checks, and without checking any other authentication schemes.
+- Si no se intenta la autenticación, devuelve `None`. Cualquier otro esquema de autenticación también en uso seguirá siendo verificado.
+- Si se intenta la autenticación pero falla, lanza una excepción `AuthenticationFailed`. Se devolverá una respuesta de error inmediatamente, independientemente de cualquier verificación de permisos, y sin verificar ningún otro esquema de autenticación.
 
-You _may_ also override the `.authenticate_header(self, request)` method. If implemented, it should return a string that will be used as the value of the `WWW-Authenticate` header in a `HTTP 401 Unauthorized` response.
+También _puedes_ sobrescribir el método `.authenticate_header(self, request)`. Si se implementa, debe devolver una cadena que se usará como el valor del encabezado `WWW-Authenticate` en una respuesta `HTTP 401 No Autorizado`.
 
-If the `.authenticate_header()` method is not overridden, the authentication scheme will return `HTTP 403 Forbidden` responses when an unauthenticated request is denied access.
-
----
-
-**Note:** When your custom authenticator is invoked by the request object's `.user` or `.auth` properties, you may see an `AttributeError` re-raised as a `WrappedAttributeError`. This is necessary to prevent the original exception from being suppressed by the outer property access. Python will not recognize that the `AttributeError` originates from your custom authenticator and will instead assume that the request object does not have a `.user` or `.auth` property. These errors should be fixed or otherwise handled by your authenticator.
+Si el método `.authenticate_header()` no se sobrescribe, el esquema de autenticación devolverá respuestas `HTTP 403 Prohibido` cuando una petición no autenticada sea denegada el acceso.
 
 ---
 
-## Example
+**Nota:** Cuando tu autenticador personalizado es invocado por las propiedades `.user` o `.auth` del objeto de petición, puedes ver un `AttributeError` relanzado como `WrappedAttributeError`. Esto es necesario para evitar que la excepción original sea suprimida por el acceso a la propiedad externa. Python no reconocerá que el `AttributeError` se origina en tu autenticador personalizado y en su lugar asumirá que el objeto de petición no tiene una propiedad `.user` o `.auth`. Estos errores deben ser corregidos o manejados de otra manera por tu autenticador.
 
-The following example will authenticate any incoming request as the user given by the username in a custom request header named 'X-USERNAME'.
+---
+
+## Ejemplo
+
+El siguiente ejemplo autenticará cualquier petición entrante como el usuario dado por el nombre de usuario en un encabezado de petición personalizado llamado 'X-USERNAME'.
 
 ```python
 from django.contrib.auth.models import User
@@ -403,27 +399,27 @@ class ExampleAuthentication(authentication.BaseAuthentication):
 
 ---
 
-# Third party packages
+# Paquetes de terceros
 
-The following third-party packages are also available.
+Los siguientes paquetes de terceros también están disponibles.
 
 ## django-rest-knox
 
-[Django-rest-knox][django-rest-knox] library provides models and views to handle token-based authentication in a more secure and extensible way than the built-in TokenAuthentication scheme - with Single Page Applications and Mobile clients in mind. It provides per-client tokens, and views to generate them when provided some other authentication (usually basic authentication), to delete the token (providing a server enforced logout) and to delete all tokens (logs out all clients that a user is logged into).
+La biblioteca [Django-rest-knox][django-rest-knox] proporciona modelos y vistas para manejar autenticación basada en tokens de una manera más segura y extensible que el esquema incorporado TokenAuthentication - pensando en Aplicaciones de Una Sola Página y clientes móviles. Proporciona tokens por cliente, y vistas para generarlos cuando se proporciona alguna otra autenticación (usualmente autenticación básica), para eliminar el token (proporcionando un cierre de sesión forzado por servidor) y para eliminar todos los tokens (cierra sesión en todos los clientes en los que un usuario ha iniciado sesión).
 
 ## Django OAuth Toolkit
 
-The [Django OAuth Toolkit][django-oauth-toolkit] package provides OAuth 2.0 support and works with Python 3.4+. The package is maintained by [jazzband][jazzband] and uses the excellent [OAuthLib][oauthlib]. The package is well documented, and well supported and is currently our **recommended package for OAuth 2.0 support**.
+El paquete [Django OAuth Toolkit][django-oauth-toolkit] proporciona soporte para OAuth 2.0 y funciona con Python 3.4+. El paquete es mantenido por [jazzband][jazzband] y usa la excelente [OAuthLib][oauthlib]. El paquete está bien documentado, y bien soportado y es actualmente nuestro **paquete recomendado para soporte de OAuth 2.0**.
 
-### Installation & configuration
+### Instalación y configuración
 
-Install using `pip`.
+Instala usando `pip`.
 
 ```bash
 pip install django-oauth-toolkit
 ```
 
-Add the package to your `INSTALLED_APPS` and modify your REST framework settings.
+Añade el paquete a tu `INSTALLED_APPS` y modifica tu configuración de REST framework.
 
 ```python
 INSTALLED_APPS = [
@@ -438,72 +434,72 @@ REST_FRAMEWORK = {
 }
 ```
 
-For more details see the [Django REST framework - Getting started][django-oauth-toolkit-getting-started] documentation.
+Para más detalles, consulta la documentación [Django REST framework - Getting started][django-oauth-toolkit-getting-started].
 
 ## Django REST framework OAuth
 
-The [Django REST framework OAuth][django-rest-framework-oauth] package provides both OAuth1 and OAuth2 support for REST framework.
+El paquete [Django REST framework OAuth][django-rest-framework-oauth] proporciona soporte tanto para OAuth1 como OAuth2 para REST framework.
 
-This package was previously included directly in the REST framework but is now supported and maintained as a third-party package.
+Este paquete fue previamente incluido directamente en REST framework pero ahora es soportado y mantenido como un paquete de terceros.
 
-### Installation & configuration
+### Instalación y configuración
 
-Install the package using `pip`.
+Instala el paquete usando `pip`.
 
 ```bash
 pip install djangorestframework-oauth
 ```
 
-For details on configuration and usage see the Django REST framework OAuth documentation for [authentication][django-rest-framework-oauth-authentication] and [permissions][django-rest-framework-oauth-permissions].
+Para detalles sobre configuración y uso, consulta la documentación de Django REST framework OAuth para [autenticación][django-rest-framework-oauth-authentication] y [permisos][django-rest-framework-oauth-permissions].
 
 ## JSON Web Token Authentication
 
-JSON Web Token is a fairly new standard which can be used for token-based authentication. Unlike the built-in TokenAuthentication scheme, JWT Authentication doesn't need to use a database to validate a token. A package for JWT authentication is [djangorestframework-simplejwt][djangorestframework-simplejwt] which provides some features as well as a pluggable token blacklist app.
+JSON Web Token es un estándar bastante nuevo que puede usarse para autenticación basada en tokens. A diferencia del esquema incorporado TokenAuthentication, la autenticación JWT no necesita usar una base de datos para validar un token. Un paquete para autenticación JWT es [djangorestframework-simplejwt][djangorestframework-simplejwt] que proporciona algunas características así como una aplicación de lista negra de tokens conectable.
 
 ## Hawk HTTP Authentication
 
-The [HawkREST][hawkrest] library builds on the [Mohawk][mohawk] library to let you work with [Hawk][hawk] signed requests and responses in your API. [Hawk][hawk] lets two parties securely communicate with each other using messages signed by a shared key. It is based on [HTTP MAC access authentication][mac] (which was based on parts of [OAuth 1.0][oauth-1.0a]).
+La biblioteca [HawkREST][hawkrest] se construye sobre la biblioteca [Mohawk][mohawk] para permitirte trabajar con peticiones y respuestas firmadas por [Hawk][hawk] en tu API. [Hawk][hawk] permite que dos partes se comuniquen de forma segura entre sí usando mensajes firmados por una clave compartida. Se basa en [Autenticación de acceso MAC HTTP][mac] (que se basó en partes de [OAuth 1.0][oauth-1.0a]).
 
 ## HTTP Signature Authentication
 
-HTTP Signature (currently a [IETF draft][http-signature-ietf-draft]) provides a way to achieve origin authentication and message integrity for HTTP messages. Similar to [Amazon's HTTP Signature scheme][amazon-http-signature], used by many of its services, it permits stateless, per-request authentication. [Elvio Toccalino][etoccalino] maintains the [djangorestframework-httpsignature][djangorestframework-httpsignature] (outdated) package which provides an easy-to-use HTTP Signature Authentication mechanism. You can use the updated fork version of [djangorestframework-httpsignature][djangorestframework-httpsignature], which is [drf-httpsig][drf-httpsig].
+HTTP Signature (actualmente un [borrador IETF][http-signature-ietf-draft]) proporciona una manera de lograr autenticación de origen e integridad de mensajes para mensajes HTTP. Similar al [esquema de Firma HTTP de Amazon][amazon-http-signature], usado por muchos de sus servicios, permite autenticación sin estado, por petición. [Elvio Toccalino][etoccalino] mantiene el paquete [djangorestframework-httpsignature][djangorestframework-httpsignature] (obsoleto) que proporciona un mecanismo de Autenticación de Firma HTTP fácil de usar. Puedes usar la versión actualizada del fork de [djangorestframework-httpsignature][djangorestframework-httpsignature], que es [drf-httpsig][drf-httpsig].
 
 ## Djoser
 
-[Djoser][djoser] library provides a set of views to handle basic actions such as registration, login, logout, password reset and account activation. The package works with a custom user model and uses token-based authentication. This is a ready to use REST implementation of the Django authentication system.
+La biblioteca [Djoser][djoser] proporciona un conjunto de vistas para manejar acciones básicas como registro, inicio de sesión, cierre de sesión, restablecimiento de contraseña y activación de cuenta. El paquete funciona con un modelo de usuario personalizado y usa autenticación basada en tokens. Esta es una implementación REST lista para usar del sistema de autenticación de Django.
 
 ## django-rest-auth / dj-rest-auth
 
-This library provides a set of REST API endpoints for registration, authentication (including social media authentication), password reset, retrieve and update user details, etc. By having these API endpoints, your client apps such as AngularJS, iOS, Android, and others can communicate to your Django backend site independently via REST APIs for user management.
+Esta biblioteca proporciona un conjunto de endpoints de API REST para registro, autenticación (incluyendo autenticación de redes sociales), restablecimiento de contraseña, recuperación y actualización de detalles de usuario, etc. Al tener estos endpoints de API, tus aplicaciones cliente como AngularJS, iOS, Android, y otras pueden comunicarse con tu sitio backend de Django independientemente a través de APIs REST para gestión de usuarios.
 
-There are currently two forks of this project.
+Actualmente hay dos forks de este proyecto:
 
-- [Django-rest-auth][django-rest-auth] is the original project, [but is not currently receiving updates](https://github.com/Tivix/django-rest-auth/issues/568).
-- [Dj-rest-auth][dj-rest-auth] is a newer fork of the project.
+- [Django-rest-auth][django-rest-auth] es el proyecto original, [pero actualmente no recibe actualizaciones](https://github.com/Tivix/django-rest-auth/issues/568).
+- [Dj-rest-auth][dj-rest-auth] es un fork más nuevo del proyecto.
 
 ## drf-social-oauth2
 
-[Drf-social-oauth2][drf-social-oauth2] is a framework that helps you authenticate with major social oauth2 vendors, such as Facebook, Google, Twitter, Orcid, etc. It generates tokens in a JWTed way with an easy setup.
+[Drf-social-oauth2][drf-social-oauth2] es un framework que te ayuda a autenticarte con principales proveedores de oauth2 sociales, como Facebook, Google, Twitter, Orcid, etc. Genera tokens de manera JWT con una configuración fácil.
 
 ## drfpasswordless
 
-[drfpasswordless][drfpasswordless] adds (Medium, Square Cash inspired) passwordless support to Django REST Framework's TokenAuthentication scheme. Users log in and sign up with a token sent to a contact point like an email address or a mobile number.
+[drfpasswordless][drfpasswordless] añade soporte sin contraseña (inspirado en Medium, Square Cash) al esquema TokenAuthentication de Django REST Framework. Los usuarios inician sesión y se registran con un token enviado a un punto de contacto como una dirección de correo electrónico o un número de móvil.
 
 ## django-rest-authemail
 
-[django-rest-authemail][django-rest-authemail] provides a RESTful API interface for user signup and authentication. Email addresses are used for authentication, rather than usernames. API endpoints are available for signup, signup email verification, login, logout, password reset, password reset verification, email change, email change verification, password change, and user detail. A fully functional example project and detailed instructions are included.
+[django-rest-authemail][django-rest-authemail] proporciona una interfaz API RESTful para registro de usuario y autenticación. Las direcciones de correo electrónico se usan para autenticación, en lugar de nombres de usuario. Los endpoints de API están disponibles para registro, verificación de correo de registro, inicio de sesión, cierre de sesión, restablecimiento de contraseña, verificación de restablecimiento de contraseña, cambio de correo, verificación de cambio de correo, cambio de contraseña, y detalles de usuario. Se incluye un proyecto de ejemplo completamente funcional e instrucciones detalladas.
 
 ## Django-Rest-Durin
 
-[Django-Rest-Durin][django-rest-durin] is built with the idea to have one library that does token auth for multiple Web/CLI/Mobile API clients via one interface but allows different token configuration for each API Client that consumes the API. It provides support for multiple tokens per user via custom models, views, permissions that work with Django-Rest-Framework. The token expiration time can be different per API client and is customizable via the Django Admin Interface.
+[Django-Rest-Durin][django-rest-durin] está construido con la idea de tener una biblioteca que haga autenticación por token para múltiples clientes de API Web/CLI/Móvil a través de una interfaz pero permite diferente configuración de token para cada Cliente de API que consume la API. Proporciona soporte para múltiples tokens por usuario a través de modelos personalizados, vistas, permisos que funcionan con Django-Rest-Framework. El tiempo de expiración del token puede ser diferente por cliente de API y es personalizable a través de la Interfaz de Administración de Django.
 
-More information can be found in the [Documentation](https://django-rest-durin.readthedocs.io/en/latest/index.html).
+Más información puede encontrarse en la [Documentación](https://django-rest-durin.readthedocs.io/en/latest/index.html).
 
-## django-pyoidc
+## django-pyoidc
 
-[dango-pyoidc][django_pyoidc] adds support for OpenID Connect (OIDC) authentication. This allows you to delegate user management to an Identity Provider, which can be used to implement Single-Sign-On (SSO). It provides support for most uses-cases, such as customizing how token info are mapped to user models, using OIDC audiences for access control, etc.
+[dango-pyoidc][django_pyoidc] añade soporte para autenticación OpenID Connect (OIDC). Esto te permite delegar la gestión de usuarios a un Proveedor de Identidad, que puede usarse para implementar Single-Sign-On (SSO). Proporciona soporte para la mayoría de casos de uso, como personalizar cómo se mapea la información de token a modelos de usuario, usar audiencias OIDC para control de acceso, etc.
 
-More information can be found in the [Documentation](https://django-pyoidc.readthedocs.io/latest/index.html).
+Más información puede encontrarse en la [Documentación](https://django-pyoidc.readthedocs.io/latest/index.html).
 
 [cite]: https://jacobian.org/writing/rest-worst-practices/
 [http401]: https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2

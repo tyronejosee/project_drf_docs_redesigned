@@ -1,29 +1,29 @@
 ---
-title: "Status Codes"
-keywords: ["django", "rest", "framework", "api", "status", "codes"]
+title: "Códigos de Estado"
+keywords: ["django", "rest", "framework", "api", "estado", "códigos"]
 order: 25
 ---
 
-# Status Codes
+# Códigos de Estado
 
-> 418 I'm a teapot - Any attempt to brew coffee with a teapot should result in the error code "418 I'm a teapot". The resulting entity body MAY be short and stout.
+> 418 Soy una tetera - Cualquier intento de preparar café con una tetera debería resultar en el código de error "418 Soy una tetera". El cuerpo de entidad resultante PUEDE ser corto y robusto.
 >
-> &mdash; [RFC 2324][rfc2324], Hyper Text Coffee Pot Control Protocol
+> &mdash; [RFC 2324][rfc2324], Protocolo de Control de Tetera de Hipertexto
 
-Using bare status codes in your responses isn't recommended. REST framework includes a set of named constants that you can use to make your code more obvious and readable.
+No se recomienda usar códigos de estado desnudos en tus respuestas. REST framework incluye un conjunto de constantes nombradas que puedes usar para hacer tu código más obvio y legible.
 
 ```python
 from rest_framework import status
 from rest_framework.response import Response
 
 def empty_view(self):
-    content = {'please move along': 'nothing to see here'}
+    content = {'por favor continúa': 'nada que ver aquí'}
     return Response(content, status=status.HTTP_404_NOT_FOUND)
 ```
 
-The full set of HTTP status codes included in the `status` module is listed below.
+El conjunto completo de códigos de estado HTTP incluidos en el módulo `status` se lista a continuación.
 
-The module also includes a set of helper functions for testing if a status code is in a given range.
+El módulo también incluye un conjunto de funciones de ayuda para probar si un código de estado está en un rango dado.
 
 ```python
 from rest_framework import status
@@ -36,12 +36,12 @@ class ExampleTestCase(APITestCase):
         self.assertTrue(status.is_success(response.status_code))
 ```
 
-For more information on proper usage of HTTP status codes see [RFC 2616][rfc2616]
-and [RFC 6585][rfc6585].
+Para más información sobre el uso adecuado de los códigos de estado HTTP, ver [RFC 2616][rfc2616]
+y [RFC 6585][rfc6585].
 
-## Informational - 1xx
+## Informativo - 1xx
 
-This class of status code indicates a provisional response. There are no 1xx status codes used in REST framework by default.
+Esta clase de código de estado indica una respuesta provisional. No hay códigos de estado 1xx usados en REST framework por defecto.
 
 ```python
 HTTP_100_CONTINUE
@@ -50,9 +50,9 @@ HTTP_102_PROCESSING
 HTTP_103_EARLY_HINTS
 ```
 
-## Successful - 2xx
+## Exitoso - 2xx
 
-This class of status code indicates that the client's request was successfully received, understood, and accepted.
+Esta clase de código de estado indica que la solicitud del cliente fue recibida exitosamente, entendida y aceptada.
 
 ```python
 HTTP_200_OK
@@ -67,9 +67,9 @@ HTTP_208_ALREADY_REPORTED
 HTTP_226_IM_USED
 ```
 
-## Redirection - 3xx
+## Redirección - 3xx
 
-This class of status code indicates that further action needs to be taken by the user agent in order to fulfill the request.
+Esta clase de código de estado indica que se necesita tomar acción adicional por parte del agente de usuario para cumplir la solicitud.
 
 ```python
 HTTP_300_MULTIPLE_CHOICES
@@ -83,9 +83,9 @@ HTTP_307_TEMPORARY_REDIRECT
 HTTP_308_PERMANENT_REDIRECT
 ```
 
-## Client Error - 4xx
+## Error del Cliente - 4xx
 
-The 4xx class of status code is intended for cases in which the client seems to have erred. Except when responding to a HEAD request, the server SHOULD include an entity containing an explanation of the error situation, and whether it is a temporary or permanent condition.
+La clase de código de estado 4xx está destinada a casos en los que el cliente parece haber errado. Excepto cuando responde a una solicitud HEAD, el servidor DEBERÍA incluir una entidad que contenga una explicación de la situación de error, y si es una condición temporal o permanente.
 
 ```python
 HTTP_400_BAD_REQUEST
@@ -118,9 +118,9 @@ HTTP_431_REQUEST_HEADER_FIELDS_TOO_LARGE
 HTTP_451_UNAVAILABLE_FOR_LEGAL_REASONS
 ```
 
-## Server Error - 5xx
+## Error del Servidor - 5xx
 
-Response status codes beginning with the digit "5" indicate cases in which the server is aware that it has erred or is incapable of performing the request. Except when responding to a HEAD request, the server SHOULD include an entity containing an explanation of the error situation, and whether it is a temporary or permanent condition.
+Los códigos de estado de respuesta que comienzan con el dígito "5" indican casos en los que el servidor es consciente de que ha errado o es incapaz de realizar la solicitud. Excepto cuando responde a una solicitud HEAD, el servidor DEBERÍA incluir una entidad que contenga una explicación de la situación de error, y si es una condición temporal o permanente.
 
 ```python
 HTTP_500_INTERNAL_SERVER_ERROR
@@ -137,9 +137,9 @@ HTTP_510_NOT_EXTENDED
 HTTP_511_NETWORK_AUTHENTICATION_REQUIRED
 ```
 
-## Helper functions
+## Funciones de ayuda
 
-The following helper functions are available for identifying the category of the response code.
+Las siguientes funciones de ayuda están disponibles para identificar la categoría del código de respuesta.
 
 ```python
 is_informational()  # 1xx

@@ -1,33 +1,33 @@
 ---
-title: "Format suffixes"
-keywords: ["django", "rest", "framework", "api", "format", "suffixes"]
+title: "Sufijos de formato"
+keywords: ["django", "rest", "framework", "api", "formato", "sufijos"]
 order: 22
 ---
 
-# Format suffixes
+# Sufijos de formato
 
-> Section 6.2.1 does not say that content negotiation should be
-> used all the time.
+> La sección 6.2.1 no dice que la negociación de contenido deba
+> usarse todo el tiempo.
 >
-> &mdash; Roy Fielding, [REST discuss mailing list][cite]
+> &mdash; Roy Fielding, [lista de correo REST discuss][cite]
 
-A common pattern for Web APIs is to use filename extensions on URLs to provide an endpoint for a given media type. For example, 'http://example.com/api/users.json' to serve a JSON representation.
+Un patrón común para las APIs web es usar extensiones de nombre de archivo en las URLs para proporcionar un endpoint para un tipo de medio determinado. Por ejemplo, 'http://example.com/api/users.json' para servir una representación JSON.
 
-Adding format-suffix patterns to each individual entry in the URLconf for your API is error-prone and non-DRY, so REST framework provides a shortcut to adding these patterns to your URLConf.
+Añadir patrones de sufijos de formato a cada entrada individual en la URLconf de tu API es propenso a errores y no sigue el principio DRY, por lo que REST framework proporciona un atajo para añadir estos patrones a tu URLConf.
 
 ## format_suffix_patterns
 
-**Signature**: format_suffix_patterns(urlpatterns, suffix_required=False, allowed=None)
+**Firma**: format_suffix_patterns(urlpatterns, suffix_required=False, allowed=None)
 
-Returns a URL pattern list which includes format suffix patterns appended to each of the URL patterns provided.
+Devuelve una lista de patrones de URL que incluye patrones de sufijos de formato añadidos a cada uno de los patrones de URL proporcionados.
 
-Arguments:
+Argumentos:
 
-- **urlpatterns**: Required. A URL pattern list.
-- **suffix_required**: Optional. A boolean indicating if suffixes in the URLs should be optional or mandatory. Defaults to `False`, meaning that suffixes are optional by default.
-- **allowed**: Optional. A list or tuple of valid format suffixes. If not provided, a wildcard format suffix pattern will be used.
+- **urlpatterns**: Requerido. Una lista de patrones de URL.
+- **suffix_required**: Opcional. Un booleano que indica si los sufijos en las URLs deben ser opcionales u obligatorios. Por defecto es `False`, lo que significa que los sufijos son opcionales por defecto.
+- **allowed**: Opcional. Una lista o tupla de sufijos de formato válidos. Si no se proporciona, se usará un patrón de sufijo de formato comodín.
 
-Example:
+Ejemplo:
 
 ```python
 from rest_framework.urlpatterns import format_suffix_patterns
@@ -42,32 +42,32 @@ urlpatterns = [
 urlpatterns = format_suffix_patterns(urlpatterns, allowed=['json', 'html'])
 ```
 
-When using `format_suffix_patterns`, you must make sure to add the `'format'` keyword argument to the corresponding views. For example:
+Al usar `format_suffix_patterns`, debes asegurarte de añadir el argumento de palabra clave `'format'` a las vistas correspondientes. Por ejemplo:
 
 ```python
 @api_view(['GET', 'POST'])
 def comment_list(request, format=None):
-    # do stuff...
+    # hacer cosas...
 ```
 
-Or with class-based views:
+O con vistas basadas en clases:
 
 ```python
 class CommentList(APIView):
     def get(self, request, format=None):
-        # do stuff...
+        # hacer cosas...
 
     def post(self, request, format=None):
-        # do stuff...
+        # hacer cosas...
 ```
 
-The name of the kwarg used may be modified by using the `FORMAT_SUFFIX_KWARG` setting.
+El nombre del kwarg utilizado puede modificarse usando la configuración `FORMAT_SUFFIX_KWARG`.
 
-Also note that `format_suffix_patterns` does not support descending into `include` URL patterns.
+También ten en cuenta que `format_suffix_patterns` no soporta descender en patrones de URL `include`.
 
-### Using with `i18n_patterns`
+### Usando con `i18n_patterns`
 
-If using the `i18n_patterns` function provided by Django, as well as `format_suffix_patterns` you should make sure that the `i18n_patterns` function is applied as the final, or outermost function. For example:
+Si usas la función `i18n_patterns` proporcionada por Django, así como `format_suffix_patterns`, debes asegurarte de que la función `i18n_patterns` se aplique como la función final o más externa. Por ejemplo:
 
 ```python
 urlpatterns = [
@@ -81,25 +81,25 @@ urlpatterns = i18n_patterns(
 
 ---
 
-## Query parameter formats
+## Formatos de parámetros de consulta
 
-An alternative to the format suffixes is to include the requested format in a query parameter. REST framework provides this option by default, and it is used in the browsable API to switch between differing available representations.
+Una alternativa a los sufijos de formato es incluir el formato solicitado en un parámetro de consulta. REST framework proporciona esta opción por defecto, y se usa en la API navegable para cambiar entre diferentes representaciones disponibles.
 
-To select a representation using its short format, use the `format` query parameter. For example: `http://example.com/organizations/?format=csv`.
+Para seleccionar una representación usando su formato corto, usa el parámetro de consulta `format`. Por ejemplo: `http://example.com/organizations/?format=csv`.
 
-The name of this query parameter can be modified using the `URL_FORMAT_OVERRIDE` setting. Set the value to `None` to disable this behavior.
+El nombre de este parámetro de consulta puede modificarse usando la configuración `URL_FORMAT_OVERRIDE`. Establece el valor en `None` para desactivar este comportamiento.
 
 ---
 
-## Accept headers vs. format suffixes
+## Cabeceras Accept vs. sufijos de formato
 
-There seems to be a view among some of the Web community that filename extensions are not a RESTful pattern, and that `HTTP Accept` headers should always be used instead.
+Parece haber una opinión en parte de la comunidad web de que las extensiones de nombre de archivo no son un patrón RESTful, y que siempre deberían usarse las cabeceras `HTTP Accept` en su lugar.
 
-It is actually a misconception. For example, take the following quote from Roy Fielding discussing the relative merits of query parameter media-type indicators vs. file extension media-type indicators:
+En realidad es un concepto erróneo. Por ejemplo, toma la siguiente cita de Roy Fielding discutiendo los méritos relativos de los indicadores de tipo de medio de parámetros de consulta vs. los indicadores de tipo de medio de extensión de archivo:
 
-&ldquo;That's why I always prefer extensions. Neither choice has anything to do with REST.&rdquo; &mdash; Roy Fielding, [REST discuss mailing list][cite2]
+"Por eso siempre prefiero las extensiones. Ninguna de las dos opciones tiene nada que ver con REST." &mdash; Roy Fielding, [lista de correo REST discuss][cite2]
 
-The quote does not mention Accept headers, but it does make it clear that format suffixes should be considered an acceptable pattern.
+La cita no menciona las cabeceras Accept, pero sí deja claro que los sufijos de formato deben considerarse un patrón aceptable.
 
 [cite]: http://tech.groups.yahoo.com/group/rest-discuss/message/5857
 [cite2]: https://groups.yahoo.com/neo/groups/rest-discuss/conversations/topics/14844

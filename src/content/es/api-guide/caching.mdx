@@ -1,27 +1,27 @@
 ---
-title: "Caching"
+title: "Caché"
 keywords: ["django", "rest", "framework", "api", "cache", "caching"]
 order: 14
 ---
 
-# Caching
+# Caché
 
-> A certain woman had a very sharp consciousness but almost no
-> memory ... She remembered enough to work, and she worked hard.
+> Cierta mujer tenía una conciencia muy aguda pero casi ninguna
+> memoria ... Recordaba lo suficiente para trabajar, y trabajaba duro.
 >
 > - Lydia Davis
 
-Caching in REST Framework works well with the cache utilities
-provided in Django.
+El almacenamiento en caché en REST Framework funciona bien con las utilidades
+de caché proporcionadas en Django.
 
 ---
 
-## Using cache with apiview and viewsets
+## Usando caché con apiview y viewsets
 
-Django provides a [`method_decorator`][decorator] to use
-decorators with class based views. This can be used with
-other cache decorators such as [`cache_page`][page],
-[`vary_on_cookie`][cookie] and [`vary_on_headers`][headers].
+Django proporciona un [`method_decorator`][decorator] para usar
+decoradores con vistas basadas en clases. Esto puede usarse con
+otros decoradores de caché como [`cache_page`][page],
+[`vary_on_cookie`][cookie] y [`vary_on_headers`][headers].
 
 ```python
 from django.utils.decorators import method_decorator
@@ -34,7 +34,7 @@ from rest_framework import viewsets
 
 
 class UserViewSet(viewsets.ViewSet):
-    # With cookie: cache requested url for each user for 2 hours
+    # Con cookie: caché de la url solicitada para cada usuario durante 2 horas
     @method_decorator(cache_page(60 * 60 * 2))
     @method_decorator(vary_on_cookie)
     def list(self, request, format=None):
@@ -45,7 +45,7 @@ class UserViewSet(viewsets.ViewSet):
 
 
 class ProfileView(APIView):
-    # With auth: cache requested url for each user for 2 hours
+    # Con auth: caché de la url solicitada para cada usuario durante 2 horas
     @method_decorator(cache_page(60 * 60 * 2))
     @method_decorator(vary_on_headers("Authorization"))
     def get(self, request, format=None):
@@ -56,20 +56,20 @@ class ProfileView(APIView):
 
 
 class PostView(APIView):
-    # Cache page for the requested url
+    # Caché de la página para la url solicitada
     @method_decorator(cache_page(60 * 60 * 2))
     def get(self, request, format=None):
         content = {
-            "title": "Post title",
-            "body": "Post content",
+            "title": "Título del post",
+            "body": "Contenido del post",
         }
         return Response(content)
 ```
 
-## Using cache with @api_view decorator
+## Usando caché con el decorador @api_view
 
-When using @api_view decorator, the Django-provided method-based cache decorators such as [`cache_page`][page],
-[`vary_on_cookie`][cookie] and [`vary_on_headers`][headers] can be called directly.
+Cuando se usa el decorador @api_view, los decoradores de caché basados en métodos proporcionados por Django como [`cache_page`][page],
+[`vary_on_cookie`][cookie] y [`vary_on_headers`][headers] pueden llamarse directamente.
 
 ```python
 from django.views.decorators.cache import cache_page
@@ -87,8 +87,8 @@ def get_user_list(request):
     return Response(content)
 ```
 
-**NOTE:** The [`cache_page`][page] decorator only caches the
-`GET` and `HEAD` responses with status 200.
+**NOTA:** El decorador [`cache_page`][page] solo almacena en caché las
+respuestas `GET` y `HEAD` con estado 200.
 
 [page]: https://docs.djangoproject.com/en/dev/topics/cache/#the-per-view-cache
 [cookie]: https://docs.djangoproject.com/en/dev/topics/http/decorators/#django.views.decorators.vary.vary_on_cookie

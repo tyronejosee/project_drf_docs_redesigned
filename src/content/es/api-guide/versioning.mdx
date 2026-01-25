@@ -1,30 +1,30 @@
 ---
-title: "Versioning"
-keywords: ["django", "rest", "framework", "api", "versioning"]
+title: "Versionamiento"
+keywords: ["django", "rest", "framework", "api", "versionamiento"]
 order: 18
 ---
 
-# Versioning
+# Versionamiento
 
-> Versioning an interface is just a "polite" way to kill deployed clients.
+> Versionar una interfaz es solo una forma "educada" de matar clientes desplegados.
 >
 > &mdash; [Roy Fielding][cite].
 
-API versioning allows you to alter behavior between different clients. REST framework provides for a number of different versioning schemes.
+El versionamiento de API te permite alterar el comportamiento entre diferentes clientes. REST framework proporciona varios esquemas de versionamiento diferentes.
 
-Versioning is determined by the incoming client request, and may either be based on the request URL, or based on the request headers.
+El versionamiento se determina por la solicitud entrante del cliente, y puede basarse ya sea en la URL de la solicitud, o en los encabezados de la solicitud.
 
-There are a number of valid approaches to approaching versioning. [Non-versioned systems can also be appropriate][roy-fielding-on-versioning], particularly if you're engineering for very long-term systems with multiple clients outside of your control.
+Hay varios enfoques válidos para el versionamiento. [Los sistemas sin versionamiento también pueden ser apropiados][roy-fielding-on-versioning], particularmente si estás diseñando para sistemas a muy largo plazo con múltiples clientes fuera de tu control.
 
-## Versioning with REST framework
+## Versionamiento con REST framework
 
-When API versioning is enabled, the `request.version` attribute will contain a string that corresponds to the version requested in the incoming client request.
+Cuando el versionamiento de API está habilitado, el atributo `request.version` contendrá una cadena que corresponde a la versión solicitada en la solicitud entrante del cliente.
 
-By default, versioning is not enabled, and `request.version` will always return `None`.
+Por defecto, el versionamiento no está habilitado, y `request.version` siempre devolverá `None`.
 
-#### Varying behavior based on the version
+#### Variar el comportamiento basado en la versión
 
-How you vary the API behavior is up to you, but one example you might typically want is to switch to a different serialization style in a newer version. For example:
+Cómo varías el comportamiento de la API depende de ti, pero un ejemplo que típicamente podrías querer es cambiar a un estilo de serialización diferente en una versión más nueva. Por ejemplo:
 
 ```python
 def get_serializer_class(self):
@@ -33,9 +33,9 @@ def get_serializer_class(self):
     return AccountSerializer
 ```
 
-#### Reversing URLs for versioned APIs
+#### Invertir URLs para APIs versionadas
 
-The `reverse` function included by REST framework ties in with the versioning scheme. You need to make sure to include the current `request` as a keyword argument, like so.
+La función `reverse` incluida por REST framework se integra con el esquema de versionamiento. Necesitas asegurarte de incluir la `request` actual como un argumento de palabra clave, así.
 
 ```python
 from rest_framework.reverse import reverse
@@ -43,14 +43,14 @@ from rest_framework.reverse import reverse
 reverse('bookings-list', request=request)
 ```
 
-The above function will apply any URL transformations appropriate to the request version. For example:
+La función anterior aplicará cualquier transformación de URL apropiada para la versión de la solicitud. Por ejemplo:
 
-- If `NamespaceVersioning` was being used, and the API version was 'v1', then the URL lookup used would be `'v1:bookings-list'`, which might resolve to a URL like `http://example.org/v1/bookings/`.
-- If `QueryParameterVersioning` was being used, and the API version was `1.0`, then the returned URL might be something like `http://example.org/bookings/?version=1.0`
+- Si se estuviera usando `NamespaceVersioning`, y la versión de la API fuera 'v1', entonces la búsqueda de URL usada sería `'v1:bookings-list'`, que podría resolverse a una URL como `http://example.org/v1/bookings/`.
+- Si se estuviera usando `QueryParameterVersioning`, y la versión de la API fuera `1.0`, entonces la URL devuelta podría ser algo como `http://example.org/bookings/?version=1.0`
 
-#### Versioned APIs and hyperlinked serializers
+#### APIs versionadas y serializadores con hipervínculos
 
-When using hyperlinked serialization styles together with a URL based versioning scheme make sure to include the request as context to the serializer.
+Cuando usas estilos de serialización con hipervínculos junto con un esquema de versionamiento basado en URL, asegúrate de incluir la solicitud como contexto para el serializador.
 
 ```python
 def get(self, request):
@@ -59,11 +59,11 @@ def get(self, request):
     return Response({'all_bookings': serializer.data})
 ```
 
-Doing so will allow any returned URLs to include the appropriate versioning.
+Hacer esto permitirá que cualquier URL devuelta incluya el versionamiento apropiado.
 
-## Configuring the versioning scheme
+## Configurando el esquema de versionamiento
 
-The versioning scheme is defined by the `DEFAULT_VERSIONING_CLASS` settings key.
+El esquema de versionamiento se define por la clave de configuración `DEFAULT_VERSIONING_CLASS`.
 
 ```python
 REST_FRAMEWORK = {
@@ -71,24 +71,24 @@ REST_FRAMEWORK = {
 }
 ```
 
-Unless it is explicitly set, the value for `DEFAULT_VERSIONING_CLASS` will be `None`. In this case the `request.version` attribute will always return `None`.
+A menos que se establezca explícitamente, el valor de `DEFAULT_VERSIONING_CLASS` será `None`. En este caso el atributo `request.version` siempre devolverá `None`.
 
-You can also set the versioning scheme on an individual view. Typically you won't need to do this, as it makes more sense to have a single versioning scheme used globally. If you do need to do so, use the `versioning_class` attribute.
+También puedes establecer el esquema de versionamiento en una vista individual. Típicamente no necesitarás hacer esto, ya que tiene más sentido tener un solo esquema de versionamiento usado globalmente. Si necesitas hacerlo, usa el atributo `versioning_class`.
 
 ```python
 class ProfileList(APIView):
     versioning_class = versioning.QueryParameterVersioning
 ```
 
-#### Other versioning settings
+#### Otras configuraciones de versionamiento
 
-The following settings keys are also used to control versioning:
+Las siguientes claves de configuración también se usan para controlar el versionamiento:
 
-- `DEFAULT_VERSION`. The value that should be used for `request.version` when no versioning information is present. Defaults to `None`.
-- `ALLOWED_VERSIONS`. If set, this value will restrict the set of versions that may be returned by the versioning scheme, and will raise an error if the provided version is not in this set. Note that the value used for the `DEFAULT_VERSION` setting is always considered to be part of the `ALLOWED_VERSIONS` set (unless it is `None`). Defaults to `None`.
-- `VERSION_PARAM`. The string that should be used for any versioning parameters, such as in the media type or URL query parameters. Defaults to `'version'`.
+- `DEFAULT_VERSION`. El valor que debería usarse para `request.version` cuando no hay información de versionamiento presente. Por defecto es `None`.
+- `ALLOWED_VERSIONS`. Si se establece, este valor restringirá el conjunto de versiones que pueden ser devueltas por el esquema de versionamiento, y lanzará un error si la versión proporcionada no está en este conjunto. Ten en cuenta que el valor usado para la configuración `DEFAULT_VERSION` siempre se considera parte del conjunto `ALLOWED_VERSIONS` (a menos que sea `None`). Por defecto es `None`.
+- `VERSION_PARAM`. La cadena que debería usarse para cualquier parámetro de versionamiento, como en el tipo de medio o parámetros de consulta de URL. Por defecto es `'version'`.
 
-You can also set your versioning class plus those three values on a per-view or a per-viewset basis by defining your own versioning scheme and using the `default_version`, `allowed_versions` and `version_param` class variables. For example, if you want to use `URLPathVersioning`:
+También puedes establecer tu clase de versionamiento más esos tres valores en una base por vista o por viewset definiendo tu propio esquema de versionamiento y usando las variables de clase `default_version`, `allowed_versions` y `version_param`. Por ejemplo, si quieres usar `URLPathVersioning`:
 
 ```python
 from rest_framework.versioning import URLPathVersioning
@@ -105,13 +105,13 @@ class ExampleView(APIVIew):
 
 ---
 
-# API Reference
+# Referencia de la API
 
-## AcceptHeaderVersioning
+## AcceptHeaderVersioning
 
-This scheme requires the client to specify the version as part of the media type in the `Accept` header. The version is included as a media type parameter, that supplements the main media type.
+Este esquema requiere que el cliente especifique la versión como parte del tipo de medio en el encabezado `Accept`. La versión se incluye como un parámetro de tipo de medio, que supplementa el tipo de medio principal.
 
-Here's an example HTTP request using the accept header versioning style.
+Aquí hay un ejemplo de solicitud HTTP usando el estilo de versionamiento de encabezado accept.
 
 ```http
 GET /bookings/ HTTP/1.1
@@ -119,20 +119,20 @@ Host: example.com
 Accept: application/json; version=1.0
 ```
 
-In the example request above `request.version` attribute would return the string `'1.0'`.
+En la solicitud de ejemplo anterior el atributo `request.version` devolvería la cadena `'1.0'`.
 
-Versioning based on accept headers is [generally considered][klabnik-guidelines] as [best practice][heroku-guidelines], although other styles may be suitable depending on your client requirements.
+El versionamiento basado en encabezados accept es [generalmente considerado][klabnik-guidelines] como [mejor práctica][heroku-guidelines], aunque otros estilos pueden ser apropiados dependiendo de los requisitos de tu cliente.
 
-#### Using accept headers with vendor media types
+#### Usando encabezados accept con tipos de medio de proveedor
 
-Strictly speaking the `json` media type is not specified as [including additional parameters][json-parameters]. If you are building a well-specified public API you might consider using a [vendor media type][vendor-media-type]. To do so, configure your renderers to use a JSON based renderer with a custom media type:
+Estrictamente hablando, el tipo de medio `json` no está especificado como [incluyendo parámetros adicionales][json-parameters]. Si estás construyendo una API pública bien especificada podrías considerar usar un [tipo de medio de proveedor][vendor-media-type]. Para hacerlo, configura tus renderizadores para usar un renderizador basado en JSON con un tipo de medio personalizado:
 
 ```python
 class BookingsAPIRenderer(JSONRenderer):
     media_type = 'application/vnd.megacorp.bookings+json'
 ```
 
-Your client requests would now look like this:
+Tus solicitudes de cliente ahora se verían así:
 
 ```http
 GET /bookings/ HTTP/1.1
@@ -142,7 +142,7 @@ Accept: application/vnd.megacorp.bookings+json; version=1.0
 
 ## URLPathVersioning
 
-This scheme requires the client to specify the version as part of the URL path.
+Este esquema requiere que el cliente especifique la versión como parte de la ruta de la URL.
 
 ```http
 GET /v1/bookings/ HTTP/1.1
@@ -150,7 +150,7 @@ Host: example.com
 Accept: application/json
 ```
 
-Your URL conf must include a pattern that matches the version with a `'version'` keyword argument, so that this information is available to the versioning scheme.
+Tu configuración de URL debe incluir un patrón que coincida con la versión con un argumento de palabra clave `'version'`, para que esta información esté disponible para el esquema de versionamiento.
 
 ```python
 urlpatterns = [
@@ -169,7 +169,7 @@ urlpatterns = [
 
 ## NamespaceVersioning
 
-To the client, this scheme is the same as `URLPathVersioning`. The only difference is how it is configured in your Django application, as it uses URL namespacing, instead of URL keyword arguments.
+Para el cliente, este esquema es el mismo que `URLPathVersioning`. La única diferencia es cómo se configura en tu aplicación Django, ya que usa espacios de nombres de URL, en lugar de argumentos de palabra clave de URL.
 
 ```http
 GET /v1/something/ HTTP/1.1
@@ -177,9 +177,9 @@ Host: example.com
 Accept: application/json
 ```
 
-With this scheme the `request.version` attribute is determined based on the `namespace` that matches the incoming request path.
+Con este esquema el atributo `request.version` se determina basado en el `namespace` que coincide con la ruta de solicitud entrante.
 
-In the following example we're giving a set of views two different possible URL prefixes, each under a different namespace:
+En el siguiente ejemplo estamos dando un conjunto de vistas dos posibles prefijos de URL diferentes, cada uno bajo un espacio de nombres diferente:
 
 ```python
 # bookings/urls.py
@@ -195,13 +195,13 @@ urlpatterns = [
 ]
 ```
 
-Both `URLPathVersioning` and `NamespaceVersioning` are reasonable if you just need a simple versioning scheme. The `URLPathVersioning` approach might be better suitable for small ad-hoc projects, and the `NamespaceVersioning` is probably easier to manage for larger projects.
+Tanto `URLPathVersioning` como `NamespaceVersioning` son razonables si solo necesitas un esquema de versionamiento simple. El enfoque `URLPathVersioning` podría ser más adecuado para proyectos pequeños ad-hoc, y `NamespaceVersioning` es probablemente más fácil de manejar para proyectos más grandes.
 
 ## HostNameVersioning
 
-The hostname versioning scheme requires the client to specify the requested version as part of the hostname in the URL.
+El esquema de versionamiento de nombre de host requiere que el cliente especifique la versión solicitada como parte del nombre de host en la URL.
 
-For example the following is an HTTP request to the `http://v1.example.com/bookings/` URL:
+Por ejemplo, lo siguiente es una solicitud HTTP a la URL `http://v1.example.com/bookings/`:
 
 ```http
 GET /bookings/ HTTP/1.1
@@ -209,21 +209,21 @@ Host: v1.example.com
 Accept: application/json
 ```
 
-By default this implementation expects the hostname to match this simple regular expression:
+Por defecto esta implementación espera que el nombre de host coincida con esta expresión regular simple:
 
 ```python
 ^([a-zA-Z0-9]+)\.[a-zA-Z0-9]+\.[a-zA-Z0-9]+$
 ```
 
-Note that the first group is enclosed in brackets, indicating that this is the matched portion of the hostname.
+Ten en cuenta que el primer grupo está encerrado en corchetes, indicando que esta es la porción coincidente del nombre de host.
 
-The `HostNameVersioning` scheme can be awkward to use in debug mode as you will typically be accessing a raw IP address such as `127.0.0.1`. There are various online tutorials on how to [access localhost with a custom subdomain][lvh] which you may find helpful in this case.
+El esquema `HostNameVersioning` puede ser incómodo de usar en modo de depuración ya que típicamente estarás accediendo a una dirección IP cruda como `127.0.0.1`. Hay varios tutoriales en línea sobre cómo [acceder a localhost con un subdominio personalizado][lvh] que podrías encontrar útiles en este caso.
 
-Hostname based versioning can be particularly useful if you have requirements to route incoming requests to different servers based on the version, as you can configure different DNS records for different API versions.
+El versionamiento basado en nombre de host puede ser particularmente útil si tienes requisitos para enrutar solicitudes entrantes a diferentes servidores basados en la versión, ya que puedes configurar diferentes registros DNS para diferentes versiones de API.
 
 ## QueryParameterVersioning
 
-This scheme is a simple style that includes the version as a query parameter in the URL. For example:
+Este esquema es un estilo simple que incluye la versión como un parámetro de consulta en la URL. Por ejemplo:
 
 ```http
 GET /something/?version=0.1 HTTP/1.1
@@ -233,13 +233,13 @@ Accept: application/json
 
 ---
 
-# Custom versioning schemes
+# Esquemas de versionamiento personalizados
 
-To implement a custom versioning scheme, subclass `BaseVersioning` and override the `.determine_version` method.
+Para implementar un esquema de versionamiento personalizado, hereda de `BaseVersioning` y sobrescribe el método `.determine_version`.
 
-## Example
+## Ejemplo
 
-The following example uses a custom `X-API-Version` header to determine the requested version.
+El siguiente ejemplo usa un encabezado personalizado `X-API-Version` para determinar la versión solicitada.
 
 ```python
 class XAPIVersionScheme(versioning.BaseVersioning):
@@ -247,7 +247,7 @@ class XAPIVersionScheme(versioning.BaseVersioning):
         return request.META.get('HTTP_X_API_VERSION', None)
 ```
 
-If your versioning scheme is based on the request URL, you will also want to alter how versioned URLs are determined. In order to do so you should override the `.reverse()` method on the class. See the source code for examples.
+Si tu esquema de versionamiento se basa en la URL de la solicitud, también querrás alterar cómo se determinan las URLs versionadas. Para hacerlo, deberías sobrescribir el método `.reverse()` en la clase. Ver el código fuente para ejemplos.
 
 [cite]: https://www.slideshare.net/evolve_conference/201308-fielding-evolve/31
 [roy-fielding-on-versioning]: https://www.infoq.com/articles/roy-fielding-on-versioning

@@ -1,65 +1,63 @@
 ---
-title: "Content negotiation"
-keywords: ["django", "rest", "framework", "api", "content", "negotiation"]
+title: "Negociación de contenido"
+keywords: ["django", "rest", "framework", "api", "contenido", "negociación"]
 order: 19
 ---
 
-# Content negotiation
+# Negociación de contenido
 
-> HTTP has provisions for several mechanisms for "content negotiation" - the process of selecting the best representation for a given response when there are multiple representations available.
+> HTTP dispone de varios mecanismos para la "negociación de contenido": el proceso de seleccionar la mejor representación para una respuesta cuando hay múltiples representaciones disponibles.
 >
 > &mdash; [RFC 2616][cite], Fielding et al.
 
 [cite]: https://www.w3.org/Protocols/rfc2616/rfc2616-sec12.html
 
-Content negotiation is the process of selecting one of multiple possible representations to return to a client, based on client or server preferences.
+La negociación de contenido es el proceso de seleccionar una de las varias representaciones posibles para devolver a un cliente, en función de las preferencias del cliente o del servidor.
 
-## Determining the accepted renderer
+## Determinación del renderizador aceptado
 
-REST framework uses a simple style of content negotiation to determine which media type should be returned to a client, based on the available renderers, the priorities of each of those renderers, and the client's `Accept:` header.  The style used is partly client-driven, and partly server-driven.
+Django REST framework utiliza un estilo sencillo de negociación de contenido para determinar qué tipo de medio (media type) debe devolverse a un cliente, basándose en los renderizadores disponibles, las prioridades de cada uno de esos renderizadores y la cabecera `Accept:` del cliente. El estilo utilizado es en parte impulsado por el cliente y en parte por el servidor.
 
-1. More specific media types are given preference to less specific media types.
-2. If multiple media types have the same specificity, then preference is given to based on the ordering of the renderers configured for the given view.
+1. Se da preferencia a los tipos de medio más específicos frente a los menos específicos.
+2. Si varios tipos de medio tienen la misma especificidad, se da preferencia según el orden de los renderizadores configurados para la vista.
 
-For example, given the following `Accept` header:
+Por ejemplo, dada la siguiente cabecera `Accept`:
 
 ```http
 application/json; indent=4, application/json, application/yaml, text/html, */*
 ```
 
+Las prioridades para cada uno de los tipos de medio serían:
 
-The priorities for each of the given media types would be:
+- `application/json; indent=4`
+- `application/json`, `application/yaml` y `text/html`
+- `*/*`
 
-* `application/json; indent=4`
-* `application/json`, `application/yaml` and `text/html`
-* `*/*`
+Si la vista solicitada solo estuviera configurada con renderizadores para `YAML` y `HTML`, entonces REST framework seleccionaría el que aparezca primero en la lista `renderer_classes` o en la configuración `DEFAULT_RENDERER_CLASSES`.
 
-If the requested view was only configured with renderers for `YAML` and `HTML`, then REST framework would select whichever renderer was listed first in the `renderer_classes` list or `DEFAULT_RENDERER_CLASSES` setting.
-
-For more information on the `HTTP Accept` header, see [RFC 2616][accept-header]
-
----
-
-**Note**: "q" values are not taken into account by REST framework when determining preference.  The use of "q" values negatively impacts caching, and in the author's opinion they are an unnecessary and overcomplicated approach to content negotiation.
-
-This is a valid approach as the HTTP spec deliberately underspecifies how a server should weight server-based preferences against client-based preferences.
+Para más información sobre la cabecera `HTTP Accept`, consulte [RFC 2616][accept-header]
 
 ---
 
-# Custom content negotiation
+**Nota**: REST framework no tiene en cuenta los valores "q" al determinar la preferencia. El uso de valores "q" afecta negativamente al cacheo y, en opinión del autor, son un enfoque innecesario y demasiado complejo para la negociación de contenido.
 
-It's unlikely that you'll want to provide a custom content negotiation scheme for REST framework, but you can do so if needed.  To implement a custom content negotiation scheme override `BaseContentNegotiation`.
+Este es un enfoque válido ya que la especificación HTTP deja deliberadamente subespecificado cómo un servidor debe ponderar las preferencias basadas en servidor frente a las del cliente.
 
-REST framework's content negotiation classes handle selection of both the appropriate parser for the request, and the appropriate renderer for the response, so you should implement both the `.select_parser(request, parsers)` and `.select_renderer(request, renderers, format_suffix)` methods.
+---
 
-The `select_parser()` method should return one of the parser instances from the list of available parsers, or `None` if none of the parsers can handle the incoming request.
+## Negociación de contenido personalizada
 
-The `select_renderer()` method should return a two-tuple of (renderer instance, media type), or raise a `NotAcceptable` exception.
+Es poco probable que desee proporcionar un esquema de negociación de contenido personalizado para REST framework, pero puede hacerlo si es necesario. Para implementar un esquema personalizado, sobrescriba `BaseContentNegotiation`.
 
-## Example
+Las clases de negociación de contenido de REST framework se encargan de la selección tanto del parser apropiado para la solicitud como del renderizador apropiado para la respuesta, así que debe implementar los métodos `.select_parser(request, parsers)` y `.select_renderer(request, renderers, format_suffix)`.
 
-The following is a custom content negotiation class which ignores the client
-request when selecting the appropriate parser or renderer.
+El método `select_parser()` debe devolver una de las instancias de parser de la lista de parsers disponibles, o `None` si ninguno puede manejar la solicitud entrante.
+
+El método `select_renderer()` debe devolver una tupla de dos elementos (instancia de renderer, tipo de medio), o lanzar una excepción `NotAcceptable`.
+
+### Ejemplo
+
+La siguiente es una clase de negociación de contenido personalizada que ignora la solicitud del cliente al seleccionar el parser o el renderer apropiado.
 
 ```python
 from rest_framework.negotiation import BaseContentNegotiation
@@ -67,20 +65,20 @@ from rest_framework.negotiation import BaseContentNegotiation
 class IgnoreClientContentNegotiation(BaseContentNegotiation):
     def select_parser(self, request, parsers):
         """
-        Select the first parser in the `.parser_classes` list.
+        Selecciona el primer parser en la lista `.parser_classes`.
         """
         return parsers[0]
 
     def select_renderer(self, request, renderers, format_suffix):
         """
-        Select the first renderer in the `.renderer_classes` list.
+        Selecciona el primer renderer en la lista `.renderer_classes`.
         """
         return (renderers[0], renderers[0].media_type)
 ```
 
-## Setting the content negotiation
+## Configuración de la negociación de contenido
 
-The default content negotiation class may be set globally, using the `DEFAULT_CONTENT_NEGOTIATION_CLASS` setting.  For example, the following settings would use our example `IgnoreClientContentNegotiation` class.
+La clase de negociación de contenido por defecto puede establecerse globalmente mediante la configuración `DEFAULT_CONTENT_NEGOTIATION_CLASS`. Por ejemplo, la siguiente configuración usaría nuestra clase `IgnoreClientContentNegotiation` de ejemplo.
 
 ```python
 REST_FRAMEWORK = {
@@ -88,7 +86,7 @@ REST_FRAMEWORK = {
 }
 ```
 
-You can also set the content negotiation used for an individual view, or viewset, using the `APIView` class-based views.
+También puede establecer la negociación de contenido para una vista individual o un viewset usando las vistas basadas en clases `APIView`.
 
 ```python
 from myapp.negotiation import IgnoreClientContentNegotiation
@@ -97,13 +95,13 @@ from rest_framework.views import APIView
 
 class NoNegotiationView(APIView):
     """
-    An example view that does not perform content negotiation.
+    Un ejemplo de vista que no realiza negociación de contenido.
     """
     content_negotiation_class = IgnoreClientContentNegotiation
 
     def get(self, request, format=None):
         return Response({
-            'accepted media type': request.accepted_renderer.media_type
+            'tipo de medio aceptado': request.accepted_renderer.media_type
         })
 ```
 

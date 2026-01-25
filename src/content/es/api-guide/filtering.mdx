@@ -1,28 +1,28 @@
 ---
-title: "Filtering"
-keywords: ["django", "rest", "framework", "api", "filtering"]
+title: "Filtrado"
+keywords: ["django", "rest", "framework", "api", "filtrado"]
 order: 16
 ---
 
-# Filtering
+# Filtrado
 
-> The root QuerySet provided by the Manager describes all objects in the database table. Usually, though, you'll need to select only a subset of the complete set of objects.
+> El QuerySet raíz proporcionado por el Manager describe todos los objetos en la tabla de la base de datos. Generalmente, sin embargo, necesitarás seleccionar solo un subconjunto del conjunto completo de objetos.
 >
 > &mdash; [Django documentation][cite]
 
-The default behavior of REST framework's generic list views is to return the entire queryset for a model manager. Often you will want your API to restrict the items that are returned by the queryset.
+El comportamiento predeterminado de las vistas de lista genéricas de REST framework es devolver el queryset completo para un model manager. A menudo querrás que tu API restrinja los elementos devueltos por el queryset.
 
-The simplest way to filter the queryset of any view that subclasses `GenericAPIView` is to override the `.get_queryset()` method.
+La forma más simple de filtrar el queryset de cualquier vista que hereda de `GenericAPIView` es sobreescribir el método `.get_queryset()`.
 
-Overriding this method allows you to customize the queryset returned by the view in a number of different ways.
+Sobrescribir este método te permite personalizar el queryset devuelto por la vista de varias maneras diferentes.
 
-## Filtering against the current user
+## Filtrado contra el usuario actual
 
-You might want to filter the queryset to ensure that only results relevant to the currently authenticated user making the request are returned.
+Podrías querer filtrar el queryset para asegurar que solo se devuelvan resultados relevantes para el usuario actualmente autenticado que realiza la solicitud.
 
-You can do so by filtering based on the value of `request.user`.
+Puedes hacerlo filtrando basado en el valor de `request.user`.
 
-For example:
+Por ejemplo:
 
 ```python
 from myapp.models import Purchase
@@ -41,17 +41,17 @@ class PurchaseList(generics.ListAPIView):
         return Purchase.objects.filter(purchaser=user)
 ```
 
-## Filtering against the URL
+## Filtrado contra la URL
 
-Another style of filtering might involve restricting the queryset based on some part of the URL.
+Otro estilo de filtrado podría implicar restringir el queryset basado en alguna parte de la URL.
 
-For example if your URL config contained an entry like this:
+Por ejemplo, si tu configuración de URLs contuviera una entrada como esta:
 
 ```python
 re_path('^purchases/(?P<username>.+)/$', PurchaseList.as_view()),
 ```
 
-You could then write a view that returned a purchase queryset filtered by the username portion of the URL:
+Podrías entonces escribir una vista que devuelva un queryset de compras filtrado por la porción de nombre de usuario de la URL:
 
 ```python
 class PurchaseList(generics.ListAPIView):
@@ -59,18 +59,18 @@ class PurchaseList(generics.ListAPIView):
 
     def get_queryset(self):
         """
-        This view should return a list of all the purchases for
-        the user as determined by the username portion of the URL.
+        Esta vista debería devolver una lista de todas las compras para
+        el usuario según lo determinado por la porción de nombre de usuario de la URL.
         """
         username = self.kwargs['username']
         return Purchase.objects.filter(purchaser__username=username)
 ```
 
-## Filtering against query parameters
+## Filtrado contra parámetros de consulta
 
-A final example of filtering the initial queryset would be to determine the initial queryset based on query parameters in the url.
+Un ejemplo final de filtrado del queryset inicial sería determinar el queryset inicial basado en parámetros de consulta en la url.
 
-We can override `.get_queryset()` to deal with URLs such as `http://example.com/api/purchases?username=denvercoder9`, and filter the queryset only if the `username` parameter is included in the URL:
+Podemos sobreescribir `.get_queryset()` para manejar URLs como `http://example.com/api/purchases?username=denvercoder9`, y filtrar el queryset solo si el parámetro `username` está incluido en la URL:
 
 ```python
 class PurchaseList(generics.ListAPIView):
@@ -78,8 +78,8 @@ class PurchaseList(generics.ListAPIView):
 
     def get_queryset(self):
         """
-        Optionally restricts the returned purchases to a given user,
-        by filtering against a `username` query parameter in the URL.
+        Opcionalmente restringe las compras devueltas a un usuario dado,
+        filtrando contra un parámetro de consulta `username` en la URL.
         """
         queryset = Purchase.objects.all()
         username = self.request.query_params.get('username')
@@ -90,17 +90,17 @@ class PurchaseList(generics.ListAPIView):
 
 ---
 
-# Generic Filtering
+# Filtrado Genérico
 
-As well as being able to override the default queryset, REST framework also includes support for generic filtering backends that allow you to easily construct complex searches and filters.
+Además de poder sobreescribir el queryset predeterminado, REST framework también incluye soporte para backends de filtrado genéricos que te permiten construir fácilmente búsquedas y filtros complejos.
 
-Generic filters can also present themselves as HTML controls in the browsable API and admin API.
+Los filtros genéricos también pueden presentarse como controles HTML en la API navegable y la API de administración.
 
-![Filter Example](../img/filter-controls.png)
+![Ejemplo de Filtro](../img/filter-controls.png)
 
-## Setting filter backends
+## Configuración de backends de filtro
 
-The default filter backends may be set globally, using the `DEFAULT_FILTER_BACKENDS` setting. For example.
+Los backends de filtro predeterminados pueden establecerse globalmente, usando la configuración `DEFAULT_FILTER_BACKENDS`. Por ejemplo:
 
 ```python
 REST_FRAMEWORK = {
@@ -108,8 +108,8 @@ REST_FRAMEWORK = {
 }
 ```
 
-You can also set the filter backends on a per-view, or per-viewset basis,
-using the `GenericAPIView` class-based views.
+También puedes establecer los backends de filtro por vista, o por viewset,
+usando las vistas basadas en clases `GenericAPIView`.
 
 ```python
 import django_filters.rest_framework
@@ -123,25 +123,25 @@ class UserListView(generics.ListAPIView):
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
 ```
 
-## Filtering and object lookups
+## Filtrado y búsquedas de objetos
 
-Note that if a filter backend is configured for a view, then as well as being used to filter list views, it will also be used to filter the querysets used for returning a single object.
+Nota que si un backend de filtro está configurado para una vista, además de ser usado para filtrar vistas de lista, también se usará para filtrar los querysets usados para devolver un solo objeto.
 
-For instance, given the previous example, and a product with an id of `4675`, the following URL would either return the corresponding object, or return a 404 response, depending on if the filtering conditions were met by the given product instance:
+Por ejemplo, dado el ejemplo anterior, y un producto con un id de `4675`, la siguiente URL devolvería el objeto correspondiente, o una respuesta 404, dependiendo de si las condiciones de filtrado fueron cumplidas por la instancia del producto dada:
 
 ```http
 http://example.com/api/products/4675/?category=clothing&max_price=10.00
 ```
 
-## Overriding the initial queryset
+## Sobreescribiendo el queryset inicial
 
-Note that you can use both an overridden `.get_queryset()` and generic filtering together, and everything will work as expected. For example, if `Product` had a many-to-many relationship with `User`, named `purchase`, you might want to write a view like this:
+Nota que puedes usar tanto un `.get_queryset()` sobrescrito como filtrado genérico juntos, y todo funcionará como se espera. Por ejemplo, si `Product` tuviera una relación muchos-a-muchos con `User`, llamada `purchase`, podrías querer escribir una vista como esta:
 
 ```python
 class PurchasedProductsList(generics.ListAPIView):
     """
-    Return a list of all the products that the authenticated
-    user has ever purchased, with optional filtering.
+    Devuelve una lista de todos los productos que el usuario
+    autenticado alguna vez compró, con filtrado opcional.
     """
     model = Product
     serializer_class = ProductSerializer
@@ -158,16 +158,16 @@ class PurchasedProductsList(generics.ListAPIView):
 
 ## DjangoFilterBackend
 
-The [`django-filter`][django-filter-docs] library includes a `DjangoFilterBackend` class which
-supports highly customizable field filtering for REST framework.
+La librería [`django-filter`][django-filter-docs] incluye una clase `DjangoFilterBackend` que
+soporta filtrado de campo altamente personalizable para REST framework.
 
-To use `DjangoFilterBackend`, first install `django-filter`.
+Para usar `DjangoFilterBackend`, primero instala `django-filter`.
 
 ```bash
 pip install django-filter
 ```
 
-Then add `'django_filters'` to Django's `INSTALLED_APPS`:
+Luego añade `'django_filters'` a las `INSTALLED_APPS` de Django:
 
 ```python
 INSTALLED_APPS = [
@@ -177,7 +177,7 @@ INSTALLED_APPS = [
 ]
 ```
 
-You should now either add the filter backend to your settings:
+Ahora deberías añadir el backend de filtro a tu configuración:
 
 ```python
 REST_FRAMEWORK = {
@@ -185,7 +185,7 @@ REST_FRAMEWORK = {
 }
 ```
 
-Or add the filter backend to an individual View or ViewSet.
+O añadir el backend de filtro a una Vista o ViewSet individual.
 
 ```python
 from django_filters.rest_framework import DjangoFilterBackend
@@ -195,7 +195,7 @@ class UserListView(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend]
 ```
 
-If all you need is simple equality-based filtering, you can set a `filterset_fields` attribute on the view, or viewset, listing the set of fields you wish to filter against.
+Si todo lo que necesitas es filtrado simple basado en igualdad, puedes establecer un atributo `filterset_fields` en la vista, o viewset, listando el conjunto de campos contra los que deseas filtrar.
 
 ```python
 class ProductList(generics.ListAPIView):
@@ -205,25 +205,25 @@ class ProductList(generics.ListAPIView):
     filterset_fields = ['category', 'in_stock']
 ```
 
-This will automatically create a `FilterSet` class for the given fields, and will allow you to make requests such as:
+Esto creará automáticamente una clase `FilterSet` para los campos dados, y te permitirá hacer solicitudes como:
 
 ```http
 http://example.com/api/products?category=clothing&in_stock=True
 ```
 
-For more advanced filtering requirements you can specify a `FilterSet` class that should be used by the view.
-You can read more about `FilterSet`s in the [django-filter documentation][django-filter-docs].
-It's also recommended that you read the section on [DRF integration][django-filter-drf-docs].
+Para requisitos de filtrado más avanzados puedes especificar una clase `FilterSet` que debería ser usada por la vista.
+Puedes leer más sobre `FilterSet`s en la [documentación de django-filter][django-filter-docs].
+También se recomienda que leas la sección sobre [integración con DRF][django-filter-drf-docs].
 
 ## SearchFilter
 
-The `SearchFilter` class supports simple single query parameter based searching, and is based on the [Django admin's search functionality][search-django-admin].
+La clase `SearchFilter` soporta búsqueda simple basada en un único parámetro de consulta, y se basa en la [funcionalidad de búsqueda del admin de Django][search-django-admin].
 
-When in use, the browsable API will include a `SearchFilter` control:
+Cuando está en uso, la API navegable incluirá un control `SearchFilter`:
 
-![Search Filter](../img/search-filter.png)
+![Filtro de Búsqueda](../img/search-filter.png)
 
-The `SearchFilter` class will only be applied if the view has a `search_fields` attribute set. The `search_fields` attribute should be a list of names of text type fields on the model, such as `CharField` or `TextField`.
+La clase `SearchFilter` solo se aplicará si la vista tiene establecido un atributo `search_fields`. El atributo `search_fields` debería ser una lista de nombres de campos de tipo texto en el modelo, como `CharField` o `TextField`.
 
 ```python
 from rest_framework import filters
@@ -235,45 +235,45 @@ class UserListView(generics.ListAPIView):
     search_fields = ['username', 'email']
 ```
 
-This will allow the client to filter the items in the list by making queries such as:
+Esto permitirá al cliente filtrar los elementos en la lista haciendo consultas como:
 
 ```http
 http://example.com/api/users?search=russell
 ```
 
-You can also perform a related lookup on a ForeignKey or ManyToManyField with the lookup API double-underscore notation:
+También puedes realizar búsquedas relacionadas en un ForeignKey o ManyToManyField con la notación de doble guión bajo de la API de búsqueda:
 
 ```python
 search_fields = ['username', 'email', 'profile__profession']
 ```
 
-For [JSONField][JSONField] and [HStoreField][HStoreField] fields you can filter based on nested values within the data structure using the same double-underscore notation:
+Para campos [JSONField][JSONField] y [HStoreField][HStoreField] puedes filtrar basado en valores anidados dentro de la estructura de datos usando la misma notación de doble guión bajo:
 
 ```python
 search_fields = ['data__breed', 'data__owner__other_pets__0__name']
 ```
 
-By default, searches will use case-insensitive partial matches. The search parameter may contain multiple search terms, which should be whitespace and/or comma separated. If multiple search terms are used then objects will be returned in the list only if all the provided terms are matched. Searches may contain _quoted phrases_ with spaces, each phrase is considered as a single search term.
+Por defecto, las búsquedas usarán coincidencias parciales insensibles a mayúsculas/minúsculas. El parámetro de búsqueda puede contener múltiples términos de búsqueda, los cuales deberían estar separados por espacios en blanco y/o comas. Si se usan múltiples términos de búsqueda, los objetos solo se devolverán en la lista si todos los términos proporcionados coinciden. Las búsquedas pueden contener _frases entre comillas_ con espacios, cada frase se considera como un único término de búsqueda.
 
-The search behavior may be specified by prefixing field names in `search_fields` with one of the following characters (which is equivalent to adding `__<lookup>` to the field):
+El comportamiento de búsqueda puede especificarse prefijando nombres de campos en `search_fields` con uno de los siguientes caracteres (lo cual es equivalente a añadir `__<lookup>` al campo):
 
-| Prefix | Lookup        |                                                                                             |
-| ------ | ------------- | ------------------------------------------------------------------------------------------- |
-| `^`    | `istartswith` | Starts-with search.                                                                         |
-| `=`    | `iexact`      | Exact matches.                                                                              |
-| `$`    | `iregex`      | Regex search.                                                                               |
-| `@`    | `search`      | Full-text search (Currently only supported Django's [PostgreSQL backend][postgres-search]). |
-| None   | `icontains`   | Contains search (Default).                                                                  |
+| Prefijo | Búsqueda     |                                                                                             |
+| ------- | ------------ | ------------------------------------------------------------------------------------------- |
+| `^`     | `istartswith` | Búsqueda que comienza con.                                                                  |
+| `=`     | `iexact`       | Coincidencias exactas.                                                                      |
+| `$`     | `iregex`       | Búsqueda con regex.                                                                         |
+| `@`     | `search`       | Búsqueda de texto completo (Actualmente solo soportado por el [backend PostgreSQL][postgres-search] de Django). |
+| Ninguno | `icontains`    | Búsqueda que contiene (Predeterminado).                                                    |
 
-For example:
+Por ejemplo:
 
 ```python
 search_fields = ['=username', '=email']
 ```
 
-By default, the search parameter is named `'search'`, but this may be overridden with the `SEARCH_PARAM` setting.
+Por defecto, el parámetro de búsqueda se llama `'search'`, pero esto puede ser sobrescrito con la configuración `SEARCH_PARAM`.
 
-To dynamically change search fields based on request content, it's possible to subclass the `SearchFilter` and override the `get_search_fields()` function. For example, the following subclass will only search on `title` if the query parameter `title_only` is in the request:
+Para cambiar dinámicamente los campos de búsqueda basado en el contenido de la solicitud, es posible subclasificar `SearchFilter` y sobreescribir la función `get_search_fields()`. Por ejemplo, la siguiente subclase solo buscará en `title` si el parámetro de consulta `title_only` está en la solicitud:
 
 ```python
 from rest_framework import filters
@@ -285,39 +285,39 @@ class CustomSearchFilter(filters.SearchFilter):
         return super().get_search_fields(view, request)
 ```
 
-For more details, see the [Django documentation][search-django-admin].
+Para más detalles, consulta la [documentación de Django][search-django-admin].
 
 ---
 
 ## OrderingFilter
 
-The `OrderingFilter` class supports simple query parameter controlled ordering of results.
+La clase `OrderingFilter` soporta ordenamiento simple de resultados controlado por parámetros de consulta.
 
-![Ordering Filter](../img/ordering-filter.png)
+![Filtro de Ordenamiento](../img/ordering-filter.png)
 
-By default, the query parameter is named `'ordering'`, but this may be overridden with the `ORDERING_PARAM` setting.
+Por defecto, el parámetro de consulta se llama `'ordering'`, pero esto puede ser sobrescrito con la configuración `ORDERING_PARAM`.
 
-For example, to order users by username:
+Por ejemplo, para ordenar usuarios por nombre de usuario:
 
 ```http
 http://example.com/api/users?ordering=username
 ```
 
-The client may also specify reverse orderings by prefixing the field name with '-', like so:
+El cliente también puede especificar ordenamiento inverso prefijando el nombre del campo con '-', así:
 
 ```http
 http://example.com/api/users?ordering=-username
 ```
 
-Multiple orderings may also be specified:
+También pueden especificarse múltiples ordenamientos:
 
 ```http
 http://example.com/api/users?ordering=account,username
 ```
 
-### Specifying which fields may be ordered against
+### Especificando contra qué campos se puede ordenar
 
-It's recommended that you explicitly specify which fields the API should allow in the ordering filter. You can do this by setting an `ordering_fields` attribute on the view, like so:
+Se recomienda que especifiques explícitamente qué campos la API debería permitir en el filtro de ordenamiento. Puedes hacer esto estableciendo un atributo `ordering_fields` en la vista, así:
 
 ```python
 class UserListView(generics.ListAPIView):
@@ -327,11 +327,11 @@ class UserListView(generics.ListAPIView):
     ordering_fields = ['username', 'email']
 ```
 
-This helps prevent unexpected data leakage, such as allowing users to order against a password hash field or other sensitive data.
+Esto ayuda a prevenir fugas de datos inesperadas, como permitir a los usuarios ordenar contra un campo de hash de contraseña u otros datos sensibles.
 
-If you _don't_ specify an `ordering_fields` attribute on the view, the filter class will default to allowing the user to filter on any readable fields on the serializer specified by the `serializer_class` attribute.
+Si _no_ especificas un atributo `ordering_fields` en la vista, la clase de filtro por defecto permitirá al usuario filtrar en cualquier campo legible en el serializador especificado por el atributo `serializer_class`.
 
-If you are confident that the queryset being used by the view doesn't contain any sensitive data, you can also explicitly specify that a view should allow ordering on _any_ model field or queryset aggregate, by using the special value `'__all__'`.
+Si estás seguro de que el queryset siendo usado por la vista no contiene datos sensibles, también puedes especificar explícitamente que una vista debería permitir ordenamiento en _cualquier_ campo del modelo o agregado del queryset, usando el valor especial `'__all__'`.
 
 ```python
 class BookingsListView(generics.ListAPIView):
@@ -341,11 +341,11 @@ class BookingsListView(generics.ListAPIView):
     ordering_fields = '__all__'
 ```
 
-### Specifying a default ordering
+### Especificando un ordenamiento predeterminado
 
-If an `ordering` attribute is set on the view, this will be used as the default ordering.
+Si un atributo `ordering` está establecido en la vista, este se usará como el ordenamiento predeterminado.
 
-Typically you'd instead control this by setting `order_by` on the initial queryset, but using the `ordering` parameter on the view allows you to specify the ordering in a way that it can then be passed automatically as context to a rendered template. This makes it possible to automatically render column headers differently if they are being used to order the results.
+Típicamente controlaría esto estableciendo `order_by` en el queryset inicial, pero usar el parámetro `ordering` en la vista te permite especificar el ordenamiento de una manera que luego puede ser pasado automáticamente como contexto a una plantilla renderizada. Esto hace posible renderizar automáticamente encabezados de columna de manera diferente si están siendo usados para ordenar los resultados.
 
 ```python
 class UserListView(generics.ListAPIView):
@@ -356,60 +356,60 @@ class UserListView(generics.ListAPIView):
     ordering = ['username']
 ```
 
-The `ordering` attribute may be either a string or a list/tuple of strings.
+El atributo `ordering` puede ser tanto una cadena como una lista/tupla de cadenas.
 
 ---
 
-# Custom generic filtering
+# Filtrado genérico personalizado
 
-You can also provide your own generic filtering backend, or write an installable app for other developers to use.
+También puedes proporcionar tu propio backend de filtrado genérico, o escribir una aplicación instalable para que otros desarrolladores la usen.
 
-To do so override `BaseFilterBackend`, and override the `.filter_queryset(self, request, queryset, view)` method. The method should return a new, filtered queryset.
+Para hacerlo, sobreescribe `BaseFilterBackend`, y sobreescribe el método `.filter_queryset(self, request, queryset, view)`. El método debería devolver un nuevo queryset filtrado.
 
-As well as allowing clients to perform searches and filtering, generic filter backends can be useful for restricting which objects should be visible to any given request or user.
+Además de permitir a los clientes realizar búsquedas y filtrado, los backends de filtro genéricos pueden ser útiles para restringir qué objetos deberían ser visibles para cualquier solicitud o usuario dado.
 
-## Example
+## Ejemplo
 
-For example, you might need to restrict users to only being able to see objects they created.
+Por ejemplo, podrías necesitar restringir a los usuarios para que solo puedan ver los objetos que crearon.
 
 ```python
 class IsOwnerFilterBackend(filters.BaseFilterBackend):
     """
-    Filter that only allows users to see their own objects.
+    Filtro que solo permite a los usuarios ver sus propios objetos.
     """
     def filter_queryset(self, request, queryset, view):
         return queryset.filter(owner=request.user)
 ```
 
-We could achieve the same behavior by overriding `get_queryset()` on the views, but using a filter backend allows you to more easily add this restriction to multiple views, or to apply it across the entire API.
+Podríamos lograr el mismo comportamiento sobreescribiendo `get_queryset()` en las vistas, pero usar un backend de filtro te permite añadir esta restricción más fácilmente a múltiples vistas, o aplicarla a través de toda la API.
 
-## Customizing the interface
+## Personalizando la interfaz
 
-Generic filters may also present an interface in the browsable API. To do so you should implement a `to_html()` method which returns a rendered HTML representation of the filter. This method should have the following signature:
+Los filtros genéricos también pueden presentar una interfaz en la API navegable. Para hacerlo deberías implementar un método `to_html()` que devuelve una representación HTML renderizada del filtro. Este método debería tener la siguiente firma:
 
 `to_html(self, request, queryset, view)`
 
-The method should return a rendered HTML string.
+El método debería devolver una cadena HTML renderizada.
 
-# Third party packages
+# Paquetes de terceros
 
-The following third party packages provide additional filter implementations.
+Los siguientes paquetes de terceros proporcionan implementaciones de filtro adicionales.
 
-## Django REST framework filters package
+## Paquete Django REST framework filters
 
-The [django-rest-framework-filters package][django-rest-framework-filters] works together with the `DjangoFilterBackend` class, and allows you to easily create filters across relationships, or create multiple filter lookup types for a given field.
+El [paquete django-rest-framework-filters][django-rest-framework-filters] funciona junto con la clase `DjangoFilterBackend`, y te permite crear fácilmente filtros a través de relaciones, o crear múltiples tipos de búsqueda de filtro para un campo dado.
 
-## Django REST framework full word search filter
+## Filtro de búsqueda de palabras completas de Django REST framework
 
-The [djangorestframework-word-filter][django-rest-framework-word-search-filter] developed as alternative to `filters.SearchFilter` which will search full word in text, or exact match.
+El [djangorestframework-word-filter][django-rest-framework-word-search-filter] desarrollado como alternativa a `filters.SearchFilter` que buscará palabras completas en texto, o coincidencias exactas.
 
 ## Django URL Filter
 
-[django-url-filter][django-url-filter] provides a safe way to filter data via human-friendly URLs. It works very similar to DRF serializers and fields in a sense that they can be nested except they are called filtersets and filters. That provides easy way to filter related data. Also this library is generic-purpose so it can be used to filter other sources of data and not only Django `QuerySet`s.
+[django-url-filter][django-url-filter] proporciona una manera segura de filtrar datos a través de URLs amigables para humanos. Funciona de manera muy similar a los serializadores y campos de DRF en el sentido de que pueden estar anidados excepto que se llaman filtersets y filters. Eso proporciona una manera fácil de filtrar datos relacionados. Además, esta librería es de propósito general, por lo que puede ser usada para filtrar otras fuentes de datos y no solo los `QuerySet` de Django.
 
 ## drf-url-filters
 
-[drf-url-filter][drf-url-filter] is a simple Django app to apply filters on drf `ModelViewSet`'s `Queryset` in a clean, simple and configurable way. It also supports validations on incoming query params and their values. A beautiful python package `Voluptuous` is being used for validations on the incoming query parameters. The best part about voluptuous is you can define your own validations as per your query params requirements.
+[drf-url-filter][drf-url-filter] es una aplicación Django simple para aplicar filtros en el `Queryset` de `ModelViewSet` de DRF de una manera limpia, simple y configurable. También soporta validaciones en los parámetros de consulta entrantes y sus valores. Un hermoso paquete python `Voluptuous` está siendo usado para validaciones en los parámetros de consulta entrantes. La mejor parte de voluptuous es que puedes definir tus propias validaciones según los requisitos de tus parámetros de consulta.
 
 [cite]: https://docs.djangoproject.com/en/stable/topics/db/queries/#retrieving-specific-objects-with-filters
 [django-filter-docs]: https://django-filter.readthedocs.io/en/latest/index.html

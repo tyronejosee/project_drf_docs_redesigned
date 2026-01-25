@@ -1,51 +1,51 @@
 ---
-title: "Permissions"
-keywords: ["django", "rest", "framework", "api", "permissions"]
+title: "Permisos"
+keywords: ["django", "rest", "framework", "api", "permisos"]
 order: 13
 ---
 
-# Permissions
+# Permisos
 
-> Authentication or identification by itself is not usually sufficient to gain access to information or code. For that, the entity requesting access must have authorization.
+> La autenticación o identificación por sí sola generalmente no es suficiente para obtener acceso a información o código. Para ello, la entidad que solicita acceso debe tener autorización.
 >
 > &mdash; [Apple Developer Documentation][cite]
 
-Together with [authentication] and [throttling], permissions determine whether a request should be granted or denied access.
+Junto con la [autenticación] y la [estrangulación], los permisos determinan si una solicitud debe ser concedida o denegada el acceso.
 
-Permission checks are always run at the very start of the view, before any other code is allowed to proceed. Permission checks will typically use the authentication information in the `request.user` and `request.auth` properties to determine if the incoming request should be permitted.
+Las verificaciones de permisos siempre se ejecutan al inicio de la vista, antes de que se permita proceder con cualquier otro código. Las verificaciones de permisos típicamente usarán la información de autenticación en las propiedades `request.user` y `request.auth` para determinar si la solicitud entrante debe ser permitida.
 
-Permissions are used to grant or deny access for different classes of users to different parts of the API.
+Los permisos se utilizan para conceder o denegar el acceso a diferentes clases de usuarios a diferentes partes de la API.
 
-The simplest style of permission would be to allow access to any authenticated user, and deny access to any unauthenticated user. This corresponds to the `IsAuthenticated` class in REST framework.
+El estilo de permiso más simple sería permitir el acceso a cualquier usuario autenticado y denegar el acceso a cualquier usuario no autenticado. Esto corresponde a la clase `IsAuthenticated` en REST framework.
 
-A slightly less strict style of permission would be to allow full access to authenticated users, but allow read-only access to unauthenticated users. This corresponds to the `IsAuthenticatedOrReadOnly` class in REST framework.
+Un estilo de permiso ligeramente menos estricto sería permitir acceso completo a usuarios autenticados, pero permitir acceso de solo lectura a usuarios no autenticados. Esto corresponde a la clase `IsAuthenticatedOrReadOnly` en REST framework.
 
-## How permissions are determined
+## Cómo se determinan los permisos
 
-Permissions in REST framework are always defined as a list of permission classes.
+Los permisos en REST framework siempre se definen como una lista de clases de permisos.
 
-Before running the main body of the view each permission in the list is checked.
-If any permission check fails, an `exceptions.PermissionDenied` or `exceptions.NotAuthenticated` exception will be raised, and the main body of the view will not run.
+Antes de ejecutar el cuerpo principal de la vista, se verifica cada permiso en la lista.
+Si alguna verificación de permisos falla, se lanzará una excepción `exceptions.PermissionDenied` o `exceptions.NotAuthenticated`, y el cuerpo principal de la vista no se ejecutará.
 
-When the permission checks fail, either a "403 Forbidden" or a "401 Unauthorized" response will be returned, according to the following rules:
+Cuando las verificaciones de permisos fallan, se devolverá una respuesta "403 Forbidden" o "401 Unauthorized", según las siguientes reglas:
 
-- The request was successfully authenticated, but permission was denied. _&mdash; An HTTP 403 Forbidden response will be returned._
-- The request was not successfully authenticated, and the highest priority authentication class _does not_ use `WWW-Authenticate` headers. _&mdash; An HTTP 403 Forbidden response will be returned._
-- The request was not successfully authenticated, and the highest priority authentication class _does_ use `WWW-Authenticate` headers. _&mdash; An HTTP 401 Unauthorized response, with an appropriate `WWW-Authenticate` header will be returned._
+- La solicitud fue autenticada exitosamente, pero el permiso fue denegado. _&mdash; Se devolverá una respuesta HTTP 403 Forbidden._
+- La solicitud no fue autenticada exitosamente, y la clase de autenticación de mayor prioridad _no_ usa encabezados `WWW-Authenticate`. _&mdash; Se devolverá una respuesta HTTP 403 Forbidden._
+- La solicitud no fue autenticada exitosamente, y la clase de autenticación de mayor prioridad _sí_ usa encabezados `WWW-Authenticate`. _&mdash; Se devolverá una respuesta HTTP 401 Unauthorized, con un encabezado `WWW-Authenticate` apropiado._
 
-## Object level permissions
+## Permisos a nivel de objeto
 
-REST framework permissions also support object-level permissioning. Object level permissions are used to determine if a user should be allowed to act on a particular object, which will typically be a model instance.
+Los permisos de REST framework también soportan permisos a nivel de objeto. Los permisos a nivel de objeto se utilizan para determinar si un usuario debe poder actuar sobre un objeto particular, que típicamente será una instancia de modelo.
 
-Object level permissions are run by REST framework's generic views when `.get_object()` is called.
-As with view level permissions, an `exceptions.PermissionDenied` exception will be raised if the user is not allowed to act on the given object.
+Los permisos a nivel de objeto son ejecutados por las vistas genéricas de REST framework cuando se llama a `.get_object()`.
+Al igual que con los permisos a nivel de vista, se lanzará una excepción `exceptions.PermissionDenied` si al usuario no se le permite actuar sobre el objeto dado.
 
-If you're writing your own views and want to enforce object level permissions,
-or if you override the `get_object` method on a generic view, then you'll need to explicitly call the `.check_object_permissions(request, obj)` method on the view at the point at which you've retrieved the object.
+Si estás escribiendo tus propias vistas y quieres aplicar permisos a nivel de objeto,
+o si sobreescribes el método `get_object` en una vista genérica, entonces necesitarás llamar explícitamente al método `.check_object_permissions(request, obj)` en la vista en el punto en que has recuperado el objeto.
 
-This will either raise a `PermissionDenied` or `NotAuthenticated` exception, or simply return if the view has the appropriate permissions.
+Esto lanzará una excepción `PermissionDenied` o `NotAuthenticated`, o simplemente retornará si la vista tiene los permisos apropiados.
 
-For example:
+Por ejemplo:
 
 ```python
 def get_object(self):
@@ -56,28 +56,27 @@ def get_object(self):
 
 ---
 
-**Note**: With the exception of `DjangoObjectPermissions`, the provided
-permission classes in `rest_framework.permissions` **do not** implement the
-methods necessary to check object permissions.
+**Nota**: Con la excepción de `DjangoObjectPermissions`, las clases de permisos
+proporcionadas en `rest_framework.permissions` **no** implementan los métodos
+necesarios para verificar permisos de objeto.
 
-If you wish to use the provided permission classes in order to check object
-permissions, **you must** subclass them and implement the
-`has_object_permission()` method described in the [_Custom
-permissions_](#custom-permissions) section (below).
+Si deseas usar las clases de permisos proporcionadas para verificar permisos de
+objeto, **debes** crear subclases de ellas e implementar el método
+`has_object_permission()` descrito en la sección [_Permisos personalizados_](#custom-permissions) (abajo).
 
 ---
 
-#### Limitations of object level permissions
+#### Limitaciones de los permisos a nivel de objeto
 
-For performance reasons the generic views will not automatically apply object level permissions to each instance in a queryset when returning a list of objects.
+Por razones de rendimiento, las vistas genéricas no aplicarán automáticamente permisos a nivel de objeto a cada instancia en un queryset cuando se devuelve una lista de objetos.
 
-Often when you're using object level permissions you'll also want to [filter the queryset][filtering] appropriately, to ensure that users only have visibility onto instances that they are permitted to view.
+A menudo, cuando usas permisos a nivel de objeto, también querrás [filtrar el queryset][filtering] apropiadamente, para asegurar que los usuarios solo tengan visibilidad sobre las instancias que tienen permiso para ver.
 
-Because the `get_object()` method is not called, object level permissions from the `has_object_permission()` method **are not applied** when creating objects. In order to restrict object creation you need to implement the permission check either in your Serializer class or override the `perform_create()` method of your ViewSet class.
+Debido a que el método `get_object()` no es llamado, los permisos a nivel de objeto del método `has_object_permission()` **no son aplicados** al crear objetos. Para restringir la creación de objetos necesitas implementar la verificación de permisos ya sea en tu clase Serializer o sobreescribir el método `perform_create()` de tu clase ViewSet.
 
-## Setting the permission policy
+## Configuración de la política de permisos
 
-The default permission policy may be set globally, using the `DEFAULT_PERMISSION_CLASSES` setting. For example.
+La política de permisos predeterminada puede establecerse globalmente, usando la configuración `DEFAULT_PERMISSION_CLASSES`. Por ejemplo:
 
 ```python
 REST_FRAMEWORK = {
@@ -87,7 +86,7 @@ REST_FRAMEWORK = {
 }
 ```
 
-If not specified, this setting defaults to allowing unrestricted access:
+Si no se especifica, esta configuración predeterminada permite acceso sin restricciones:
 
 ```python
 'DEFAULT_PERMISSION_CLASSES': [
@@ -95,8 +94,8 @@ If not specified, this setting defaults to allowing unrestricted access:
 ]
 ```
 
-You can also set the authentication policy on a per-view, or per-viewset basis,
-using the `APIView` class-based views.
+También puedes establecer la política de autenticación por vista o por viewset,
+usando las vistas basadas en clases `APIView`.
 
 ```python
 from rest_framework.permissions import IsAuthenticated
@@ -108,12 +107,12 @@ class ExampleView(APIView):
 
     def get(self, request, format=None):
         content = {
-            'status': 'request was permitted'
+            'status': 'solicitud fue permitida'
         }
         return Response(content)
 ```
 
-Or, if you're using the `@api_view` decorator with function based views.
+O, si estás usando el decorador `@api_view` con vistas basadas en funciones.
 
 ```python
 from rest_framework.decorators import api_view, permission_classes
@@ -124,14 +123,14 @@ from rest_framework.response import Response
 @permission_classes([IsAuthenticated])
 def example_view(request, format=None):
     content = {
-        'status': 'request was permitted'
+        'status': 'solicitud fue permitida'
     }
     return Response(content)
 ```
 
-**Note:** when you set new permission classes via the class attribute or decorators you're telling the view to ignore the default list set in the **settings.py** file.
+**Nota:** cuando estableces nuevas clases de permisos a través del atributo de clase o decoradores, le estás diciendo a la vista que ignore la lista predeterminada establecida en el archivo **settings.py**.
 
-Provided they inherit from `rest_framework.permissions.BasePermission`, permissions can be composed using standard Python bitwise operators. For example, `IsAuthenticatedOrReadOnly` could be written:
+Siempre que hereden de `rest_framework.permissions.BasePermission`, los permisos pueden componerse usando operadores bit a bit estándar de Python. Por ejemplo, `IsAuthenticatedOrReadOnly` podría escribirse:
 
 ```python
 from rest_framework.permissions import BasePermission, IsAuthenticated, SAFE_METHODS
@@ -147,123 +146,123 @@ class ExampleView(APIView):
 
     def get(self, request, format=None):
         content = {
-            'status': 'request was permitted'
+            'status': 'solicitud fue permitida'
         }
         return Response(content)
 ```
 
-**Note:** it supports & (and), | (or) and ~ (not).
+**Nota:** soporta & (y), | (o) y ~ (no).
 
 ---
 
-# API Reference
+# Referencia de la API
 
 ## AllowAny
 
-The `AllowAny` permission class will allow unrestricted access, **regardless of if the request was authenticated or unauthenticated**.
+La clase de permisos `AllowAny` permitirá acceso sin restricciones, **independientemente de si la solicitud fue autenticada o no**.
 
-This permission is not strictly required, since you can achieve the same result by using an empty list or tuple for the permissions setting, but you may find it useful to specify this class because it makes the intention explicit.
+Este permiso no es estrictamente necesario, ya que puedes lograr el mismo resultado usando una lista o tupla vacía para la configuración de permisos, pero puedes encontrar útil especificar esta clase porque hace la intención explícita.
 
 ## IsAuthenticated
 
-The `IsAuthenticated` permission class will deny permission to any unauthenticated user, and allow permission otherwise.
+La clase de permisos `IsAuthenticated` denegará el permiso a cualquier usuario no autenticado, y permitirá el permiso en caso contrario.
 
-This permission is suitable if you want your API to only be accessible to registered users.
+Este permiso es adecuado si quieres que tu API solo sea accesible para usuarios registrados.
 
 ## IsAdminUser
 
-The `IsAdminUser` permission class will deny permission to any user, unless `user.is_staff` is `True` in which case permission will be allowed.
+La clase de permisos `IsAdminUser` denegará el permiso a cualquier usuario, a menos que `user.is_staff` sea `True`, en cuyo caso se permitirá el permiso.
 
-This permission is suitable if you want your API to only be accessible to a subset of trusted administrators.
+Este permiso es adecuado si quieres que tu API solo sea accesible para un subconjunto de administradores de confianza.
 
 ## IsAuthenticatedOrReadOnly
 
-The `IsAuthenticatedOrReadOnly` will allow authenticated users to perform any request. Requests for unauthenticated users will only be permitted if the request method is one of the "safe" methods; `GET`, `HEAD` or `OPTIONS`.
+`IsAuthenticatedOrReadOnly` permitirá que los usuarios autenticados realicen cualquier solicitud. Las solicitudes de usuarios no autenticados solo se permitirán si el método de solicitud es uno de los métodos "seguros": `GET`, `HEAD` u `OPTIONS`.
 
-This permission is suitable if you want to your API to allow read permissions to anonymous users, and only allow write permissions to authenticated users.
+Este permiso es adecuado si quieres que tu API permita permisos de lectura a usuarios anónimos, y solo permita permisos de escritura a usuarios autenticados.
 
 ## DjangoModelPermissions
 
-This permission class ties into Django's standard `django.contrib.auth` [model permissions][contribauth]. This permission must only be applied to views that have a `.queryset` property or `get_queryset()` method. Authorization will only be granted if the user _is authenticated_ and has the _relevant model permissions_ assigned. The appropriate model is determined by checking `get_queryset().model` or `queryset.model`.
+Esta clase de permisos se integra con los [permisos de modelo estándar][contribauth] de Django `django.contrib.auth`. Este permiso solo debe aplicarse a vistas que tienen una propiedad `.queryset` o un método `get_queryset()`. La autorización solo se concederá si el usuario _está autenticado_ y tiene asignados los _permisos de modelo relevantes_. El modelo apropiado se determina verificando `get_queryset().model` o `queryset.model`.
 
-- `POST` requests require the user to have the `add` permission on the model.
-- `PUT` and `PATCH` requests require the user to have the `change` permission on the model.
-- `DELETE` requests require the user to have the `delete` permission on the model.
+- Las solicitudes `POST` requieren que el usuario tenga el permiso `add` en el modelo.
+- Las solicitudes `PUT` y `PATCH` requieren que el usuario tenga el permiso `change` en el modelo.
+- Las solicitudes `DELETE` requieren que el usuario tenga el permiso `delete` en el modelo.
 
-The default behavior can also be overridden to support custom model permissions. For example, you might want to include a `view` model permission for `GET` requests.
+El comportamiento predeterminado también puede ser sobrescrito para soportar permisos de modelo personalizados. Por ejemplo, podrías querer incluir un permiso de modelo `view` para solicitudes `GET`.
 
-To use custom model permissions, override `DjangoModelPermissions` and set the `.perms_map` property. Refer to the source code for details.
+Para usar permisos de modelo personalizados, sobrescribe `DjangoModelPermissions` y establece la propiedad `.perms_map`. Consulta el código fuente para más detalles.
 
 ## DjangoModelPermissionsOrAnonReadOnly
 
-Similar to `DjangoModelPermissions`, but also allows unauthenticated users to have read-only access to the API.
+Similar a `DjangoModelPermissions`, pero también permite que los usuarios no autenticados tengan acceso de solo lectura a la API.
 
-## DjangoObjectPermissions
+## DjangoObjectPermissions
 
-This permission class ties into Django's standard [object permissions framework][objectpermissions] that allows per-object permissions on models. In order to use this permission class, you'll also need to add a permission backend that supports object-level permissions, such as [django-guardian][guardian].
+Esta clase de permisos se integra con el [framework de permisos de objeto estándar][objectpermissions] de Django que permite permisos por objeto en modelos. Para usar esta clase de permisos, también necesitarás agregar un backend de permisos que soporte permisos a nivel de objeto, como [django-guardian][guardian].
 
-As with `DjangoModelPermissions`, this permission must only be applied to views that have a `.queryset` property or `.get_queryset()` method. Authorization will only be granted if the user _is authenticated_ and has the _relevant per-object permissions_ and _relevant model permissions_ assigned.
+Al igual que con `DjangoModelPermissions`, este permiso solo debe aplicarse a vistas que tienen una propiedad `.queryset` o un método `.get_queryset()`. La autorización solo se concederá si el usuario _está autenticado_ y tiene asignados los _permisos por objeto relevantes_ y los _permisos de modelo relevantes_.
 
-- `POST` requests require the user to have the `add` permission on the model instance.
-- `PUT` and `PATCH` requests require the user to have the `change` permission on the model instance.
-- `DELETE` requests require the user to have the `delete` permission on the model instance.
+- Las solicitudes `POST` requieren que el usuario tenga el permiso `add` en la instancia del modelo.
+- Las solicitudes `PUT` y `PATCH` requieren que el usuario tenga el permiso `change` en la instancia del modelo.
+- Las solicitudes `DELETE` requieren que el usuario tenga el permiso `delete` en la instancia del modelo.
 
-Note that `DjangoObjectPermissions` **does not** require the `django-guardian` package, and should support other object-level backends equally well.
+Ten en cuenta que `DjangoObjectPermissions` **no** requiere el paquete `django-guardian`, y debería soportar otros backends a nivel de objeto igualmente bien.
 
-As with `DjangoModelPermissions` you can use custom model permissions by overriding `DjangoObjectPermissions` and setting the `.perms_map` property. Refer to the source code for details.
-
----
-
-**Note**: If you need object level `view` permissions for `GET`, `HEAD` and `OPTIONS` requests and are using django-guardian for your object-level permissions backend, you'll want to consider using the `DjangoObjectPermissionsFilter` class provided by the [`djangorestframework-guardian2` package][django-rest-framework-guardian2]. It ensures that list endpoints only return results including objects for which the user has appropriate view permissions.
+Al igual que con `DjangoModelPermissions`, puedes usar permisos de modelo personalizados sobrescribiendo `DjangoObjectPermissions` y estableciendo la propiedad `.perms_map`. Consulta el código fuente para más detalles.
 
 ---
 
-# Custom permissions
+**Nota**: Si necesitas permisos `view` a nivel de objeto para solicitudes `GET`, `HEAD` y `OPTIONS` y estás usando django-guardian para tu backend de permisos a nivel de objeto, querrás considerar usar la clase `DjangoObjectPermissionsFilter` proporcionada por el [paquete `djangorestframework-guardian2`][django-rest-framework-guardian2]. Asegura que los endpoints de lista solo devuelvan resultados incluyendo objetos para los cuales el usuario tiene los permisos de vista apropiados.
 
-To implement a custom permission, override `BasePermission` and implement either, or both, of the following methods:
+---
+
+# Permisos personalizados
+
+Para implementar un permiso personalizado, sobrescribe `BasePermission` e implementa uno o ambos de los siguientes métodos:
 
 - `.has_permission(self, request, view)`
 - `.has_object_permission(self, request, view, obj)`
 
-The methods should return `True` if the request should be granted access, and `False` otherwise.
+Los métodos deben devolver `True` si la solicitud debe ser concedida el acceso, y `False` en caso contrario.
 
-If you need to test if a request is a read operation or a write operation, you should check the request method against the constant `SAFE_METHODS`, which is a tuple containing `'GET'`, `'OPTIONS'` and `'HEAD'`. For example:
+Si necesitas probar si una solicitud es una operación de lectura o de escritura, debes verificar el método de solicitud contra la constante `SAFE_METHODS`, que es una tupla que contiene `'GET'`, `'OPTIONS'` y `'HEAD'`. Por ejemplo:
 
 ```python
 if request.method in permissions.SAFE_METHODS:
-    # Check permissions for read-only request
+    # Verificar permisos para solicitud de solo lectura
 else:
-    # Check permissions for write request
+    # Verificar permisos para solicitud de escritura
 ```
 
 ---
 
-**Note**: The instance-level `has_object_permission` method will only be called if the view-level `has_permission` checks have already passed. Also note that in order for the instance-level checks to run, the view code should explicitly call `.check_object_permissions(request, obj)`. If you are using the generic views then this will be handled for you by default. (Function-based views will need to check object permissions explicitly, raising `PermissionDenied` on failure.)
+**Nota**: El método `has_object_permission` a nivel de instancia solo será llamado si las verificaciones `has_permission` a nivel de vista ya han pasado. También ten en cuenta que para que las verificaciones a nivel de instancia se ejecuten, el código de la vista debe llamar explícitamente a `.check_object_permissions(request, obj)`. Si estás usando las vistas genéricas, esto será manejado automáticamente. (Las vistas basadas en funciones necesitarán verificar permisos de objeto explícitamente, lanzando `PermissionDenied` en caso de fallo.)
 
 ---
 
-Custom permissions will raise a `PermissionDenied` exception if the test fails. To change the error message associated with the exception, implement a `message` attribute directly on your custom permission. Otherwise the `default_detail` attribute from `PermissionDenied` will be used. Similarly, to change the code identifier associated with the exception, implement a `code` attribute directly on your custom permission - otherwise the `default_code` attribute from `PermissionDenied` will be used.
+Los permisos personalizados lanzarán una excepción `PermissionDenied` si la prueba falla. Para cambiar el mensaje de error asociado con la excepción, implementa un atributo `message` directamente en tu permiso personalizado. De lo contrario, se usará el atributo `default_detail` de `PermissionDenied`. De manera similar, para cambiar el identificador de código asociado con la excepción, implementa un atributo `code` directamente en tu permiso personalizado; de lo contrario, se usará el atributo `default_code` de `PermissionDenied`.
 
 ```python
 from rest_framework import permissions
 
 class CustomerAccessPermission(permissions.BasePermission):
-    message = 'Adding customers not allowed.'
+    message = 'No se permite agregar clientes.'
 
     def has_permission(self, request, view):
             ...
 ```
 
-## Examples
+## Ejemplos
 
-The following is an example of a permission class that checks the incoming request's IP address against a blocklist, and denies the request if the IP has been blocked.
+El siguiente es un ejemplo de una clase de permisos que verifica la dirección IP de la solicitud entrante contra una lista de bloqueo, y deniega la solicitud si la IP ha sido bloqueada.
 
 ```python
 from rest_framework import permissions
 
 class BlocklistPermission(permissions.BasePermission):
     """
-    Global permission check for blocked IPs.
+    Verificación global de permisos para IPs bloqueadas.
     """
 
     def has_permission(self, request, view):
@@ -272,94 +271,94 @@ class BlocklistPermission(permissions.BasePermission):
         return not blocked
 ```
 
-As well as global permissions, that are run against all incoming requests, you can also create object-level permissions, that are only run against operations that affect a particular object instance. For example:
+Además de los permisos globales, que se ejecutan contra todas las solicitudes entrantes, también puedes crear permisos a nivel de objeto, que solo se ejecutan contra operaciones que afectan a una instancia de objeto particular. Por ejemplo:
 
 ```python
 class IsOwnerOrReadOnly(permissions.BasePermission):
     """
-    Object-level permission to only allow owners of an object to edit it.
-    Assumes the model instance has an `owner` attribute.
+    Permiso a nivel de objeto para permitir solo a los propietarios de un objeto editarlo.
+    Asume que la instancia del modelo tiene un atributo `owner`.
     """
 
     def has_object_permission(self, request, view, obj):
-        # Read permissions are allowed to any request,
-        # so we'll always allow GET, HEAD or OPTIONS requests.
+        # Los permisos de lectura están permitidos para cualquier solicitud,
+        # así que siempre permitiremos solicitudes GET, HEAD u OPTIONS.
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        # Instance must have an attribute named `owner`.
+        # La instancia debe tener un atributo llamado `owner`.
         return obj.owner == request.user
 ```
 
-Note that the generic views will check the appropriate object level permissions, but if you're writing your own custom views, you'll need to make sure you check the object level permission checks yourself. You can do so by calling `self.check_object_permissions(request, obj)` from the view once you have the object instance. This call will raise an appropriate `APIException` if any object-level permission checks fail, and will otherwise simply return.
+Ten en cuenta que las vistas genéricas verificarán los permisos apropiados a nivel de objeto, pero si estás escribiendo tus propias vistas personalizadas, necesitarás asegurarte de verificar las verificaciones de permisos a nivel de objeto tú mismo. Puedes hacerlo llamando a `self.check_object_permissions(request, obj)` desde la vista una vez que tienes la instancia del objeto. Esta llamada lanzará una `APIException` apropiada si alguna verificación de permisos a nivel de objeto falla, y de lo contrario simplemente retornará.
 
-Also note that the generic views will only check the object-level permissions for views that retrieve a single model instance. If you require object-level filtering of list views, you'll need to filter the queryset separately. See the [filtering documentation][filtering] for more details.
+También ten en cuenta que las vistas genéricas solo verificarán los permisos a nivel de objeto para vistas que recuperan una sola instancia de modelo. Si requieres filtrado a nivel de objeto de vistas de lista, necesitarás filtrar el queryset por separado. Consulta la [documentación de filtrado][filtering] para más detalles.
 
-# Overview of access restriction methods
+# Resumen de métodos de restricción de acceso
 
-REST framework offers three different methods to customize access restrictions on a case-by-case basis. These apply in different scenarios and have different effects and limitations.
+REST framework ofrece tres métodos diferentes para personalizar las restricciones de acceso caso por caso. Estos se aplican en diferentes escenarios y tienen diferentes efectos y limitaciones.
 
-- `queryset`/`get_queryset()`: Limits the general visibility of existing objects from the database. The queryset limits which objects will be listed and which objects can be modified or deleted. The `get_queryset()` method can apply different querysets based on the current action.
-- `permission_classes`/`get_permissions()`: General permission checks based on the current action, request and targeted object. Object level permissions can only be applied to retrieve, modify and deletion actions. Permission checks for list and create will be applied to the entire object type. (In case of list: subject to restrictions in the queryset.)
-- `serializer_class`/`get_serializer()`: Instance level restrictions that apply to all objects on input and output. The serializer may have access to the request context. The `get_serializer()` method can apply different serializers based on the current action.
+- `queryset`/`get_queryset()`: Limita la visibilidad general de los objetos existentes de la base de datos. El queryset limita qué objetos serán listados y qué objetos pueden ser modificados o eliminados. El método `get_queryset()` puede aplicar diferentes querysets basados en la acción actual.
+- `permission_classes`/`get_permissions()`: Verificaciones generales de permisos basadas en la acción actual, solicitud y objeto objetivo. Los permisos a nivel de objeto solo pueden aplicarse a acciones de recuperación, modificación y eliminación. Las verificaciones de permisos para lista y creación se aplicarán a todo el tipo de objeto. (En caso de lista: sujeto a restricciones en el queryset.)
+- `serializer_class`/`get_serializer()`: Restricciones a nivel de instancia que se aplican a todos los objetos en entrada y salida. El serializador puede tener acceso al contexto de la solicitud. El método `get_serializer()` puede aplicar diferentes serializadores basados en la acción actual.
 
-The following table lists the access restriction methods and the level of control they offer over which actions.
+La siguiente tabla lista los métodos de restricción de acceso y el nivel de control que ofrecen sobre qué acciones.
 
 |                                   | `queryset` | `permission_classes` | `serializer_class` |
 | --------------------------------- | ---------- | -------------------- | ------------------ |
-| Action: list                      | global     | global               | object-level\*     |
-| Action: create                    | no         | global               | object-level       |
-| Action: retrieve                  | global     | object-level         | object-level       |
-| Action: update                    | global     | object-level         | object-level       |
-| Action: partial_update            | global     | object-level         | object-level       |
-| Action: destroy                   | global     | object-level         | no                 |
-| Can reference action in decision  | no\*\*     | yes                  | no\*\*             |
-| Can reference request in decision | no\*\*     | yes                  | yes                |
+| Acción: list                      | global     | global               | a nivel de objeto\*     |
+| Acción: create                    | no         | global               | a nivel de objeto       |
+| Acción: retrieve                  | global     | a nivel de objeto         | a nivel de objeto       |
+| Acción: update                    | global     | a nivel de objeto         | a nivel de objeto       |
+| Acción: partial_update            | global     | a nivel de objeto         | a nivel de objeto       |
+| Acción: destroy                   | global     | a nivel de objeto         | no                 |
+| Puede referenciar acción en decisión  | no\*\*     | sí                  | no\*\*             |
+| Puede referenciar solicitud en decisión | no\*\*     | sí                  | sí                |
 
-- A Serializer class should not raise `PermissionDenied` in a list action, or the entire list would not be returned.
-- The `get__*()` methods have access to the current view and can return different `Serializer` or `QuerySet` instances based on the request or action.
+- Una clase Serializer no debería lanzar `PermissionDenied` en una acción de lista, o toda la lista no sería devuelta.
+- Los métodos `get__*()` tienen acceso a la vista actual y pueden devolver diferentes instancias de `Serializer` o `QuerySet` basadas en la solicitud o acción.
 
 ---
 
-# Third party packages
+# Paquetes de terceros
 
-The following third party packages are also available.
+Los siguientes paquetes de terceros también están disponibles.
 
 ## DRF - Access Policy
 
-The [Django REST - Access Policy][drf-access-policy] package provides a way to define complex access rules in declarative policy classes that are attached to view sets or function-based views. The policies are defined in JSON in a format similar to AWS' Identity & Access Management policies.
+El paquete [Django REST - Access Policy][drf-access-policy] proporciona una forma de definir reglas de acceso complejas en clases de políticas declarativas que se adjuntan a viewsets o vistas basadas en funciones. Las políticas se definen en JSON en un formato similar a las políticas de Identity & Access Management de AWS.
 
 ## Composed Permissions
 
-The [Composed Permissions][composed-permissions] package provides a simple way to define complex and multi-depth (with logic operators) permission objects, using small and reusable components.
+El paquete [Composed Permissions][composed-permissions] proporciona una forma simple de definir objetos de permisos complejos y multi-nivel (con operadores lógicos), usando componentes pequeños y reutilizables.
 
 ## REST Condition
 
-The [REST Condition][rest-condition] package is another extension for building complex permissions in a simple and convenient way. The extension allows you to combine permissions with logical operators.
+El paquete [REST Condition][rest-condition] es otra extensión para construir permisos complejos de forma simple y conveniente. La extensión te permite combinar permisos con operadores lógicos.
 
 ## DRY Rest Permissions
 
-The [DRY Rest Permissions][dry-rest-permissions] package provides the ability to define different permissions for individual default and custom actions. This package is made for apps with permissions that are derived from relationships defined in the app's data model. It also supports permission checks being returned to a client app through the API's serializer. Additionally it supports adding permissions to the default and custom list actions to restrict the data they retrieve per user.
+El paquete [DRY Rest Permissions][dry-rest-permissions] proporciona la capacidad de definir diferentes permisos para acciones predeterminadas y personalizadas individuales. Este paquete está hecho para aplicaciones con permisos que se derivan de relaciones definidas en el modelo de datos de la aplicación. También soporta que las verificaciones de permisos se devuelvan a una aplicación cliente a través del serializador de la API. Adicionalmente, soporta agregar permisos a las acciones de lista predeterminadas y personalizadas para restringir los datos que recuperan por usuario.
 
 ## Django Rest Framework Roles
 
-The [Django Rest Framework Roles][django-rest-framework-roles] package makes it easier to parameterize your API over multiple types of users.
+El paquete [Django Rest Framework Roles][django-rest-framework-roles] facilita parametrizar tu API sobre múltiples tipos de usuarios.
 
 ## Rest Framework Roles
 
-The [Rest Framework Roles][rest-framework-roles] makes it super easy to protect views based on roles. Most importantly allows you to decouple accessibility logic from models and views in a clean human-readable way.
+[Rest Framework Roles][rest-framework-roles] hace súper fácil proteger vistas basadas en roles. Lo más importante es que te permite desacoplar la lógica de accesibilidad de modelos y vistas de forma limpia y legible.
 
 ## Django REST Framework API Key
 
-The [Django REST Framework API Key][djangorestframework-api-key] package provides permissions classes, models and helpers to add API key authorization to your API. It can be used to authorize internal or third-party backends and services (i.e. _machines_) which do not have a user account. API keys are stored securely using Django's password hashing infrastructure, and they can be viewed, edited and revoked at anytime in the Django admin.
+El paquete [Django REST Framework API Key][djangorestframework-api-key] proporciona clases de permisos, modelos y ayudantes para agregar autorización de clave API a tu API. Puede usarse para autorizar backends y servicios internos o de terceros (es decir, _máquinas_) que no tienen una cuenta de usuario. Las claves API se almacenan de forma segura usando la infraestructura de hashing de contraseñas de Django, y pueden ser vistas, editadas y revocadas en cualquier momento en el administrador de Django.
 
 ## Django Rest Framework Role Filters
 
-The [Django Rest Framework Role Filters][django-rest-framework-role-filters] package provides simple filtering over multiple types of roles.
+El paquete [Django Rest Framework Role Filters][django-rest-framework-role-filters] proporciona filtrado simple sobre múltiples tipos de roles.
 
 ## Django Rest Framework PSQ
 
-The [Django Rest Framework PSQ][drf-psq] package is an extension that gives support for having action-based **permission_classes**, **serializer_class**, and **queryset** dependent on permission-based rules.
+El paquete [Django Rest Framework PSQ][drf-psq] es una extensión que da soporte para tener **permission_classes**, **serializer_class** y **queryset** basados en acciones y dependientes de reglas basadas en permisos.
 
 [cite]: https://developer.apple.com/library/mac/#documentation/security/Conceptual/AuthenticationAndAuthorizationGuide/Authorization/Authorization.html
 [authentication]: authentication.md
