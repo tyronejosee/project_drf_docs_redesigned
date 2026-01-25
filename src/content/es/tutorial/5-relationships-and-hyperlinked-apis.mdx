@@ -6,7 +6,7 @@ order: 6
 
 # Tutorial 5: Relaciones y APIs con Hipervínculos
 
-Actualmente, las relaciones dentro de nuestra API se representan mediante claves primarias. En esta parte del tutorial, mejoraremos la cohesión y descubribilidad de nuestra API utilizando hipervínculos para las relaciones.
+Actualmente, las relaciones dentro de nuestra API se representan mediante claves primarias. En esta parte del tutorial, mejoraremos la cohesión y la capacidad de descubrimiento de nuestra API utilizando hipervínculos para las relaciones.
 
 ## Creando un punto de entrada para nuestra API
 
@@ -64,7 +64,7 @@ path('snippets/<int:pk>/highlight/', views.SnippetHighlight.as_view()),
 
 ## Hipervinculando nuestra API
 
-Manejar las relaciones entre entidades es uno de los aspectos más desafiantes del diseño de APIs web. Hay varias formas diferentes en que podríamos elegir representar una relación:
+Manejar las relaciones entre entidades es uno de los aspectos más complejos del diseño de APIs web. Hay varias formas diferentes en que podríamos elegir representar una relación:
 
 - Usando claves primarias.
 - Usando hipervínculos entre entidades.

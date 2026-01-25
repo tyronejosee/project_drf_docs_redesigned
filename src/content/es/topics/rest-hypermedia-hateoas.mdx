@@ -1,45 +1,44 @@
 ---
-title: "REST, Hypermedia and HATEOAS"
+title: "REST, Hipermedia y HATEOAS"
 keywords:
   ["django", "rest", "framework", "api", "rest", "hypermedia", "hateoas"]
 order: 7
 ---
 
-# REST, Hypermedia and HATEOAS
+# REST, Hipermedia y HATEOAS
 
-> You keep using that word "REST". I do not think it means what you think it means.
+> Sigue usando esa palabra "REST". No creo que signifique lo que tú crees que significa.
 >
-> &mdash; Mike Amundsen, [REST fest 2012 keynote][cite].
+> &mdash; Mike Amundsen, [conferencia principal de REST fest 2012][cite].
 
-First off, the disclaimer. The name "Django REST framework" was decided back in early 2011 and was chosen simply to ensure the project would be easily found by developers. Throughout the documentation we try to use the more simple and technically correct terminology of "Web APIs".
+Primero, el descargo de responsabilidad. El nombre "Django REST framework" se decidió a principios de 2011 y se eligió simplemente para asegurar que el proyecto pudiera ser encontrado fácilmente por los desarrolladores. A lo largo de la documentación, intentamos usar la terminología más simple y técnicamente correcta de "APIs Web".
 
-If you are serious about designing a Hypermedia API, you should look to resources outside of this documentation to help inform your design choices.
+Si te tomas en serio el diseño de una API de Hipermedia, deberías buscar recursos fuera de esta documentación para ayudar a informar tus decisiones de diseño.
 
-The following fall into the "required reading" category.
+Los siguientes entran en la categoría de "lectura obligatoria".
 
-- Roy Fielding's dissertation - [Architectural Styles and
-  the Design of Network-based Software Architectures][dissertation].
-- Roy Fielding's "[REST APIs must be hypertext-driven][hypertext-driven]" blog post.
-- Leonard Richardson & Mike Amundsen's [RESTful Web APIs][restful-web-apis].
-- Mike Amundsen's [Building Hypermedia APIs with HTML5 and Node][building-hypermedia-apis].
-- Steve Klabnik's [Designing Hypermedia APIs][designing-hypermedia-apis].
-- The [Richardson Maturity Model][maturitymodel].
+- La tesis doctoral de Roy Fielding - [Estilos arquitectónicos y el diseño de arquitecturas de software basadas en red][dissertation].
+- La publicación de blog de Roy Fielding "[Las APIs REST deben estar impulsadas por hipertexto][hypertext-driven]".
+- [APIs Web RESTful][restful-web-apis] de Leonard Richardson & Mike Amundsen.
+- [Construyendo APIs de Hipermedia con HTML5 y Node][building-hypermedia-apis] de Mike Amundsen.
+- [Diseñando APIs de Hipermedia][designing-hypermedia-apis] de Steve Klabnik.
+- El [Modelo de Madurez de Richardson][maturitymodel].
 
-For a more thorough background, check out Klabnik's [Hypermedia API reading list][readinglist].
+Para obtener un contexto más completo, consulta la [lista de lectura de APIs de Hipermedia][readinglist] de Klabnik.
 
-## Building Hypermedia APIs with REST framework
+## Construyendo APIs de Hipermedia con REST framework
 
-REST framework is an agnostic Web API toolkit. It does help guide you towards building well-connected APIs, and makes it easy to design appropriate media types, but it does not strictly enforce any particular design style.
+REST framework es un toolkit de API web agnóstico. Sí ayuda a guiar hacia la construcción de APIs bien conectadas, y facilita el diseño de tipos de medios apropiados, pero no impone estrictamente ningún estilo de diseño particular.
 
-## What REST framework provides.
+## Lo que proporciona REST framework.
 
-It is self evident that REST framework makes it possible to build Hypermedia APIs. The browsable API that it offers is built on HTML - the hypermedia language of the web.
+Es evidente por sí mismo que REST framework hace posible construir APIs de Hipermedia. La API navegable que ofrece está construida sobre HTML: el lenguaje de hipermedia de la web.
 
-REST framework also includes [serialization] and [parser]/[renderer] components that make it easy to build appropriate media types, [hyperlinked relations][fields] for building well-connected systems, and great support for [content negotiation][conneg].
+REST framework también incluye componentes de [serialización] y [parser]/[renderer] que facilitan la construcción de tipos de medios apropiados, [relaciones hipervinculadas][fields] para construir sistemas bien conectados, y excelente soporte para [negociación de contenido][conneg].
 
-## What REST framework doesn't provide.
+## Lo que no proporciona REST framework.
 
-What REST framework doesn't do is give you machine readable hypermedia formats such as [HAL][hal], [Collection+JSON][collection], [JSON API][json-api] or HTML [microformats] by default, or the ability to auto-magically create fully HATEOAS style APIs that include hypermedia-based form descriptions and semantically labelled hyperlinks. Doing so would involve making opinionated choices about API design that should really remain outside of the framework's scope.
+Lo que REST framework no hace es darte formatos de hipermedia legibles por máquina como [HAL][hal], [Collection+JSON][collection], [JSON API][json-api] o [microformatos][microformats] de HTML por defecto, o la capacidad de crear mágicamente APIs completamente estilo HATEOAS que incluyan descripciones de formularios basadas en hipermedia e hipervínculos etiquetados semánticamente. Hacerlo implicaría tomar decisiones opinadas sobre el diseño de APIs que realmente deberían permanecer fuera del alcance del framework.
 
 [cite]: https://vimeo.com/channels/restfest/49503453
 [dissertation]: https://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm

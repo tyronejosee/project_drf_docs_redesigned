@@ -1,24 +1,24 @@
 ---
-title: "HTML and Forms"
+title: "HTML y Formularios"
 keywords: ["django", "rest", "framework", "api", "html", "forms"]
 order: 4
 ---
 
-# HTML and Forms
+# HTML y Formularios
 
-REST framework is suitable for returning both API style responses, and regular HTML pages. Additionally, serializers can be used as HTML forms and rendered in templates.
+REST framework es adecuado para devolver tanto respuestas estilo API como páginas HTML regulares. Adicionalmente, los serializadores pueden usarse como formularios HTML y renderizarse en plantillas.
 
-## Rendering HTML
+## Renderizando HTML
 
-In order to return HTML responses you'll need to use either `TemplateHTMLRenderer`, or `StaticHTMLRenderer`.
+Para devolver respuestas HTML, necesitarás usar `TemplateHTMLRenderer` o `StaticHTMLRenderer`.
 
-The `TemplateHTMLRenderer` class expects the response to contain a dictionary of context data, and renders an HTML page based on a template that must be specified either in the view or on the response.
+La clase `TemplateHTMLRenderer` espera que la respuesta contenga un diccionario de datos de contexto, y renderiza una página HTML basada en una plantilla que debe especificarse ya sea en la vista o en la respuesta.
 
-The `StaticHTMLRender` class expects the response to contain a string of the pre-rendered HTML content.
+La clase `StaticHTMLRender` espera que la respuesta contenga una cadena del contenido HTML pre-renderizado.
 
-Because static HTML pages typically have different behavior from API responses you'll probably need to write any HTML views explicitly, rather than relying on the built-in generic views.
+Debido a que las páginas HTML estáticas típicamente tienen un comportamiento diferente de las respuestas de API, probablemente necesitarás escribir cualquier vista HTML explícitamente, en lugar de confiar en las vistas genéricas incorporadas.
 
-Here's an example of a view that returns a list of "Profile" instances, rendered in an HTML template:
+Aquí tienes un ejemplo de una vista que devuelve una lista de instancias de "Profile", renderizadas en una plantilla HTML:
 
 - `views.py`:
 
@@ -43,7 +43,7 @@ class ProfileList(APIView):
 ```html
 <html>
   <body>
-    <h1>Profiles</h1>
+    <h1>Perfiles</h1>
     <ul>
       {% for profile in profiles %}
       <li>{{ profile.name }}</li>
@@ -53,11 +53,11 @@ class ProfileList(APIView):
 </html>
 ```
 
-## Rendering Forms
+## Renderizando Formularios
 
-Serializers may be rendered as forms by using the `render_form` template tag, and including the serializer instance as context to the template.
+Los serializadores pueden renderizarse como formularios usando la etiqueta de plantilla `render_form`, e incluyendo la instancia del serializador como contexto para la plantilla.
 
-The following view demonstrates an example of using a serializer in a template for viewing and updating a model instance:
+La siguiente vista demuestra un ejemplo de uso de un serializador en una plantilla para ver y actualizar una instancia de modelo:
 
 - `views.py`:
 
@@ -93,23 +93,23 @@ class ProfileDetail(APIView):
 
 <html>
   <body>
-    <h1>Profile - {{ profile.name }}</h1>
+    <h1>Perfil - {{ profile.name }}</h1>
 
     <form action="{% url 'profile-detail' pk=profile.pk %}" method="POST">
       {% csrf_token %} {% render_form serializer %}
-      <input type="submit" value="Save" />
+      <input type="submit" value="Guardar" />
     </form>
   </body>
 </html>
 ```
 
-### Using template packs
+### Usando paquetes de plantillas
 
-The `render_form` tag takes an optional `template_pack` argument, that specifies which template directory should be used for rendering the form and form fields.
+La etiqueta `render_form` toma un argumento opcional `template_pack`, que especifica qué directorio de plantillas debe usarse para renderizar el formulario y los campos del formulario.
 
-REST framework includes three built-in template packs, all based on Bootstrap 3. The built-in styles are `horizontal`, `vertical`, and `inline`. The default style is `horizontal`. To use any of these template packs you'll want to also include the Bootstrap 3 CSS.
+REST framework incluye tres paquetes de plantillas incorporados, todos basados en Bootstrap 3. Los estilos incorporados son `horizontal`, `vertical` e `inline`. El estilo predeterminado es `horizontal`. Para usar cualquiera de estos paquetes de plantillas, también querrás incluir el CSS de Bootstrap 3.
 
-The following HTML will link to a CDN hosted version of the Bootstrap 3 CSS:
+El siguiente HTML enlazará a una versión alojada en CDN del CSS de Bootstrap 3:
 
 ```html
 <head>
@@ -121,19 +121,19 @@ The following HTML will link to a CDN hosted version of the Bootstrap 3 CSS:
 </head>
 ```
 
-Third party packages may include alternate template packs, by bundling a template directory containing the necessary form and field templates.
+Los paquetes de terceros pueden incluir paquetes de plantillas alternativos, agrupando un directorio de plantillas que contenga las plantillas de formulario y campo necesarias.
 
-Let's take a look at how to render each of the three available template packs. For these examples we'll use a single serializer class to present a "Login" form.
+Echemos un vistazo a cómo renderizar cada uno de los tres paquetes de plantillas disponibles. Para estos ejemplos, usaremos una sola clase de serializador para presentar un formulario de "Inicio de sesión".
 
 ```python
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField(
         max_length=100,
-        style={'placeholder': 'Email', 'autofocus': True}
+        style={'placeholder': 'Correo electrónico', 'autofocus': True}
     )
     password = serializers.CharField(
         max_length=100,
-        style={'input_type': 'password', 'placeholder': 'Password'}
+        style={'input_type': 'password', 'placeholder': 'Contraseña'}
     )
     remember_me = serializers.BooleanField()
 ```
@@ -142,9 +142,9 @@ class LoginSerializer(serializers.Serializer):
 
 #### `rest_framework/vertical`
 
-Presents form labels above their corresponding control inputs, using the standard Bootstrap layout.
+Presenta etiquetas de formulario encima de sus entradas de control correspondientes, usando el diseño estándar de Bootstrap.
 
-_This is the default template pack._
+_Este es el paquete de plantillas predeterminado._
 
 ```html
 {% load rest_framework %} ...
@@ -152,19 +152,19 @@ _This is the default template pack._
 <form action="{% url 'login' %}" method="post" novalidate>
   {% csrf_token %} {% render_form serializer
   template_pack='rest_framework/vertical' %}
-  <button type="submit" class="btn btn-default">Sign in</button>
+  <button type="submit" class="btn btn-default">Iniciar sesión</button>
 </form>
 ```
 
-![Vertical form example](../img/vertical.png)
+![Ejemplo de formulario vertical](../img/vertical.png)
 
 ---
 
 #### `rest_framework/horizontal`
 
-Presents labels and controls alongside each other, using a 2/10 column split.
+Presenta etiquetas y controles uno al lado del otro, usando una división de columnas 2/10.
 
-_This is the form style used in the browsable API and admin renderers._
+_Este es el estilo de formulario usado en las renderizaciones de la API navegable y de administración._
 
 ```html
 {% load rest_framework %} ...
@@ -178,19 +178,19 @@ _This is the form style used in the browsable API and admin renderers._
   {% csrf_token %} {% render_form serializer %}
   <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
-      <button type="submit" class="btn btn-default">Sign in</button>
+      <button type="submit" class="btn btn-default">Iniciar sesión</button>
     </div>
   </div>
 </form>
 ```
 
-![Horizontal form example](../img/horizontal.png)
+![Ejemplo de formulario horizontal](../img/horizontal.png)
 
 ---
 
 #### `rest_framework/inline`
 
-A compact form style that presents all the controls inline.
+Un estilo de formulario compacto que presenta todos los controles en línea.
 
 ```html
 {% load rest_framework %} ...
@@ -198,19 +198,19 @@ A compact form style that presents all the controls inline.
 <form class="form-inline" action="{% url 'login' %}" method="post" novalidate>
   {% csrf_token %} {% render_form serializer
   template_pack='rest_framework/inline' %}
-  <button type="submit" class="btn btn-default">Sign in</button>
+  <button type="submit" class="btn btn-default">Iniciar sesión</button>
 </form>
 ```
 
-![Inline form example](../img/inline.png)
+![Ejemplo de formulario en línea](../img/inline.png)
 
-## Field styles
+## Estilos de campo
 
-Serializer fields can have their rendering style customized by using the `style` keyword argument. This argument is a dictionary of options that control the template and layout used.
+Los campos del serializador pueden tener su estilo de renderizado personalizado usando el argumento de palabra clave `style`. Este argumento es un diccionario de opciones que controlan la plantilla y el diseño utilizados.
 
-The most common way to customize the field style is to use the `base_template` style keyword argument to select which template in the template pack should be use.
+La forma más común de personalizar el estilo del campo es usar el argumento de palabra clave de estilo `base_template` para seleccionar qué plantilla en el paquete de plantillas debe usarse.
 
-For example, to render a `CharField` as an HTML textarea rather than the default HTML input, you would use something like this:
+Por ejemplo, para renderizar un `CharField` como un textarea HTML en lugar de la entrada HTML predeterminada, usarías algo así:
 
 ```python
 details = serializers.CharField(
@@ -219,7 +219,7 @@ details = serializers.CharField(
 )
 ```
 
-If you instead want a field to be rendered using a custom template that is _not part of an included template pack_, you can instead use the `template` style option, to fully specify a template name:
+Si en su lugar quieres que un campo se renderice usando una plantilla personalizada que _no es parte de un paquete de plantillas incluido_, puedes usar la opción de estilo `template` para especificar completamente un nombre de plantilla:
 
 ```python
 details = serializers.CharField(
@@ -228,7 +228,7 @@ details = serializers.CharField(
 )
 ```
 
-Field templates can also use additional style properties, depending on their type. For example, the `textarea.html` template also accepts a `rows` property that can be used to affect the sizing of the control.
+Las plantillas de campo también pueden usar propiedades de estilo adicionales, dependiendo de su tipo. Por ejemplo, la plantilla `textarea.html` también acepta una propiedad `rows` que puede usarse para afectar el tamaño del control.
 
 ```python
 details = serializers.CharField(
@@ -237,21 +237,21 @@ details = serializers.CharField(
 )
 ```
 
-The complete list of `base_template` options and their associated style options is listed below.
+La lista completa de opciones de `base_template` y sus opciones de estilo asociadas se muestra a continuación.
 
 <div style={{ overflowX: "auto" }}>
   <table>
     <thead>
       <tr>
         <th>base_template</th>
-        <th>Valid field types</th>
-        <th>Additional style options</th>
+        <th>Tipos de campo válidos</th>
+        <th>Opciones de estilo adicionales</th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <td>input.html</td>
-        <td>Any string, numeric or date/time field</td>
+        <td>Cualquier campo de cadena, numérico o de fecha/hora</td>
         <td>input_type, placeholder, hide_label, autofocus</td>
       </tr>
       <tr>
@@ -264,21 +264,21 @@ The complete list of `base_template` options and their associated style options 
       <tr>
         <td>select.html</td>
         <td>
-          <code>ChoiceField</code> or relational field types
+          <code>ChoiceField</code> o tipos de campos relacionales
         </td>
         <td>hide_label</td>
       </tr>
       <tr>
         <td>radio.html</td>
         <td>
-          <code>ChoiceField</code> or relational field types
+          <code>ChoiceField</code> o tipos de campos relacionales
         </td>
         <td>inline, hide_label</td>
       </tr>
       <tr>
         <td>select_multiple.html</td>
         <td>
-          <code>MultipleChoiceField</code> or relational fields with{" "}
+          <code>MultipleChoiceField</code> o campos relacionales con{" "}
           <code>many=True</code>
         </td>
         <td>hide_label</td>
@@ -286,7 +286,7 @@ The complete list of `base_template` options and their associated style options 
       <tr>
         <td>checkbox_multiple.html</td>
         <td>
-          <code>MultipleChoiceField</code> or relational fields with{" "}
+          <code>MultipleChoiceField</code> o campos relacionales con{" "}
           <code>many=True</code>
         </td>
         <td>inline, hide_label</td>
@@ -300,13 +300,13 @@ The complete list of `base_template` options and their associated style options 
       </tr>
       <tr>
         <td>fieldset.html</td>
-        <td>Nested serializer</td>
+        <td>Serializador anidado</td>
         <td>hide_label</td>
       </tr>
       <tr>
         <td>list_fieldset.html</td>
         <td>
-          <code>ListField</code> or nested serializer with{" "}
+          <code>ListField</code> o serializador anidado con{" "}
           <code>many=True</code>
         </td>
         <td>hide_label</td>

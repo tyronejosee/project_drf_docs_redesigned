@@ -1,23 +1,23 @@
 ---
-title: "Writable nested serializers"
+title: "Serializadores anidados escribibles"
 keywords:
   ["django", "rest", "framework", "api", "writable", "nested", "serializers"]
 order: 8
 ---
 
-# Writable nested serializers
+# Serializadores anidados escribibles
 
-> To save HTTP requests, it may be convenient to send related documents along with the request.
+> Para ahorrar solicitudes HTTP, puede ser conveniente enviar documentos relacionados junto con la solicitud.
 >
-> &mdash; [JSON API specification for Ember Data][cite].
+> &mdash; [Especificación JSON API para Ember Data][cite].
 
-Although flat data structures serve to properly delineate between the individual entities in your service, there are cases where it may be more appropriate or convenient to use nested data structures.
+Aunque las estructuras de datos planas sirven para delinear adecuadamente entre las entidades individuales en tu servicio, hay casos en los que puede ser más apropiado o conveniente usar estructuras de datos anidadas.
 
-Nested data structures are easy enough to work with if they're read-only - simply nest your serializer classes and you're good to go. However, there are a few more subtleties to using writable nested serializers, due to the dependencies between the various model instances, and the need to save or delete multiple instances in a single action.
+Las estructuras de datos anidadas son lo suficientemente fáciles de manejar si son de solo lectura: simplemente anida tus clases de serializador y listo. Sin embargo, hay algunas sutilezas más al usar serializadores anidados escribibles, debido a las dependencias entre las diversas instancias de modelo, y la necesidad de guardar o eliminar múltiples instancias en una sola acción.
 
-## One-to-many data structures
+## Estructuras de datos uno-a-muchos
 
-_Example of a **read-only** nested serializer. Nothing complex to worry about here._
+_Ejemplo de un serializador anidado **de solo lectura**. Nada complejo de qué preocuparse aquí._
 
 ```python
 class ToDoItemSerializer(serializers.ModelSerializer):
@@ -33,25 +33,25 @@ class ToDoListSerializer(serializers.ModelSerializer):
         fields = ['title', 'items']
 ```
 
-Some example output from our serializer.
+Algunos resultados de ejemplo de nuestro serializador.
 
 ```json
 {
-    'title': 'Leaving party preparations',
+    'title': 'Preparativos de fiesta de despedida',
     'items': [
-        {'text': 'Compile playlist', 'is_completed': True},
-        {'text': 'Send invites', 'is_completed': False},
-        {'text': 'Clean house', 'is_completed': False}
+        {'text': 'Compilar lista de reproducción', 'is_completed': True},
+        {'text': 'Enviar invitaciones', 'is_completed': False},
+        {'text': 'Limpiar casa', 'is_completed': False}
     ]
 }
 ```
 
-Let's take a look at updating our nested one-to-many data structure.
+Echemos un vistazo a actualizar nuestra estructura de datos anidados uno-a-muchos.
 
-### Validation errors
+### Errores de validación
 
-### Adding and removing items
+### Agregar y eliminar elementos
 
-### Making PATCH requests
+### Realizando solicitudes PATCH
 
 [cite]: http://jsonapi.org/format/#url-based-json-api

@@ -29,7 +29,7 @@ source env/bin/activate
 
 Ahora que estamos dentro de un entorno virtual, podemos instalar los paquetes necesarios.
 
-```bash filename="next.config.js"
+```bash
 pip install django
 pip install djangorestframework
 pip install pygments  # Lo usaremos para el resaltado de código
@@ -205,7 +205,7 @@ serializer.save()
 
 Observa cuán similar es la API a trabajar con formularios. La similitud debería volverse aún más evidente cuando comencemos a escribir vistas que usen nuestro serializador.
 
-También podemos serializar conjuntos de consultas en lugar de instancias de modelo. Para hacerlo, simplemente agregamos una bandera `many=True` a los argumentos del serializador.
+También podemos serializar querysets en lugar de instancias de modelo. Para hacerlo, simplemente agregamos una bandera `many=True` a los argumentos del serializador.
 
 ```python
 serializer = SnippetSerializer(Snippet.objects.all(), many=True)

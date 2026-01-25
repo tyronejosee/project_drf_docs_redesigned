@@ -1,31 +1,31 @@
 ---
-title: "Internationalization"
+title: "Internacionalización"
 keywords: ["django", "rest", "framework", "api", "internationalization"]
 order: 2
 ---
 
-# Internationalization
+# Internacionalización
 
-> Supporting internationalization is not optional. It must be a core feature.
+> Apoyar la internacionalización no es opcional. Debe ser una característica central.
 >
-> &mdash; [Jannis Leidel, speaking at Django Under the Hood, 2015][cite].
+> &mdash; [Jannis Leidel, hablando en Django Under the Hood, 2015][cite].
 
-REST framework ships with translatable error messages. You can make these appear in your language enabling [Django's standard translation mechanisms][django-translation].
+REST framework incluye mensajes de error traducibles. Puedes hacer que estos aparezcan en tu idioma habilitando [los mecanismos de traducción estándar de Django][django-translation].
 
-Doing so will allow you to:
+Hacerlo te permitirá:
 
-- Select a language other than English as the default, using the standard `LANGUAGE_CODE` Django setting.
-- Allow clients to choose a language themselves, using the `LocaleMiddleware` included with Django. A typical usage for API clients would be to include an `Accept-Language` request header.
+- Seleccionar un idioma distinto al inglés como predeterminado, usando la configuración estándar de Django `LANGUAGE_CODE`.
+- Permitir que los clientes elijan un idioma ellos mismos, usando el `LocaleMiddleware` incluido con Django. Un uso típico para los clientes de API sería incluir una cabecera de solicitud `Accept-Language`.
 
-## Enabling internationalized APIs
+## Habilitando APIs internacionalizadas
 
-You can change the default language by using the standard Django `LANGUAGE_CODE` setting:
+Puedes cambiar el idioma predeterminado usando la configuración estándar de Django `LANGUAGE_CODE`:
 
 ```python
 LANGUAGE_CODE = "es-es"
 ```
 
-You can turn on per-request language requests by adding `LocalMiddleware` to your `MIDDLEWARE` setting:
+Puedes activar las solicitudes de idioma por solicitud añadiendo `LocalMiddleware` a tu configuración `MIDDLEWARE`:
 
 ```python
 MIDDLEWARE = [
@@ -34,9 +34,9 @@ MIDDLEWARE = [
 ]
 ```
 
-When per-request internationalization is enabled, client requests will respect the `Accept-Language` header where possible. For example, let's make a request for an unsupported media type:
+Cuando la internacionalización por solicitud está activada, las solicitudes de los clientes respetarán la cabecera `Accept-Language` cuando sea posible. Por ejemplo, hagamos una solicitud para un tipo de medio no compatible:
 
-**Request**
+**Solicitud**
 
 ```http
 GET /api/users HTTP/1.1
@@ -45,7 +45,7 @@ Accept-Language: es-es
 Host: example.org
 ```
 
-**Response**
+**Respuesta**
 
 ```http
 HTTP/1.0 406 NOT ACCEPTABLE
@@ -57,76 +57,75 @@ HTTP/1.0 406 NOT ACCEPTABLE
 }
 ```
 
-REST framework includes these built-in translations both for standard exception cases, and for serializer validation errors.
+REST framework incluye estas traducciones incorporadas tanto para casos de excepción estándar como para errores de validación de serializadores.
 
-Note that the translations only apply to the error strings themselves. The format of error messages, and the keys of field names will remain the same. An example `400 Bad Request` response body might look like this:
+Ten en cuenta que las traducciones solo se aplican a las cadenas de error themselves. El formato de los mensajes de error y las claves de los nombres de campo permanecerán iguales. Un cuerpo de respuesta `400 Bad Request` de ejemplo podría verse así:
 
 ```json
 {
   "detail": {
-    "username": ["Esse campo deve ser único."]
+    "username": ["Este campo debe ser único."]
   }
 }
 ```
 
-If you want to use different string for parts of the response such as `detail` and `non_field_errors` then you can modify this behavior by using a [custom exception handler][custom-exception-handler].
+Si quieres usar diferentes cadenas para partes de la respuesta como `detail` y `non_field_errors` entonces puedes modificar este comportamiento usando un [manejador de excepciones personalizado][custom-exception-handler].
 
-#### Specifying the set of supported languages.
+#### Especificando el conjunto de idiomas admitidos.
 
-By default all available languages will be supported.
+Por defecto, todos los idiomas disponibles serán admitidos.
 
-If you only wish to support a subset of the available languages, use Django's standard `LANGUAGES` setting:
+Si solo deseas admitir un subconjunto de los idiomas disponibles, usa la configuración estándar de Django `LANGUAGES`:
 
 ```python
 LANGUAGES = [
-    ('de', _('German')),
-    ('en', _('English')),
+    ('de', _('Alemán')),
+    ('en', _('Inglés')),
 ]
 ```
 
-## Adding new translations
+## Agregando nuevas traducciones
 
-REST framework translations are managed online using [Transifex][transifex-project]. You can use the Transifex service to add new translation languages. The maintenance team will then ensure that these translation strings are included in the REST framework package.
+Las traducciones de REST framework se gestionan en línea usando [Transifex][transifex-project]. Puedes usar el servicio Transifex para agregar nuevos idiomas de traducción. El equipo de mantenimiento luego se asegurará de que estas cadenas de traducción se incluyan en el paquete REST framework.
 
-Sometimes you may need to add translation strings to your project locally. You may need to do this if:
+A veces puedes necesitar agregar cadenas de traducción a tu proyecto localmente. Puede que necesites hacer esto si:
 
-- You want to use REST Framework in a language which has not been translated yet on Transifex.
-- Your project includes custom error messages, which are not part of REST framework's default translation strings.
+- Quieres usar REST Framework en un idioma que aún no ha sido traducido en Transifex.
+- Tu proyecto incluye mensajes de error personalizados, que no son parte de las cadenas de traducción predeterminadas de REST framework.
 
-#### Translating a new language locally
+#### Traduciendo un nuevo idioma localmente
 
-This guide assumes you are already familiar with how to translate a Django app. If you're not, start by reading [Django's translation docs][django-translation].
+Esta guía asume que ya estás familiarizado con cómo traducir una aplicación Django. Si no lo estás, comienza leyendo [la documentación de traducción de Django][django-translation].
 
-If you're translating a new language you'll need to translate the existing REST framework error messages:
+Si estás traduciendo un nuevo idioma, necesitarás traducir los mensajes de error existentes de REST framework:
 
-1. Make a new folder where you want to store the internationalization resources. Add this path to your [`LOCALE_PATHS`][django-locale-paths] setting.
+1. Crea una nueva carpeta donde desees almacenar los recursos de internacionalización. Agrega esta ruta a tu configuración [`LOCALE_PATHS`][django-locale-paths].
 
-2. Now create a subfolder for the language you want to translate. The folder should be named using [locale name][django-locale-name] notation. For example: `de`, `pt_BR`, `es_AR`.
+2. Ahora crea una subcarpeta para el idioma que quieres traducir. La carpeta debe nombrarse usando la notación [nombre de locale][django-locale-name]. Por ejemplo: `de`, `pt_BR`, `es_AR`.
 
-3. Now copy the [base translations file][django-po-source] from the REST framework source code into your translations folder.
+3. Ahora copia el [archivo de traducciones base][django-po-source] del código fuente de REST framework en tu carpeta de traducciones.
 
-4. Edit the `django.po` file you've just copied, translating all the error messages.
+4. Edita el archivo `django.po` que acabas de copiar, traduciendo todos los mensajes de error.
 
-5. Run `manage.py compilemessages -l pt_BR` to make the translations
-   available for Django to use. You should see a message like `processing file django.po in <...>/locale/pt_BR/LC_MESSAGES`.
+5. Ejecuta `manage.py compilemessages -l pt_BR` para hacer que las traducciones estén disponibles para que Django las use. Deberías ver un mensaje como `processing file django.po in <...>/locale/pt_BR/LC_MESSAGES`.
 
-6. Restart your development server to see the changes take effect.
+6. Reinicia tu servidor de desarrollo para ver que los cambios surtan efecto.
 
-If you're only translating custom error messages that exist inside your project codebase you don't need to copy the REST framework source `django.po` file into a `LOCALE_PATHS` folder, and can instead simply run Django's standard `makemessages` process.
+Si solo estás traduciendo mensajes de error personalizados que existen dentro de tu base de código del proyecto, no necesitas copiar el archivo `django.po` fuente de REST framework en una carpeta `LOCALE_PATHS`, y en su lugar simplemente puedes ejecutar el proceso estándar `makemessages` de Django.
 
-## How the language is determined
+## Cómo se determina el idioma
 
-If you want to allow per-request language preferences you'll need to include `django.middleware.locale.LocaleMiddleware` in your `MIDDLEWARE` setting.
+Si quieres permitir preferencias de idioma por solicitud, necesitarás incluir `django.middleware.locale.LocaleMiddleware` en tu configuración `MIDDLEWARE`.
 
-You can find more information on how the language preference is determined in the [Django documentation][django-language-preference]. For reference, the method is:
+Puedes encontrar más información sobre cómo se determina la preferencia de idioma en la [documentación de Django][django-language-preference]. Como referencia, el método es:
 
-1. First, it looks for the language prefix in the requested URL.
-2. Failing that, it looks for the `LANGUAGE_SESSION_KEY` key in the current user’s session.
-3. Failing that, it looks for a cookie.
-4. Failing that, it looks at the `Accept-Language` HTTP header.
-5. Failing that, it uses the global `LANGUAGE_CODE` setting.
+1. Primero, busca el prefijo de idioma en la URL solicitada.
+2. Si no lo encuentra, busca la clave `LANGUAGE_SESSION_KEY` en la sesión del usuario actual.
+3. Si no la encuentra, busca una cookie.
+4. Si no la encuentra, mira la cabecera HTTP `Accept-Language`.
+5. Si no la encuentra, usa la configuración global `LANGUAGE_CODE`.
 
-For API clients the most appropriate of these will typically be to use the `Accept-Language` header; Sessions and cookies will not be available unless using session authentication, and generally better practice to prefer an `Accept-Language` header for API clients rather than using language URL prefixes.
+Para los clientes de API, el más apropiado de estos será típicamente usar la cabecera `Accept-Language`; las sesiones y las cookies no estarán disponibles a menos que uses autenticación de sesión, y generalmente es mejor práctica preferir una cabecera `Accept-Language` para clientes de API en lugar de usar prefijos de idioma en la URL.
 
 [cite]: https://youtu.be/Wa0VfS2q94Y
 [django-translation]: https://docs.djangoproject.com/en/stable/topics/i18n/translation

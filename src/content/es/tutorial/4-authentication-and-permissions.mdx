@@ -250,7 +250,7 @@ http POST http://127.0.0.1:8000/snippets/ code="print(123)"
 Podemos hacer una solicitud exitosa incluyendo el nombre de usuario y la contraseña de uno de los usuarios que creamos anteriormente:
 
 ```bash
-http -a admin:contraseña123 POST http://127.0.0.1:8000/snippets/ code="print(789)"
+http -a admin:tucontraseña POST http://127.0.0.1:8000/snippets/ code="print(789)"
 
 {
     "id": 1,
@@ -265,7 +265,7 @@ http -a admin:contraseña123 POST http://127.0.0.1:8000/snippets/ code="print(78
 
 ## Resumen
 
-Ahora tenemos un conjunto bastante detallado de permisos en nuestra API web, y puntos finales para los usuarios del sistema y para los fragmentos de código que han creado.
+Ahora tenemos un conjunto completo de permisos en nuestra API web, y endpoints para los usuarios del sistema y para los fragmentos de código que han creado.
 
 En la [parte 5][tut-5] del tutorial, veremos cómo podemos unir todo creando un punto final HTML para nuestros fragmentos resaltados y mejoraremos la cohesión de nuestra API utilizando hipervínculos para las relaciones dentro del sistema.
 

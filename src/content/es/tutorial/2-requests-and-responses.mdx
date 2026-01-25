@@ -71,7 +71,7 @@ def snippet_list(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 ```
 
-Nuestra vista de instancia es una mejora respecto al ejemplo anterior. Es un poco más concisa y el código ahora se siente muy similar a cuando trabajamos con la API de Formularios. También estamos usando códigos de estado con nombre, lo que hace que el significado de las respuestas sea más claro.
+Nuestra vista de lista es una mejora respecto al ejemplo anterior. Es un poco más concisa y el código ahora se siente muy similar a cuando trabajamos con la API de Formularios. También estamos usando códigos de estado con nombre, lo que hace que el significado de las respuestas sea más claro.
 
 Aquí está la vista para un fragmento individual, en el módulo `views.py`.
 

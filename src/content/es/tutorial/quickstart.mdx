@@ -107,7 +107,7 @@ from tutorial.quickstart.serializers import GroupSerializer, UserSerializer
 
 class UserViewSet(viewsets.ModelViewSet):
     """
-    Punto final de la API que permite ver o editar usuarios.
+    Endpoint de la API que permite ver o editar usuarios.
     """
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
@@ -116,7 +116,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class GroupViewSet(viewsets.ModelViewSet):
     """
-    Punto final de la API que permite ver o editar grupos.
+    Endpoint de la API que permite ver o editar grupos.
     """
     queryset = Group.objects.all().order_by('name')
     serializer_class = GroupSerializer
@@ -125,7 +125,7 @@ class GroupViewSet(viewsets.ModelViewSet):
 
 En lugar de escribir múltiples vistas, estamos agrupando todo el comportamiento común en clases llamadas `ViewSets`.
 
-Si es necesario, podemos desglosarlas fácilmente en vistas individuales, pero el uso de viewsets mantiene la lógica de las vistas bien organizada y muy concisa.
+Si es necesario, podemos descomponerlas fácilmente en vistas individuales, pero el uso de viewsets mantiene la lógica de las vistas bien organizada y muy concisa.
 
 ## URLs
 

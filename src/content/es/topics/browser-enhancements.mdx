@@ -1,24 +1,24 @@
 ---
-title: "Browser enhancements"
+title: "Mejoras del navegador"
 keywords: ["django", "rest", "framework", "api", "browser", "enhancements"]
 order: 5
 ---
 
-# Browser enhancements
+# Mejoras del navegador
 
-> "There are two noncontroversial uses for overloaded POST. The first is to _simulate_ HTTP's uniform interface for clients like web browsers that don't support PUT or DELETE"
+> "Hay dos usos no controvertidos para POST sobrecargado. El primero es _simular_ la interfaz uniforme de HTTP para clientes como navegadores web que no soportan PUT o DELETE"
 >
-> &mdash; [RESTful Web Services][cite], Leonard Richardson & Sam Ruby.
+> &mdash; [Servicios Web RESTful][cite], Leonard Richardson & Sam Ruby.
 
-In order to allow the browsable API to function, there are a couple of browser enhancements that REST framework needs to provide.
+Para permitir que la API navegable funcione, hay un par de mejoras del navegador que REST framework necesita proporcionar.
 
-As of version 3.3.0 onwards these are enabled with javascript, using the [ajax-form][ajax-form] library.
+A partir de la versión 3.3.0 en adelante, estas están habilitadas con javascript, usando la biblioteca [ajax-form][ajax-form].
 
-## Browser based PUT, DELETE, etc...
+## PUT, DELETE, etc... basados en navegador
 
-The [AJAX form library][ajax-form] supports browser-based `PUT`, `DELETE` and other methods on HTML forms.
+La [biblioteca de formularios AJAX][ajax-form] admite métodos `PUT`, `DELETE` y otros basados en navegador en formularios HTML.
 
-After including the library, use the `data-method` attribute on the form, like so:
+Después de incluir la biblioteca, usa el atributo `data-method` en el formulario, así:
 
 ```html
 <form action="/" data-method="PUT">
@@ -27,13 +27,13 @@ After including the library, use the `data-method` attribute on the form, like s
 </form>
 ```
 
-Note that prior to 3.3.0, this support was server-side rather than javascript based. The method overloading style (as used in [Ruby on Rails][rails]) is no longer supported due to subtle issues that it introduces in request parsing.
+Ten en cuenta que antes de la 3.3.0, este soporte era del lado del servidor en lugar de basado en javascript. El estilo de sobrecarga de métodos (como se usa en [Ruby on Rails][rails]) ya no es compatible debido a problemas sutiles que introduce en el análisis de solicitudes.
 
-## Browser based submission of non-form content
+## Envío de contenido no formulado basado en navegador
 
-Browser-based submission of content types such as JSON are supported by the [AJAX form library][ajax-form], using form fields with `data-override='content-type'` and `data-override='content'` attributes.
+El envío basado en navegador de tipos de contenido como JSON es compatible con la [biblioteca de formularios AJAX][ajax-form], usando campos de formulario con atributos `data-override='content-type'` y `data-override='content'`.
 
-For example:
+Por ejemplo:
 
 ```html
 <form action="/">
@@ -43,21 +43,19 @@ For example:
 </form>
 ```
 
-Note that prior to 3.3.0, this support was server-side rather than javascript based.
+Ten en cuenta que antes de la 3.3.0, este soporte era del lado del servidor en lugar de basado en javascript.
 
-## URL based format suffixes
+## Sufijos de formato basados en URL
 
-REST framework can take `?format=json` style URL parameters, which can be a
-useful shortcut for determining which content type should be returned from
-the view.
+REST framework puede tomar parámetros de URL estilo `?format=json`, que pueden ser un acceso directo útil para determinar qué tipo de contenido debe devolverse desde la vista.
 
-This behavior is controlled using the `URL_FORMAT_OVERRIDE` setting.
+Este comportamiento se controla usando la configuración `URL_FORMAT_OVERRIDE`.
 
-## HTTP header based method overriding
+## Sobrescritura de métodos basada en cabeceras HTTP
 
-Prior to version 3.3.0 the semi extension header `X-HTTP-Method-Override` was supported for overriding the request method. This behavior is no longer in core, but can be adding if needed using middleware.
+Antes de la versión 3.3.0, la cabecera de semi extensión `X-HTTP-Method-Override` era compatible para sobrescribir el método de solicitud. Este comportamiento ya no está en el núcleo, pero puede agregarse si es necesario usando middleware.
 
-For example:
+Por ejemplo:
 
 ```python
 METHOD_OVERRIDE_HEADER = 'HTTP_X_HTTP_METHOD_OVERRIDE'
@@ -73,13 +71,13 @@ class MethodOverrideMiddleware:
         return self.get_response(request)
 ```
 
-## URL based accept headers
+## Cabeceras de aceptación basadas en URL
 
-Until version 3.3.0 REST framework included built-in support for `?accept=application/json` style URL parameters, which would allow the `Accept` header to be overridden.
+Hasta la versión 3.3.0, REST framework incluía soporte incorporado para parámetros de URL estilo `?accept=application/json`, que permitirían sobrescribir la cabecera `Accept`.
 
-Since the introduction of the content negotiation API this behavior is no longer included in core, but may be added using a custom content negotiation class, if needed.
+Desde la introducción de la API de negociación de contenido, este comportamiento ya no está incluido en el núcleo, pero puede agregarse usando una clase de negociación de contenido personalizada, si es necesario.
 
-For example:
+Por ejemplo:
 
 ```python
 class AcceptQueryParamOverride()
@@ -89,12 +87,9 @@ class AcceptQueryParamOverride()
         return [token.strip() for token in header.split(',')]
 ```
 
-## Doesn't HTML5 support PUT and DELETE forms?
+## ¿HTML5 no soporta formularios PUT y DELETE?
 
-Nope. It was at one point intended to support `PUT` and `DELETE` forms, but
-was later [dropped from the spec][html5]. There remains
-[ongoing discussion][put_delete] about adding support for `PUT` and `DELETE`,
-as well as how to support content types other than form-encoded data.
+No. En algún momento se pretendía soportar formularios `PUT` y `DELETE`, pero más tarde se [eliminó de la especificación][html5]. Queda [discusión en curso][put_delete] sobre agregar soporte para `PUT` y `DELETE`, así como sobre cómo soportar tipos de contenido distintos de datos codificados en formulario.
 
 [cite]: https://www.amazon.com/RESTful-Web-Services-Leonard-Richardson/dp/0596529260
 [ajax-form]: https://github.com/tomchristie/ajax-form
